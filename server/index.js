@@ -4,7 +4,8 @@ import bodyParser from 'body-parser';
 
 import mongoose from 'mongoose';
 
-const CONNECTION_URL = 'your_mongodb_connection_string';
+const CONNECTION_URL = process.env.MONGO_DB || 'mongodb://localhost:27017';
+const DB_NAME = 'my-ecommerce';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,6 +16,17 @@ app.use(bodyParser.json());
 app.get('/', (req, res) => {
     res.send('Hello from the server!');
 });
+
+const connectDB = async () => {
+    try {
+        await mongoose.connect(CONNECTION_URL, {dbName: DB_NAME});
+        console.log('MongoDB connected');
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+connectDB();
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
