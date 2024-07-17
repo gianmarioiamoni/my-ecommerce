@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, Card, CardContent, CardMedia } from '@mui/material';
+import { CartContext } from '../contexts/CartContext';
+import { Button, CardActions } from '@mui/material';
+
 
 const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState({});
+
+    const { addToCart, removeFromCart, cart } = useContext(CartContext);
+
+    const isInCart = cart.some(item => item.id === product.id);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +29,7 @@ const ProductDetails = () => {
                 <CardMedia
                     component="img"
                     alt={product.name}
-                    height="400"
+                    height="140"
                     image={product.imageUrl}
                     title={product.name}
                 />
@@ -37,6 +44,17 @@ const ProductDetails = () => {
                         ${product.price}
                     </Typography>
                 </CardContent>
+                <CardActions>
+                    {isInCart ? (
+                        <Button size="small" color="secondary" onClick={() => removeFromCart(product.id)}>
+                            Remove from Cart
+                        </Button>
+                    ) : (
+                        <Button size="small" color="primary" onClick={() => addToCart(product)}>
+                            Add to Cart
+                        </Button>
+                    )}
+                </CardActions>
             </Card>
         </Container>
     );

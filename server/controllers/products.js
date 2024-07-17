@@ -30,7 +30,8 @@ export const getProduct = async (req, res) => {
 
     try {
         const product = await Product.findById(id);
-        res.status(200).json(product);
+        const productWithId = { ...product._doc, _id: id };
+        res.status(200).json(productWithId);
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
