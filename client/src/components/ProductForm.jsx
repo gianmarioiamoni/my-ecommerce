@@ -1,6 +1,5 @@
-// ProductForm.js
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import axios from 'axios';
 
 const ProductForm = () => {
@@ -25,15 +24,15 @@ const ProductForm = () => {
             <Typography variant="h4" gutterBottom>
                 Add a New Product
             </Typography>
-            <form onSubmit={handleSubmit}>
-                <TextField name="name" label="Name" onChange={handleChange} fullWidth margin="normal" />
-                <TextField name="description" label="Description" onChange={handleChange} fullWidth margin="normal" />
-                <TextField name="price" label="Price" type="number" onChange={handleChange} fullWidth margin="normal" />
-                <TextField name="imageUrl" label="Image URL" onChange={handleChange} fullWidth margin="normal" />
+            <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <TextField name="name" label="Name" onChange={handleChange} fullWidth />
+                <TextField name="description" label="Description" onChange={handleChange} fullWidth />
+                <TextField name="price" label="Price" type="number" onChange={handleChange} fullWidth />
+                <TextField name="imageUrl" label="Image URL" onChange={handleChange} fullWidth />
                 <Button type="submit" variant="contained" color="primary">
                     Add Product
                 </Button>
-            </form>
+            </Box>
         </Container>
     );
 };
