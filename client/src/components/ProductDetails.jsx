@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Container, Typography, Card, CardContent, CardMedia } from '@mui/material';
+import { Container, Typography, Card, CardContent, CardMedia, Button, CardActions } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
-import { Button, CardActions } from '@mui/material';
-
 
 const ProductDetails = () => {
     const { id } = useParams();
