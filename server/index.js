@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
 import userRoutes from './routes/users.js';
+import productRoutes from './routes/products.js';
 
 const CONNECTION_URL = process.env.MONGO_DB || 'mongodb://localhost:27017';
 const DB_NAME = 'my-ecommerce';
@@ -19,8 +20,9 @@ app.get('/', (req, res) => {
     res.send('Hello from the server!');
 });
 
-// add users routes
+// routes
 app.use('/users', userRoutes);
+app.use('/products', productRoutes);
 
 const connectDB = async () => {
     try {
