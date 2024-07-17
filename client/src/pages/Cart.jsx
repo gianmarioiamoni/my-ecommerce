@@ -17,7 +17,7 @@ const Cart = () => {
             </Typography>
             <List>
                 {cart.map((product) => (
-                    <ListItem key={product.id}>
+                    <ListItem key={product._id}>
                         <ListItemText
                             primary={product.name}
                             secondary={`$${product.price}`}

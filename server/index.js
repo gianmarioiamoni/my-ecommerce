@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 
 import userRoutes from './routes/users.js';
 import productRoutes from './routes/products.js';
+import orderRoutes from './routes/orders.js';
 
 
 const DB_NAME = 'my-ecommerce';
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
 // routes
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
+app.use('/orders', orderRoutes);
 
 const connectDB = async () => {
     try {
