@@ -1,41 +1,46 @@
-import Order from '../models/Order.js';
+import paypalClient from '../config/paypal.js';
+import paypal from '@paypal/checkout-server-sdk';
 
-// Create a new order
+// Create an order
 export const createOrder = async (req, res) => {
-    const { products, totalAmount } = req.body;
+    const { total } = req.body;
+    console.log('Total:', total);
 
-    const newOrder = new Order({
-        products,
-        totalAmount,
+    const request = new paypal.orders.OrdersCreateRequest();
+    request.requestBody({
+        intent: 'CAPTURE',
+        purchase_units: [
+            {
+                amount: {
+                    currency_code: 'USD',
+                    value: total,
+                },
+            },
+        ],
     });
 
     try {
-        const savedOrder = await newOrder.save();
-        res.status(201).json(savedOrder);
+        const order = await paypalClient.execute(request);
+        console.log('Order created:', order.result.id);
+        res.json({ id: order.result.id });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Error creating order:', error);
+        res.status(500).json({ error: 'An error occurred while creating the order' });
     }
 };
 
-// Fetch all orders
-export const getAllOrders = async (req, res) => {
-    try {
-        const orders = await Order.find().populate('products.product');
-        res.status(200).json(orders);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+// Capture an order
+export const captureOrder = async (req, res) => {
+    const { orderID } = req.body;
 
-// Fetch a single order by ID
-export const getOrderById = async (req, res) => {
+    const request = new paypal.orders.OrdersCaptureRequest(orderID);
+    request.requestBody({});
+
     try {
-        const order = await Order.findById(req.params.id).populate('products.product');
-        if (!order) {
-            return res.status(404).json({ message: 'Order not found' });
-        }
-        res.status(200).json(order);
+        const capture = await paypalClient.execute(request);
+        res.json({ status: capture.result.status });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred while capturing the order' });
     }
 };
