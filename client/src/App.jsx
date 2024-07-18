@@ -32,6 +32,9 @@ import ProductForm from './components/ProductForm';
 import NavBar from './components/NavBar';
 import Cart from './pages/Cart';
 import { CartProvider } from './contexts/CartContext';
+import Checkout from './components/Checkout';
+import Success from './pages/Success';
+import NotFound from './pages/NotFound';
 
 const App = () => {
   return (
@@ -46,6 +49,9 @@ const App = () => {
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/" exact element={<ProductList />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/success" element={<Success />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </CartProvider>
