@@ -4,6 +4,9 @@ import { useParams } from 'react-router-dom';
 import { Container, Typography, Card, CardContent, CardMedia, Button, CardActions } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
 
+const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+console.log("serverURL", serverURL);
+
 const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState({});
@@ -14,9 +17,12 @@ const ProductDetails = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await axios.get(`http://localhost:5000/products/${id}`);
+            const { data } = await axios.get(`${serverURL}/products/${id}`);
             setProduct(data);
         };
+        //     const { data } = await axios.get(`http://localhost:5000/products/${id}`);
+        //     setProduct(data);
+        // };
 
         fetchData();
     }, [id]);

@@ -32,7 +32,7 @@ import ProductForm from './components/ProductForm';
 import NavBar from './components/NavBar';
 import Cart from './pages/Cart';
 import { CartProvider } from './contexts/CartContext';
-import Checkout from './components/Checkout';
+import Checkout from './pages/Checkout';
 import Success from './pages/Success';
 import NotFound from './pages/NotFound';
 

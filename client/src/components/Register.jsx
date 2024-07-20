@@ -5,6 +5,9 @@ import { TextField, Button, Container, Typography } from '@mui/material';
 
 import axios from 'axios';
 
+const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+console.log("serverURL", serverURL);
+
 const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
@@ -15,7 +18,9 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post('http://localhost:5000/users/register', formData);
+            // usare axios.post su /users/register utilizzando serverURL
+            // const { data } = await axios.post('http://localhost:5000/users/register', formData);
+            const { data } = await axios.post(`${serverURL}/users/register`, formData);
             console.log(data);
         } catch (error) {
             console.error(error);

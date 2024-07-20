@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import axios from 'axios';
 
+const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+console.log("serverURL", serverURL);
+
 const ProductForm = () => {
     const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrl: '' });
 
@@ -12,7 +15,9 @@ const ProductForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post('http://localhost:5000/products', formData);
+            // usare axios.post su /products utilizzando serverURL
+            // const { data } = await axios.post('http://localhost:5000/products', formData);   
+            const { data } = await axios.post(`${serverURL}/products`, formData);
             console.log(data);
         } catch (error) {
             console.error(error);

@@ -1,15 +1,19 @@
 import React from 'react';
-import { Container, Typography } from '@mui/material';
+import { Container, Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const Success = () => {
     return (
         <Container>
             <Typography variant="h4" component="h1" gutterBottom>
-                Order Successful
+                Payment Successful
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body1" gutterBottom>
                 Thank you for your purchase! Your order has been placed successfully.
             </Typography>
+            <Button variant="contained" color="primary" component={Link} to="/">
+                Back to Home
+            </Button>
         </Container>
     );
 };

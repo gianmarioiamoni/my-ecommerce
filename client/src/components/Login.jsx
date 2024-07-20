@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import axios from 'axios';
 
+const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+console.log("serverURL", serverURL);
+
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
 
@@ -13,7 +16,9 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post('http://localhost:5000/users/login', formData);
+            // usare axios.post su /users/login utilizzando serverURL
+            const { data } = await axios.post(`${serverURL}/users/login`, formData);
+            // const { data } = await axios.post('http://localhost:5000/users/login', formData);
             console.log(data);
         } catch (error) {
             console.error(error);

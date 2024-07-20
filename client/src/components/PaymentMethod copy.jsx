@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, Typography, Box } from '@mui/material';
 
-const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) => {
-    const [paymentMethod, setPaymentMethod] = useState('paypal');
+
+const PaymentMethod = ({ nextStep, prevStep }) => {
+    const [paymentMethod, setPaymentMethod] = useState('paypal'); // Default to PayPal for demonstration
     const [paypalLoaded, setPaypalLoaded] = useState(false);
-    const paypalContainerRef = useRef(null);
 
     const handleChange = (e) => {
         setPaymentMethod(e.target.value);
         if (e.target.value !== 'paypal') {
-            setPaypalLoaded(false);
+            setPaypalLoaded(false); // Reset PayPal loaded state
         }
     };
 
@@ -19,15 +19,17 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
     };
 
     useEffect(() => {
-        const loadPaypalButtons = () => {
-            if (paypalContainerRef.current) {
-                paypalContainerRef.current.innerHTML = '';
+        if (paymentMethod === 'paypal' && !paypalLoaded) {
+            const loadPaypalButtons = () => {
+                if (document.getElementById('paypal-button-container').children.length > 0) {
+                    document.getElementById('paypal-button-container').innerHTML = ''; // Clear previous buttons
+                }
                 window.paypal.Buttons({
                     createOrder: (data, actions) => {
                         return actions.order.create({
                             purchase_units: [{
                                 amount: {
-                                    value: getTotal()
+                                    value: '0.01' // Replace with actual amount
                                 }
                             }]
                         });
@@ -35,28 +37,31 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
                     onApprove: (data, actions) => {
                         return actions.order.capture().then(details => {
                             console.log('Payment Approved: ', details);
-                            handlePaymentSuccess(details); // Call handlePaymentSuccess with payment details
+                            nextStep(paymentMethod);
                         });
                     },
                     onError: (err) => {
                         console.error('Error: ', err);
                     }
-                }).render(paypalContainerRef.current);
-            }
-        };
+                }).render('#paypal-button-container');
+            };
 
-        if (paymentMethod === 'paypal' && !paypalLoaded) {
-            if (!document.querySelector('script[src="https://www.paypal.com/sdk/js?client-id=ATIMh-61ppJmOSL_juZPv1o4bq1U8Z-Tv8QwywWRa9Cf7fVfogCpvEV_qQXIVqeMhFAQQjFMfD802oiA"]')) {
+            // Load PayPal script if not already loaded
+            // scrivi una stringa tra backtick `
+
+
+            if (!document.querySelector('script[src="https://www.paypal.com/sdk/js?client-id=Acb_kWdY8XWwVWsp_KgDuzmXZt-Eipg6OYoGysywq6UF8ALobs639iuL32SIvRh4lgf0g14zRavYpR1S"]')) {
                 const script = document.createElement('script');
-                script.src = "https://www.paypal.com/sdk/js?client-id=ATIMh-61ppJmOSL_juZPv1o4bq1U8Z-Tv8QwywWRa9Cf7fVfogCpvEV_qQXIVqeMhFAQQjFMfD802oiA";
+                script.src = "https://www.paypal.com/sdk/js?client-id=Acb_kWdY8XWwVWsp_KgDuzmXZt-Eipg6OYoGysywq6UF8ALobs639iuL32SIvRh4lgf0g14zRavYpR1S";
                 script.onload = loadPaypalButtons;
                 document.body.appendChild(script);
             } else {
                 loadPaypalButtons();
             }
+
             setPaypalLoaded(true);
         }
-    }, [paymentMethod, paypalLoaded, getTotal, handlePaymentSuccess]);
+    }, [paymentMethod, paypalLoaded, nextStep]);
 
     return (
         <Container>
@@ -72,7 +77,7 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
                     </RadioGroup>
                 </FormControl>
                 {paymentMethod === 'paypal' && (
-                    <Box id="paypal-button-container" ref={paypalContainerRef} style={{ marginTop: '20px', maxWidth: '400px' }}></Box>
+                    <Box id="paypal-button-container" style={{ marginTop: '20px', maxWidth: '400px' }}></Box>
                 )}
                 {paymentMethod !== 'paypal' && (
                     <div style={{ marginTop: '20px' }}>

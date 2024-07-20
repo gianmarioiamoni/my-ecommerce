@@ -3,12 +3,16 @@ import axios from 'axios';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+console.log("serverURL", serverURL);
+
 const ProductList = () => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await axios.get('http://localhost:5000/products');
+            const { data } = await axios.get(`${serverURL}/products`);
+            // const { data } = await axios.get('http://localhost:5000/products');
             setProducts(data);
         };
 
