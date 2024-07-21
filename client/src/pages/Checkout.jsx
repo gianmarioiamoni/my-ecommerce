@@ -31,6 +31,7 @@ const Checkout = () => {
 
     const handlePaymentSuccess = async (details) => {
         try {
+            console.log('handlePaymentSuccess - details:', details);
             const orderData = {
                 shippingData,
                 paymentMethod,
@@ -38,16 +39,23 @@ const Checkout = () => {
                 totalAmount: getTotal(),
                 paymentDetails: details
             };
+            console.log('handlePaymentSuccess - orderData:', orderData);
             // Make a request to capture the order
-            const captureResponse = await axios.post(`${serverURL}/orders/capture`, { orderID: details.id });
-            if (captureResponse.data.status === 'COMPLETED') {
-                // Place the order
-                await axios.post(`${serverURL}/orders/capture`, orderData);
-                clearCart();
-                navigate('/success');
-            } else {
-                throw new Error('Payment was not completed.');
-            }
+            ///////////////
+                
+            clearCart();
+            navigate('/success');
+            // const captureResponse = await axios.post(`${serverURL}/orders/capture`, { orderID: details.orderID });
+            // console.log('handlePaymentSuccess - captureResponse.data:', captureResponse.data);
+            // if (captureResponse.data.status === 'COMPLETED') {
+            //     // Place the order
+            //     const orderResponse = await axios.post(`${serverURL}/orders/capture`, orderData);
+            //     console.log('handlePaymentSuccess - orderResponse.data:', orderResponse.data);
+            //     clearCart();
+            //     navigate('/success');
+            // } else {
+            //     throw new Error('Payment was not completed.');
+            // }
         } catch (error) {
             console.error('Error placing order:', error);
         }

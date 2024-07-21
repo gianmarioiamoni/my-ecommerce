@@ -1,9 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, Typography, Box } from '@mui/material';
-import axios from 'axios';
-
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
-console.log("serverURL", serverURL);
 
 const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) => {
     const [paymentMethod, setPaymentMethod] = useState('paypal');
@@ -27,31 +23,20 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
             if (paypalContainerRef.current) {
                 paypalContainerRef.current.innerHTML = '';
                 window.paypal.Buttons({
-                    createOrder: async (data, actions) => {
-                        try {
-                            // call the API by using the const serverURL
-                            const response = await axios.post(`${serverURL}/orders/`, {
-                                action: 'create',
-                                total: getTotal(),
-                            });
-                            return response.data.id;
-                        } catch (error) {
-                            console.error('Error creating order:', error);
-                        }
+                    createOrder: (data, actions) => {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: getTotal()
+                                }
+                            }]
+                        });
                     },
-                    onApprove: async (data, actions) => {
-                        try {
-                            const response = await axios.post(`${serverURL}/orders/`, {
-                                action: 'capture',
-                                orderID: data.orderID,
-                            });
-                            if (response.data.status === 'COMPLETED') {
-                                console.log('Payment Approved: ', response.data);
-                                handlePaymentSuccess(response.data); // Call handlePaymentSuccess with payment details
-                            }
-                        } catch (error) {
-                            console.error('Error capturing order:', error);
-                        }
+                    onApprove: (data, actions) => {
+                        return actions.order.capture().then(details => {
+                            console.log('Payment Approved: ', details);
+                            handlePaymentSuccess(details); // Call handlePaymentSuccess with payment details
+                        });
                     },
                     onError: (err) => {
                         console.error('Error: ', err);
@@ -61,20 +46,14 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
         };
 
         if (paymentMethod === 'paypal' && !paypalLoaded) {
-            const scriptId = 'paypal-sdk-script';
-            const existingScript = document.getElementById(scriptId);
-
-            if (!existingScript) {
+            if (!document.querySelector('script[src="https://www.paypal.com/sdk/js?client-id=ATIMh-61ppJmOSL_juZPv1o4bq1U8Z-Tv8QwywWRa9Cf7fVfogCpvEV_qQXIVqeMhFAQQjFMfD802oiA"]')) {
                 const script = document.createElement('script');
-                // use env variable for client id
                 script.src = "https://www.paypal.com/sdk/js?client-id=ATIMh-61ppJmOSL_juZPv1o4bq1U8Z-Tv8QwywWRa9Cf7fVfogCpvEV_qQXIVqeMhFAQQjFMfD802oiA";
-                script.id = scriptId;
                 script.onload = loadPaypalButtons;
                 document.body.appendChild(script);
             } else {
                 loadPaypalButtons();
             }
-
             setPaypalLoaded(true);
         }
     }, [paymentMethod, paypalLoaded, getTotal, handlePaymentSuccess]);

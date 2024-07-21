@@ -29,7 +29,8 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
                 window.paypal.Buttons({
                     createOrder: async (data, actions) => {
                         try {
-                            // call the API by using the const serverURL
+                            // scrivi axios.post per creare l'ordine utilizzando la costante serverURL
+
                             const response = await axios.post(`${serverURL}/orders/`, {
                                 action: 'create',
                                 total: getTotal(),
@@ -47,7 +48,10 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
                             });
                             if (response.data.status === 'COMPLETED') {
                                 console.log('Payment Approved: ', response.data);
-                                handlePaymentSuccess(response.data); // Call handlePaymentSuccess with payment details
+                                const paymentDetails = { ...response.data, orderID: data.orderID };
+                                console.log('Payment Details:', paymentDetails);
+                                // handlePaymentSuccess(response.data); // Call handlePaymentSuccess with payment details
+                                handlePaymentSuccess(paymentDetails); // Call handlePaymentSuccess with payment details
                             }
                         } catch (error) {
                             console.error('Error capturing order:', error);
@@ -61,20 +65,14 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
         };
 
         if (paymentMethod === 'paypal' && !paypalLoaded) {
-            const scriptId = 'paypal-sdk-script';
-            const existingScript = document.getElementById(scriptId);
-
-            if (!existingScript) {
+            if (!document.querySelector('script[src="https://www.paypal.com/sdk/js?client-id=ATIMh-61ppJmOSL_juZPv1o4bq1U8Z-Tv8QwywWRa9Cf7fVfogCpvEV_qQXIVqeMhFAQQjFMfD802oiA"]')) {
                 const script = document.createElement('script');
-                // use env variable for client id
                 script.src = "https://www.paypal.com/sdk/js?client-id=ATIMh-61ppJmOSL_juZPv1o4bq1U8Z-Tv8QwywWRa9Cf7fVfogCpvEV_qQXIVqeMhFAQQjFMfD802oiA";
-                script.id = scriptId;
                 script.onload = loadPaypalButtons;
                 document.body.appendChild(script);
             } else {
                 loadPaypalButtons();
             }
-
             setPaypalLoaded(true);
         }
     }, [paymentMethod, paypalLoaded, getTotal, handlePaymentSuccess]);
@@ -113,3 +111,4 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
 };
 
 export default PaymentMethod;
+
