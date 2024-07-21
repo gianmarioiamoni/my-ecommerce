@@ -38,11 +38,21 @@ const Checkout = () => {
                 paymentDetails: details
             };
 
-            await axios.post(`${serverURL}/orders`, orderData);
+            console.log("handlePaymentSuccess - orderData", orderData);
+            const response = await axios.post(`${serverURL}/orders`, orderData);
+            console.log("handlePaymentSuccess - response", response);
+            if (response.data.status === 'success') {
+                console.log("handlePaymentSuccess - response.data", response.data);
+            }
             clearCart();
             navigate('/success');
         } catch (error) {
             console.error('Error placing order:', error);
+            if (error.response && error.response.data.message === 'Order already captured') {
+                alert('This order has already been captured.');
+            } else {
+                alert('An error occurred while placing the order. Please try again.');
+            }
         }
     };
 

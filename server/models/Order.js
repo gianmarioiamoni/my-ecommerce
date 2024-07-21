@@ -23,6 +23,11 @@ const orderSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    paypalOrderId: {
+        type: String,
+        // required: true,
+        unique: true,
+    },
 });
 
 const Order = mongoose.model('Order', orderSchema);
