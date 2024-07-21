@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Container, Typography, Button, List, ListItem, ListItemText } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
+import PayPalButton from './PayPalButton';
 
 const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
     const { cart } = useContext(CartContext);
@@ -10,8 +11,9 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
     };
 
     const handlePlaceOrder = () => {
-        // Call placeOrder function to proceed with placing the order
-        placeOrder();
+        if (paymentMethod !== 'paypal') {
+            placeOrder();
+        }
     };
 
     return (
@@ -48,12 +50,21 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
                 <Button variant="contained" color="secondary" onClick={prevStep}>
                     Back
                 </Button>
-                <Button variant="contained" color="primary" style={{ marginLeft: '10px' }} onClick={handlePlaceOrder}>
-                    Place Order
-                </Button>
+                {paymentMethod !== 'paypal' && (
+                    <Button variant="contained" color="primary" style={{ marginLeft: '10px' }} onClick={handlePlaceOrder}>
+                        Place Order
+                    </Button>
+                )}
+                {paymentMethod === 'paypal' && (
+                    <PayPalButton
+                        amount={getTotal()}
+                        onSuccess={placeOrder}
+                    />
+                )}
             </div>
         </Container>
     );
 };
 
 export default ReviewOrder;
+

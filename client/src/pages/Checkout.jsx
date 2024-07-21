@@ -28,10 +28,8 @@ const Checkout = () => {
         setStep(step - 1);
     };
 
-
     const handlePaymentSuccess = async (details) => {
         try {
-            console.log('handlePaymentSuccess - details:', details);
             const orderData = {
                 shippingData,
                 paymentMethod,
@@ -39,23 +37,10 @@ const Checkout = () => {
                 totalAmount: getTotal(),
                 paymentDetails: details
             };
-            console.log('handlePaymentSuccess - orderData:', orderData);
-            // Make a request to capture the order
-            ///////////////
-                
+
+            await axios.post(`${serverURL}/orders`, orderData);
             clearCart();
             navigate('/success');
-            // const captureResponse = await axios.post(`${serverURL}/orders/capture`, { orderID: details.orderID });
-            // console.log('handlePaymentSuccess - captureResponse.data:', captureResponse.data);
-            // if (captureResponse.data.status === 'COMPLETED') {
-            //     // Place the order
-            //     const orderResponse = await axios.post(`${serverURL}/orders/capture`, orderData);
-            //     console.log('handlePaymentSuccess - orderResponse.data:', orderResponse.data);
-            //     clearCart();
-            //     navigate('/success');
-            // } else {
-            //     throw new Error('Payment was not completed.');
-            // }
         } catch (error) {
             console.error('Error placing order:', error);
         }
@@ -68,14 +53,7 @@ const Checkout = () => {
     return (
         <div>
             {step === 1 && <ShippingForm nextStep={nextStep} />}
-            {step === 2 && (
-                <PaymentMethod
-                    nextStep={nextStep}
-                    prevStep={prevStep}
-                    getTotal={getTotal}
-                    handlePaymentSuccess={handlePaymentSuccess}
-                />
-            )}
+            {step === 2 && <PaymentMethod nextStep={nextStep} prevStep={prevStep} />}
             {step === 3 && (
                 <ReviewOrder
                     shippingData={shippingData}
@@ -84,11 +62,9 @@ const Checkout = () => {
                     placeOrder={handlePaymentSuccess}
                 />
             )}
-            {step === 3 && paymentMethod === 'PayPal' && (
-                <div id="paypal-button-container"></div>
-            )}
         </div>
     );
 };
 
 export default Checkout;
+

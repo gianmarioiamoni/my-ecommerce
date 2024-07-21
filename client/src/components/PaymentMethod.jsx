@@ -1,111 +1,36 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Container, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, Button, Typography, Box } from '@mui/material';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { Container, Typography, Button, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
-console.log("serverURL", serverURL);
+const PaymentMethod = ({ nextStep, prevStep }) => {
+    const [selectedMethod, setSelectedMethod] = useState('');
 
-const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) => {
-    const [paymentMethod, setPaymentMethod] = useState('paypal');
-    const [paypalLoaded, setPaypalLoaded] = useState(false);
-    const paypalContainerRef = useRef(null);
-
-    const handleChange = (e) => {
-        setPaymentMethod(e.target.value);
-        if (e.target.value !== 'paypal') {
-            setPaypalLoaded(false);
-        }
+    const handleNext = () => {
+        nextStep(selectedMethod);
     };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        nextStep(paymentMethod);
-    };
-
-    useEffect(() => {
-        const loadPaypalButtons = () => {
-            if (paypalContainerRef.current) {
-                paypalContainerRef.current.innerHTML = '';
-                window.paypal.Buttons({
-                    createOrder: async (data, actions) => {
-                        try {
-                            // call the API by using the const serverURL
-                            const response = await axios.post(`${serverURL}/orders/`, {
-                                action: 'create',
-                                total: getTotal(),
-                            });
-                            return response.data.id;
-                        } catch (error) {
-                            console.error('Error creating order:', error);
-                        }
-                    },
-                    onApprove: async (data, actions) => {
-                        try {
-                            const response = await axios.post(`${serverURL}/orders/`, {
-                                action: 'capture',
-                                orderID: data.orderID,
-                            });
-                            if (response.data.status === 'COMPLETED') {
-                                console.log('Payment Approved: ', response.data);
-                                handlePaymentSuccess(response.data); // Call handlePaymentSuccess with payment details
-                            }
-                        } catch (error) {
-                            console.error('Error capturing order:', error);
-                        }
-                    },
-                    onError: (err) => {
-                        console.error('Error: ', err);
-                    }
-                }).render(paypalContainerRef.current);
-            }
-        };
-
-        if (paymentMethod === 'paypal' && !paypalLoaded) {
-            const scriptId = 'paypal-sdk-script';
-            const existingScript = document.getElementById(scriptId);
-
-            if (!existingScript) {
-                const script = document.createElement('script');
-                // use env variable for client id
-                script.src = "https://www.paypal.com/sdk/js?client-id=ATIMh-61ppJmOSL_juZPv1o4bq1U8Z-Tv8QwywWRa9Cf7fVfogCpvEV_qQXIVqeMhFAQQjFMfD802oiA";
-                script.id = scriptId;
-                script.onload = loadPaypalButtons;
-                document.body.appendChild(script);
-            } else {
-                loadPaypalButtons();
-            }
-
-            setPaypalLoaded(true);
-        }
-    }, [paymentMethod, paypalLoaded, getTotal, handlePaymentSuccess]);
 
     return (
         <Container>
             <Typography variant="h4" component="h1" gutterBottom>
-                Payment Method
+                Choose Payment Method
             </Typography>
-            <form onSubmit={handleSubmit}>
-                <FormControl component="fieldset">
-                    <FormLabel component="legend">Select Payment Method</FormLabel>
-                    <RadioGroup value={paymentMethod} onChange={handleChange}>
-                        <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
-                        <FormControlLabel value="creditCard" control={<Radio />} label="Credit Card" />
-                    </RadioGroup>
-                </FormControl>
-                {paymentMethod === 'paypal' && (
-                    <Box id="paypal-button-container" ref={paypalContainerRef} style={{ marginTop: '20px', maxWidth: '400px' }}></Box>
-                )}
-                {paymentMethod !== 'paypal' && (
-                    <div style={{ marginTop: '20px' }}>
-                        <Button type="submit" variant="contained" color="primary">
-                            Next
-                        </Button>
-                    </div>
-                )}
-            </form>
+            <FormControl component="fieldset">
+                <FormLabel component="legend">Payment Method</FormLabel>
+                <RadioGroup
+                    aria-label="payment-method"
+                    name="payment-method"
+                    value={selectedMethod}
+                    onChange={(e) => setSelectedMethod(e.target.value)}
+                >
+                    <FormControlLabel value="paypal" control={<Radio />} label="PayPal" />
+                    <FormControlLabel value="credit-card" control={<Radio />} label="Credit Card" />
+                </RadioGroup>
+            </FormControl>
             <div style={{ marginTop: '20px' }}>
                 <Button variant="contained" color="secondary" onClick={prevStep}>
                     Back
+                </Button>
+                <Button variant="contained" color="primary" style={{ marginLeft: '10px' }} onClick={handleNext} disabled={!selectedMethod}>
+                    Next
                 </Button>
             </div>
         </Container>
@@ -113,3 +38,4 @@ const PaymentMethod = ({ nextStep, prevStep, getTotal, handlePaymentSuccess }) =
 };
 
 export default PaymentMethod;
+
