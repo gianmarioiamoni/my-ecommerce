@@ -25,11 +25,17 @@ const orderSchema = new mongoose.Schema({
     },
     paypalOrderId: {
         type: String,
-        // required: true,
         unique: true,
+        sparse: true,
+    },
+    stripePaymentIntentId: {
+        type: String,
+        unique: true,
+        sparse: true,
     },
 });
 
 const Order = mongoose.model('Order', orderSchema);
 
 export default Order;
+

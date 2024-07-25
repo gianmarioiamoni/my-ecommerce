@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Container, Typography, Button, List, ListItem, ListItemText } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
 import PayPalButton from './PayPalButton';
+import CreditCardForm from './CreditCardForm';
 
 const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
     const { cart } = useContext(CartContext);
@@ -11,11 +12,6 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
         setTotal(cart.reduce((total, product) => total + product.price, 0).toFixed(2));
     }, [cart]);
 
-    const handlePlaceOrder = () => {
-        if (paymentMethod !== 'paypal') {
-            placeOrder();
-        }
-    };
 
     return (
         <Container>
@@ -51,16 +47,19 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
                 <Button variant="contained" color="secondary" onClick={prevStep}>
                     Back
                 </Button>
-                {paymentMethod !== 'paypal' && (
+                {/* {paymentMethod !== 'paypal' && (
                     <Button variant="contained" color="primary" style={{ marginLeft: '10px' }} onClick={handlePlaceOrder}>
                         Place Order
                     </Button>
-                )}
-                {paymentMethod === 'paypal' && total > 0 && (
+                )} */}
+                {paymentMethod === 'paypal' ? (
                     <PayPalButton
                         amount={total}
-                        onSuccess={placeOrder}
-                    />
+                        onSuccess={placeOrder} />
+                ) : (
+                    <CreditCardForm
+                        handlePaymentSuccess={placeOrder}
+                        total={total} />
                 )}
             </div>
         </Container>
@@ -68,6 +67,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
 };
 
 export default ReviewOrder;
+
 
 
 
