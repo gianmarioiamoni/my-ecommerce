@@ -16,10 +16,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // usare axios.post su /users/login utilizzando serverURL
-            const { data } = await axios.post(`${serverURL}/users/login`, formData);
-            // const { data } = await axios.post('http://localhost:5000/users/login', formData);
-            console.log(data);
+            await axios.post(`${serverURL}/users/login`, formData);
         } catch (error) {
             console.error(error);
         }

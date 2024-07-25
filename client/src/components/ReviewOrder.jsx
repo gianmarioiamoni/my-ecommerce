@@ -12,7 +12,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
         setTotal(cart.reduce((total, product) => total + product.price, 0).toFixed(2));
     }, [cart]);
 
-
+    
     return (
         <Container>
             <Typography variant="h4" component="h1" gutterBottom>
@@ -47,11 +47,6 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
                 <Button variant="contained" color="secondary" onClick={prevStep}>
                     Back
                 </Button>
-                {/* {paymentMethod !== 'paypal' && (
-                    <Button variant="contained" color="primary" style={{ marginLeft: '10px' }} onClick={handlePlaceOrder}>
-                        Place Order
-                    </Button>
-                )} */}
                 {paymentMethod === 'paypal' ? (
                     <PayPalButton
                         amount={total}

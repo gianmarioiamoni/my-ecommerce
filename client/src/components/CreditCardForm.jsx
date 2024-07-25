@@ -27,186 +27,12 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
             card: cardElement,
         });
 
-        console.log("Created Payment Method: ", paymentMethod);
         if (error) {
             console.error("Error creating Payment Method: ", error);
             setLoading(false);
             setError(error);
             return;
         }
-
-        // try {
-        //     const response = await axios.post(`${serverURL}/orders/create-payment-intent`, {
-        //         paymentMethodId: paymentMethod.id,
-        //         amount: parseFloat(total) // Assicurati che total sia un numero
-        //     }, {
-        //         headers: { 'Content-Type': 'application/json' }
-        //     });
-
-        //     const paymentIntentRes = response.data;
-        //     console.log("CreditCardForm - paymentIntentRes: ", paymentIntentRes)
-        //     if (paymentIntentRes.error) {
-        //         console.error(paymentIntentRes.error);
-        //         setLoading(false);
-        //         setError(paymentIntentRes.error);
-        //         return;
-        //     }
-
-        //     // const { clientSecret } = paymentIntentRes;
-        //     const { status, clientSecret } = paymentIntentRes;
-        //     console.log("Payment Intent Status before confirmation: ", status);
-        //     if (status !== 'requires_confirmation') {
-        //         console.error("Unexpected Payment Intent status: ", status);
-        //         setError({ message: "Unexpected Payment Intent status" });
-        //         return;
-        //     }
-        //     console.log("CreditCardForm - clientSecret: ", clientSecret)
-        //     console.log("CreditCardForm - paymentMethod: ", paymentMethod)
-
-        //     // Fetch payment intent to check its status
-        //     const paymentIntentStatus = await stripe.retrievePaymentIntent(clientSecret);
-        //     console.log("CreditCardForm - paymentIntentStatus: ", paymentIntentStatus);
-
-        //     if (paymentIntentStatus.paymentIntent.status !== 'requires_confirmation') {
-        //         console.error('Unexpected Payment Intent state', paymentIntentStatus.paymentIntent.status);
-        //         setLoading(false);
-        //         setError(new Error('PaymentIntent is in an unexpected state.'));
-        //         return;
-        //     }
-
-        //     const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        //         payment_method: paymentMethod.id,
-        //     });
-
-        //     if (confirmError) {
-        //         console.error('Payment failed', confirmError);
-        //         setError(confirmError);
-        //     } else {
-        //         console.log('Payment succeeded, PaymentIntent: ', paymentIntent);
-        //         handlePaymentSuccess(paymentIntent);
-        //     }
-
-        //     console.log("Confirmed Payment Intent: ", paymentIntent);
-        //     if (confirmError) {
-        //         console.error('Payment failed', confirmError);
-        //         setError(confirmError);
-        //     } else if (paymentIntent) {
-        //         handlePaymentSuccess(paymentIntent);
-        //     } else {
-        //         console.error('PaymentIntent is undefined');
-        //     }
-        // try {
-        //     const response = await axios.post(`${serverURL}/orders/create-payment-intent`, {
-        //         paymentMethodId: paymentMethod.id,
-        //         amount: parseFloat(total)
-        //     }, {
-        //         headers: { 'Content-Type': 'application/json' }
-        //     });
-
-        //     const paymentIntentRes = response.data;
-        //     console.log("CreditCardForm - paymentIntentRes: ", paymentIntentRes);
-
-        //     if (paymentIntentRes.error) {
-        //         console.error("Error in Payment Intent Response: ", paymentIntentRes.error);
-        //         setLoading(false);
-        //         setError(paymentIntentRes.error);
-        //         return;
-        //     }
-
-        //     const { clientSecret, paymentIntent } = paymentIntentRes;
-        //     console.log("Client Secret: ", clientSecret);
-        //     console.log("Payment Intent: ", paymentIntent);
-
-        //     if (!paymentIntent || !paymentIntent.status) {
-        //         console.error("Unexpected Payment Intent status: ", paymentIntent ? paymentIntent.status : 'undefined');
-        //         setError({ message: "Unexpected Payment Intent status" });
-        //         setLoading(false);
-        //         return;
-        //     }
-
-        //     console.log("Payment Intent Status before confirmation: ", paymentIntent.status);
-        //     if (paymentIntent.status !== 'requires_confirmation') {
-        //         console.error("Unexpected Payment Intent status: ", paymentIntent.status);
-        //         setError({ message: "Unexpected Payment Intent status" });
-        //         setLoading(false);
-        //         return;
-        //     }
-
-        //     const { error: confirmError, paymentIntent: confirmedPaymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        //         payment_method: paymentMethod.id,
-        //     });
-
-        //     if (confirmError) {
-        //         console.error('Payment failed', confirmError);
-        //         setError(confirmError);
-        //     } else if (confirmedPaymentIntent) {
-        //         console.log('Payment succeeded, PaymentIntent: ', confirmedPaymentIntent);
-        //         handlePaymentSuccess(confirmedPaymentIntent);
-        //     } else {
-        //         console.error('PaymentIntent is undefined');
-        //     }
-        // } catch (error) {
-        //     console.error('Error creating payment intent:', error.response ? error.response.data : error.message);
-        //     setError(error);
-        // }
-
-        // setLoading(false);
-        // try {
-        //     const response = await axios.post(`${serverURL}/orders/create-payment-intent`, {
-        //         paymentMethodId: paymentMethod.id,
-        //         amount: parseFloat(total)
-        //     }, {
-        //         headers: { 'Content-Type': 'application/json' }
-        //     });
-
-        //     const paymentIntentRes = response.data;
-        //     console.log("CreditCardForm - paymentIntentRes: ", paymentIntentRes);
-
-        //     if (paymentIntentRes.error) {
-        //         console.error("Error in Payment Intent Response: ", paymentIntentRes.error);
-        //         setLoading(false);
-        //         setError(paymentIntentRes.error);
-        //         return;
-        //     }
-
-        //     const { clientSecret, paymentIntent } = paymentIntentRes;
-        //     console.log("Client Secret: ", clientSecret);
-        //     console.log("Payment Intent: ", paymentIntent);
-
-        //     if (!paymentIntent || !paymentIntent.status) {
-        //         console.error("Unexpected Payment Intent status: ", paymentIntent ? paymentIntent.status : 'undefined');
-        //         setError({ message: "Unexpected Payment Intent status" });
-        //         setLoading(false);
-        //         return;
-        //     }
-
-        //     console.log("Payment Intent Status before confirmation: ", paymentIntent.status);
-        //     if (paymentIntent.status !== 'requires_confirmation') {
-        //         console.error("Unexpected Payment Intent status: ", paymentIntent.status);
-        //         setError({ message: "Unexpected Payment Intent status" });
-        //         setLoading(false);
-        //         return;
-        //     }
-
-        //     const { error: confirmError, paymentIntent: confirmedPaymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        //         payment_method: paymentMethod.id,
-        //     });
-
-        //     if (confirmError) {
-        //         console.error('Payment failed', confirmError);
-        //         setError(confirmError);
-        //     } else if (confirmedPaymentIntent) {
-        //         console.log('Payment succeeded, PaymentIntent: ', confirmedPaymentIntent);
-        //         handlePaymentSuccess(confirmedPaymentIntent);
-        //     } else {
-        //         console.error('PaymentIntent is undefined');
-        //     }
-        // } catch (error) {
-        //     console.error('Error creating payment intent:', error.response ? error.response.data : error.message);
-        //     setError(error);
-        // }
-
-        // setLoading(false);
 
         try {
             const response = await axios.post(`${serverURL}/orders/create-payment-intent`, {
@@ -217,7 +43,6 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
             });
 
             const paymentIntentRes = response.data;
-            console.log("CreditCardForm - paymentIntentRes: ", paymentIntentRes);
 
             if (paymentIntentRes.error) {
                 console.error("Error in Payment Intent Response: ", paymentIntentRes.error);
@@ -227,7 +52,6 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
             }
 
             const { paymentIntent } = paymentIntentRes;
-            console.log("Payment Intent: ", paymentIntent);
 
             if (!paymentIntent || !paymentIntent.status) {
                 console.error("Unexpected Payment Intent status: ", paymentIntent ? paymentIntent.status : 'undefined');
@@ -236,9 +60,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
                 return;
             }
 
-            console.log("Payment Intent Status before confirmation: ", paymentIntent.status);
             if (paymentIntent.status !== 'requires_confirmation') {
-                console.error("Unexpected Payment Intent status: ", paymentIntent.status);
                 setError({ message: "Unexpected Payment Intent status" });
                 setLoading(false);
                 return;
@@ -253,7 +75,6 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
             const confirmedPaymentIntent = confirmResponse.data.paymentIntent;
 
             if (confirmedPaymentIntent.status === 'succeeded') {
-                console.log('Payment succeeded, PaymentIntent: ', confirmedPaymentIntent);
                 handlePaymentSuccess(confirmedPaymentIntent);
             } else {
                 console.error('Payment failed');
@@ -265,8 +86,6 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
         }
 
         setLoading(false);
-
-
 
     };
 

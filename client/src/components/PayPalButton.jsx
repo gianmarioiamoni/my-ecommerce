@@ -4,21 +4,26 @@ const PayPalButton = ({ amount, onSuccess }) => {
     const paypalRef = useRef(null);
     const isButtonRendered = useRef(false);
 
+    const amountNumber = parseFloat(amount);
+
+    console.log("PayPalButton - amountNumber: ", amountNumber);
+    console.log("PayPalButton - typeof(amountNumber): ", typeof(amountNumber));
+
     useEffect(() => {
-        if (!isButtonRendered.current) {
+        if (!isButtonRendered.current && amountNumber > 0) {
             window.paypal.Buttons({
                 createOrder: (data, actions) => {
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: amount, // L'importo totale da pagare
+                                value: amountNumber.toFixed(2), // Assicurati che ci siano sempre due decimali
                             },
                         }],
                     });
                 },
                 onApprove: (data, actions) => {
                     return actions.order.capture().then(details => {
-                        onSuccess(details); // Gestisci il successo del pagamento
+                        onSuccess(details);
                     });
                 },
                 onError: (err) => {
@@ -27,12 +32,13 @@ const PayPalButton = ({ amount, onSuccess }) => {
             }).render(paypalRef.current);
             isButtonRendered.current = true;
         }
-    }, [amount, onSuccess]);
+    }, [amountNumber, onSuccess]);
 
     return <div ref={paypalRef}></div>;
 };
 
 export default PayPalButton;
+
 
 
 

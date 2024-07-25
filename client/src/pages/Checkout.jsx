@@ -9,7 +9,6 @@ import axios from 'axios';
 import { CartContext } from '../contexts/CartContext';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-console.log("VITE_STRIPE_PUBLIC_KEY", import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
@@ -43,16 +42,16 @@ const Checkout = () => {
             paymentDetails: details
         };
 
-        console.log("handlePaymentSuccess - orderData", orderData);
-        const response = await axios.post(`${serverURL}/orders`, orderData);
-        console.log("handlePaymentSuccess - response", response);
-        if (response.data.status === 'success') {
-            console.log("handlePaymentSuccess - response.data", response.data);
+        if (paymentMethod === 'paypal') {
+            await axios.post(`${serverURL}/orders/paypal-order`, orderData);
         }
+        else if (paymentMethod === 'credit-card') {
+            await axios.post(`${serverURL}/orders/credit-card-order`, orderData);
+        }
+        
         clearCart();
         navigate('/success');
     } catch (error) {
-        console.error('Error placing order:', error);
         if (error.response && error.response.data.message === 'Order already captured') {
             alert('This order has already been captured.');
         } else {
@@ -62,25 +61,24 @@ const Checkout = () => {
 };
 
 // In the component
-const handlePayPalPaymentSuccess = (details) => {
-    if (details.id && details.status === 'COMPLETED') {
-        handlePaymentSuccess(details);
-    } else {
-        alert('Invalid PayPal payment details');
-    }
-};
+    const handlePayPalPaymentSuccess = (details) => {
+        if (details.id && details.status === 'COMPLETED') {
+            handlePaymentSuccess(details);
+        } else {
+            alert('Invalid PayPal payment details');
+        }
+    };
 
     const handleStripePaymentSuccess = (paymentIntent) => {
-        console.log("handleStripePaymentSuccess - paymentIntent", paymentIntent);
         if (!paymentIntent) {
             throw new Error("Payment Intent is undefined");
         }
-    if (paymentIntent.id && paymentIntent.status === 'succeeded') {
-        handlePaymentSuccess(paymentIntent);
-    } else {
-        alert('Invalid Stripe payment details');
-    }
-};
+        if (paymentIntent.id && paymentIntent.status === 'succeeded') {
+            handlePaymentSuccess(paymentIntent);
+        } else {
+            alert('Invalid Stripe payment details');
+        }
+    };
 
     const getTotal = () => {
         return cart.reduce((total, product) => total + product.price, 0).toFixed(2);

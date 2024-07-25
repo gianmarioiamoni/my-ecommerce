@@ -25,13 +25,9 @@ const orderSchema = new mongoose.Schema({
     },
     paypalOrderId: {
         type: String,
-        unique: true,
-        sparse: true,
     },
     stripePaymentIntentId: {
         type: String,
-        unique: true,
-        sparse: true,
     },
 });
 

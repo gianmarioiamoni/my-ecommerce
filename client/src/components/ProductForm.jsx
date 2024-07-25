@@ -15,10 +15,7 @@ const ProductForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // usare axios.post su /products utilizzando serverURL
-            // const { data } = await axios.post('http://localhost:5000/products', formData);   
-            const { data } = await axios.post(`${serverURL}/products`, formData);
-            console.log(data);
+            await axios.post(`${serverURL}/products`, formData);
         } catch (error) {
             console.error(error);
         }

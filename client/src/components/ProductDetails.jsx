@@ -20,9 +20,6 @@ const ProductDetails = () => {
             const { data } = await axios.get(`${serverURL}/products/${id}`);
             setProduct(data);
         };
-        //     const { data } = await axios.get(`http://localhost:5000/products/${id}`);
-        //     setProduct(data);
-        // };
 
         fetchData();
     }, [id]);
