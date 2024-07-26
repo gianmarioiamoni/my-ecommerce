@@ -47,7 +47,6 @@ export const createPayPalOrder = async (req, res) => {
                     return res.status(200).json({ status: 'success' });
                 }
 
-                console.log("*** create PayPal order - totalAmount: ", totalAmount);
                 const newOrder = new Order({
                     products: cartItems.map(item => ({
                         product: item._id,

@@ -60,13 +60,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
                 return;
             }
 
-        } catch (error) {
-            console.error('Error creating payment intent:', error.response ? error.response.data : error.message);
-            setError(error);
-        }
-
-        // confirm payment intent
-        try {
+            // confirm payment intent
             const confirmResponse = await confirmPaymentIntent(paymentIntent.id);
 
             const confirmedPaymentIntent = confirmResponse.paymentIntent;
@@ -77,9 +71,8 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
                 console.error('Payment failed');
                 setError({ message: 'Payment failed' });
             }
-        
         } catch (error) {
-            console.error('Error confirming payment intent:', error.response ? error.response.data : error.message);
+            console.error('Error creating payment intent:', error.response ? error.response.data : error.message);
             setError(error);
         }
         setLoading(false);
