@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+
 import { CartContext } from '../contexts/CartContext';
+
 import { Container, Typography, Button, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Link } from 'react-router-dom';
 
 const Cart = () => {
     const { cart, removeFromCart, clearCart } = useContext(CartContext);

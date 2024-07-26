@@ -6,9 +6,6 @@ const PayPalButton = ({ amount, onSuccess }) => {
 
     const amountNumber = parseFloat(amount);
 
-    console.log("PayPalButton - amountNumber: ", amountNumber);
-    console.log("PayPalButton - typeof(amountNumber): ", typeof(amountNumber));
-
     useEffect(() => {
         if (!isButtonRendered.current && amountNumber > 0) {
             window.paypal.Buttons({

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import { Container, Typography, Card, CardContent, CardMedia, Button, CardActions } from '@mui/material';
-import { CartContext } from '../contexts/CartContext';
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
-console.log("serverURL", serverURL);
+import { Container, Typography, Card, CardContent, CardMedia, Button, CardActions } from '@mui/material';
+
+import { CartContext } from '../../contexts/CartContext';
+import { getProductById } from '../../services/productsServices';
+
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -17,8 +17,12 @@ const ProductDetails = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await axios.get(`${serverURL}/products/${id}`);
-            setProduct(data);
+            try {
+                const product = await getProductById(id);
+                setProduct(product);
+            } catch (error) {
+                console.error(error);
+            }
         };
 
         fetchData();

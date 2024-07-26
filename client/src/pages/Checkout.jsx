@@ -1,16 +1,19 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import ShippingForm from '../components/ShippingForm';
-import PaymentMethod from '../components/PaymentMethod';
-import ReviewOrder from '../components/ReviewOrder';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+
+import ShippingForm from '../components/orders/ShippingForm';
+import PaymentMethod from '../components/orders/PaymentMethod';
+import ReviewOrder from '../components/orders/ReviewOrder';
+
 import { CartContext } from '../contexts/CartContext';
+
+import { createPayPalOrder, createCreditCardOrder } from '../services/ordersServices';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
 const Checkout = () => {
     const [step, setStep] = useState(1);
@@ -33,34 +36,36 @@ const Checkout = () => {
     };
 
     const handlePaymentSuccess = async (details) => {
-    try {
-        const orderData = {
-            shippingData,
-            paymentMethod,
-            cartItems: cart,
-            totalAmount: getTotal(),
-            paymentDetails: details
-        };
+        try {
+            const orderData = {
+                shippingData,
+                paymentMethod,
+                cartItems: cart,
+                totalAmount: getTotal(),
+                paymentDetails: details
+            };
 
-        if (paymentMethod === 'paypal') {
-            await axios.post(`${serverURL}/orders/paypal-order`, orderData);
-        }
-        else if (paymentMethod === 'credit-card') {
-            await axios.post(`${serverURL}/orders/credit-card-order`, orderData);
-        }
-        
-        clearCart();
-        navigate('/success');
-    } catch (error) {
-        if (error.response && error.response.data.message === 'Order already captured') {
-            alert('This order has already been captured.');
-        } else {
-            alert('An error occurred while placing the order. Please try again.');
-        }
-    }
-};
+            if (paymentMethod === 'paypal') {
+                await createPayPalOrder(orderData);
+            }
+            else if (paymentMethod === 'credit-card') {
+                await createCreditCardOrder(orderData);
+            } else {
+                throw new Error('Invalid payment method');
+            }
 
-// In the component
+            clearCart();
+            navigate('/success');
+        } catch (error) {
+            if (error.response && error.response.data.message === 'Order already captured') {
+                alert('This order has already been captured.');
+            } else {
+                alert('An error occurred while placing the order. Please try again.');
+            }
+        }
+    };
+
+    // In the component
     const handlePayPalPaymentSuccess = (details) => {
         if (details.id && details.status === 'COMPLETED') {
             handlePaymentSuccess(details);

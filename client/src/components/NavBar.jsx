@@ -1,9 +1,11 @@
 import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+
 import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+
 import { CartContext } from '../contexts/CartContext';
 
 const NavBar = () => {

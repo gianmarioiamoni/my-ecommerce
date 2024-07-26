@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import axios from 'axios';
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
-console.log("serverURL", serverURL);
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
+
+import { createProduct } from '../../services/productsServices'
+
 
 const ProductForm = () => {
     const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrl: '' });
@@ -15,7 +15,9 @@ const ProductForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(`${serverURL}/products`, formData);
+            const newProduct = await createProduct(formData);
+            alert(`Product ${newProduct.name} created successfully!`);
+
         } catch (error) {
             console.error(error);
         }

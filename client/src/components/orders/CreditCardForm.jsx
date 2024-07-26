@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button, Typography } from '@mui/material';
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+import { confirmPaymentIntent, createPaymentIntent } from '../../services/ordersServices';
+
 
 const CreditCardForm = ({ handlePaymentSuccess, total }) => {
     const stripe = useStripe();
@@ -34,15 +34,9 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
             return;
         }
 
+        // create payment Intent
         try {
-            const response = await axios.post(`${serverURL}/orders/create-payment-intent`, {
-                paymentMethodId: paymentMethod.id,
-                amount: parseFloat(total)
-            }, {
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const paymentIntentRes = response.data;
+            const paymentIntentRes = await createPaymentIntent(paymentMethod.id, total);
 
             if (paymentIntentRes.error) {
                 console.error("Error in Payment Intent Response: ", paymentIntentRes.error);
@@ -66,13 +60,16 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
                 return;
             }
 
-            const confirmResponse = await axios.post(`${serverURL}/orders/confirm-payment-intent`, {
-                paymentIntentId: paymentIntent.id,
-            }, {
-                headers: { 'Content-Type': 'application/json' }
-            });
+        } catch (error) {
+            console.error('Error creating payment intent:', error.response ? error.response.data : error.message);
+            setError(error);
+        }
 
-            const confirmedPaymentIntent = confirmResponse.data.paymentIntent;
+        // confirm payment intent
+        try {
+            const confirmResponse = await confirmPaymentIntent(paymentIntent.id);
+
+            const confirmedPaymentIntent = confirmResponse.paymentIntent;
 
             if (confirmedPaymentIntent.status === 'succeeded') {
                 handlePaymentSuccess(confirmedPaymentIntent);
@@ -80,14 +77,14 @@ const CreditCardForm = ({ handlePaymentSuccess, total }) => {
                 console.error('Payment failed');
                 setError({ message: 'Payment failed' });
             }
+        
         } catch (error) {
-            console.error('Error creating payment intent:', error.response ? error.response.data : error.message);
+            console.error('Error confirming payment intent:', error.response ? error.response.data : error.message);
             setError(error);
         }
-
         setLoading(false);
-
     };
+
 
     return (
         <form onSubmit={handleSubmit}>

@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
+
 import { Container, Typography, Button, List, ListItem, ListItemText } from '@mui/material';
-import { CartContext } from '../contexts/CartContext';
+
+import { CartContext } from '../../contexts/CartContext';
 import PayPalButton from './PayPalButton';
 import CreditCardForm from './CreditCardForm';
 
@@ -12,7 +14,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder }) => {
         setTotal(cart.reduce((total, product) => total + product.price, 0).toFixed(2));
     }, [cart]);
 
-    
+
     return (
         <Container>
             <Typography variant="h4" component="h1" gutterBottom>

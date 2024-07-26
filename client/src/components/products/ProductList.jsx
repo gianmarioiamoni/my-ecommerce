@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Grid, Card, CardContent, CardMedia, Typography, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
-console.log("serverURL", serverURL);
+import { getAllProducts } from '../../services/productsServices';
+
+import { Grid, Card, CardContent, CardMedia, Typography, Button, Container } from '@mui/material';
+
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const { data } = await axios.get(`${serverURL}/products`);
-            // const { data } = await axios.get('http://localhost:5000/products');
-            setProducts(data);
+            try {
+                const products = await getAllProducts();
+                setProducts(products);
+            } catch (error) {
+                console.error(error);
+            }
+            
         };
 
         fetchData();
