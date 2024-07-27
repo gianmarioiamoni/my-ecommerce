@@ -1,0 +1,29 @@
+.product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.product-image-container {
+    max-width: 30rem;
+    max-height: 30rem;
+    width: auto;
+    height: auto;
+    overflow: auto;
+    border: 1px solid #ddd;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-image {
+    max-width: 100%;
+    /* Adatta l'immagine alla larghezza del container */
+    max-height: 100%;
+    /* Adatta l'immagine all'altezza del container */
+    object-fit: contain;
+    /* Mantiene le proporzioni dell'immagine */
+}
