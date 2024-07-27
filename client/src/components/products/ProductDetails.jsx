@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, Card, CardContent, Button, CardActions } from '@mui/material';
-import Zoom from 'react-medium-image-zoom';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import 'react-medium-image-zoom/dist/styles.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
 import './ProductDetails.css';
-
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -31,13 +31,13 @@ const ProductDetails = () => {
         <Container>
             <Card className="product-card">
                 <div className="product-image-container">
-                    <Zoom>
-                        <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="product-image"
-                        />
-                    </Zoom>
+                    <Carousel showThumbs={product.imageUrls && product.imageUrls.length > 1} dynamicHeight={true} showArrows={true}>
+                        {product.imageUrls && product.imageUrls.map((url, index) => (
+                            <div key={index} className="carousel-image-wrapper">
+                                <img src={url} alt={`${product.name} ${index + 1}`} className="product-image" />
+                            </div>
+                        ))}
+                    </Carousel>
                 </div>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
@@ -67,7 +67,4 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-
-
-
 

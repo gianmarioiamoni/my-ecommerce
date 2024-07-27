@@ -14,6 +14,7 @@ const ProductList = () => {
             try {
                 const products = await getAllProducts();
                 setProducts(products);
+                console.log("ProductList - products", products);
             } catch (error) {
                 console.error(error);
             }
@@ -36,7 +37,7 @@ const ProductList = () => {
                                 component="img"
                                 alt={product.name}
                                 height="200"
-                                image={product.imageUrl}
+                                image={product.imageUrls[0] || 'https://picsum.photos/200/300'}
                                 title={product.name}
                             />
                             <CardContent>
