@@ -3,7 +3,9 @@ import { TextField, Button, Container, Typography, Box, Paper } from '@mui/mater
 import { createProduct } from '../../services/productsServices';
 
 const ProductForm = () => {
-    const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [''] });
+    const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [] });
+    const [localImages, setLocalImages] = useState([]);
+    const [url, setUrl] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
 
     useEffect(() => {
@@ -11,10 +13,10 @@ const ProductForm = () => {
         const isNameValid = formData.name.trim() !== '';
         const isDescriptionValid = formData.description.trim() !== '';
         const isPriceValid = formData.price.trim() !== '';
-        const isImageUrlsValid = formData.imageUrls.some(url => url.trim() !== '');
+        const isImageUrlsValid = formData.imageUrls.some(url => url.trim() !== '') || localImages.length > 0;
 
         setIsFormValid(isNameValid && isDescriptionValid && isPriceValid && isImageUrlsValid);
-    }, [formData]);
+    }, [formData, localImages]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,15 +28,28 @@ const ProductForm = () => {
         setFormData({ ...formData, imageUrls: newImageUrls });
     };
 
-    const handleAddImageUrl = () => {
-        setFormData({ ...formData, imageUrls: [...formData.imageUrls, ''] });
+    const handleUrlChange = (e) => {
+        setUrl(e.target.value);
+    };
+
+    const handleAddUrl = () => {
+        if (url.trim() !== '') {
+            setFormData({ ...formData, imageUrls: [...formData.imageUrls, url] });
+            setUrl('');
+        }
+    };
+
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        const newLocalImages = files.map(file => URL.createObjectURL(file));
+        setLocalImages([...localImages, ...newLocalImages]);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log("ProductForm - handleSubmit - formData:", formData);
-            const newProduct = await createProduct(formData);
+            const allImages = [...formData.imageUrls, ...localImages];
+            const newProduct = await createProduct({ ...formData, imageUrls: allImages });
             alert(`Product ${newProduct.name} created successfully!`);
         } catch (error) {
             console.error(error);
@@ -83,9 +98,29 @@ const ProductForm = () => {
                             required={index === 0} // Solo il primo campo immagine è obbligatorio
                         />
                     ))}
-                    <Button type="button" variant="outlined" onClick={handleAddImageUrl}>
-                        Add Another Image URL
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                        <TextField
+                            label="New Image URL"
+                            value={url}
+                            onChange={handleUrlChange}
+                            fullWidth
+                        />
+                        <Button type="button" variant="outlined" onClick={handleAddUrl}>
+                            Add Image URL
+                        </Button>
+                    </Box>
+                    <Button variant="contained" component="label" sx={{ mt: 2 }}>
+                        Upload Local Images
+                        <input type="file" multiple hidden onChange={handleFileChange} />
                     </Button>
+                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
+                        {formData.imageUrls.map((url, index) => (
+                            <img key={index} src={url} alt={`Product ${index}`} style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                        ))}
+                        {localImages.map((src, index) => (
+                            <img key={index} src={src} alt={`Product Local ${index}`} style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+                        ))}
+                    </Box>
                     <Button type="submit" variant="contained" color="primary" disabled={!isFormValid}>
                         Add Product
                     </Button>
@@ -96,6 +131,4 @@ const ProductForm = () => {
 };
 
 export default ProductForm;
-
-
 
