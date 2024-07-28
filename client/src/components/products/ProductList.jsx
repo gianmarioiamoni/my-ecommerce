@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
 import { getAllProducts } from '../../services/productsServices';
-
-import { Grid, Card, CardContent, CardMedia, Typography, Button, Container } from '@mui/material';
-
+import { Grid, Card, CardContent, CardMedia, Typography, Button, Container, Box } from '@mui/material';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -18,7 +15,6 @@ const ProductList = () => {
             } catch (error) {
                 console.error(error);
             }
-            
         };
 
         fetchData();
@@ -32,15 +28,24 @@ const ProductList = () => {
             <Grid container spacing={4}>
                 {products.map((product) => (
                     <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
-                        <Card>
-                            <CardMedia
-                                component="img"
-                                alt={product.name}
-                                height="200"
-                                image={product.imageUrls[0] || 'https://picsum.photos/200/300'}
-                                title={product.name}
-                            />
-                            <CardContent>
+                        <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <Box sx={{ position: 'relative', width: '100%', paddingTop: '75%' }}> {/* 4:3 aspect ratio */}
+                                <CardMedia
+                                    component="img"
+                                    alt={product.name}
+                                    image={product.imageUrls[0] || 'https://picsum.photos/200/300'}
+                                    title={product.name}
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover'
+                                    }}
+                                />
+                            </Box>
+                            <CardContent sx={{ flexGrow: 1 }}>
                                 <Typography gutterBottom variant="h5" component="div">
                                     {product.name}
                                 </Typography>
@@ -63,5 +68,6 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
 
 
