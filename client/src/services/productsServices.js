@@ -2,14 +2,7 @@ import axios from 'axios';
 
 import serverURL from '../config/serverURL';
 
-export const getProductById = async (id) => {
-    try {
-        const response = await axios.get(`${serverURL}/products/${id}`);
-        return response.data;
-    } catch (error) {
-        return { error: error.response.data.error };
-    }
-}
+
 
 export const getAllProducts = async () => {
     try {
@@ -19,6 +12,33 @@ export const getAllProducts = async () => {
         return { error: error.response.data.error };
     }
 }
+
+export const getProductById = async (id) => {
+    try {
+        const response = await axios.get(`${serverURL}/products/${id}`);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+}
+
+export const updateProduct = async (id, product) => {
+    try {
+        const response = await axios.patch(`${serverURL}/products/${id}`, product);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+};
+
+export const deleteProduct = async (id) => {
+    try {
+        const response = await axios.delete(`${serverURL}/products/${id}`);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+};
 
 export const createProduct = async (product) => {
     try {
