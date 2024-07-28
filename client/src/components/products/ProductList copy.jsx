@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllProducts } from '../../services/productsServices';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, Container, Box } from '@mui/material';
-import { CartContext } from '../../contexts/CartContext';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
-    const { cart, addToCart, removeFromCart } = useContext(CartContext);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,8 +19,6 @@ const ProductList = () => {
 
         fetchData();
     }, []);
-
-    const isInCart = (productId) => cart.some(item => item._id === productId);
 
     return (
         <Container>
@@ -62,15 +58,6 @@ const ProductList = () => {
                                 <Button component={Link} to={`/products/${product._id}`} variant="contained" color="primary">
                                     View
                                 </Button>
-                                {isInCart(product._id) ? (
-                                    <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
-                                        Remove from Cart
-                                    </Button>
-                                ) : (
-                                    <Button size="small" color="primary" onClick={() => addToCart(product)}>
-                                        Add to Cart
-                                    </Button>
-                                )}
                             </CardContent>
                         </Card>
                     </Grid>

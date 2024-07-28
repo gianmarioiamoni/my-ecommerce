@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, Card, CardContent, Button, CardActions } from '@mui/material';
+
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import 'react-medium-image-zoom/dist/styles.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
 import './ProductDetails.css';
@@ -11,6 +13,7 @@ const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState({});
     const { addToCart, removeFromCart, cart } = useContext(CartContext);
+    const isInCart = cart.some(item => item.id === product.id);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,8 +28,6 @@ const ProductDetails = () => {
         fetchData();
     }, [id]);
 
-    const isInCart = cart.some(item => item._id === product._id);
-
     return (
         <Container>
             <Card className="product-card">
@@ -37,7 +38,7 @@ const ProductDetails = () => {
                                 <img src={url} alt={`${product.name} ${index + 1}`} className="product-image" />
                             </div>
                         ))}
-                    </Carousel>
+                        </Carousel>
                 </div>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
@@ -52,7 +53,7 @@ const ProductDetails = () => {
                 </CardContent>
                 <CardActions>
                     {isInCart ? (
-                        <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
+                        <Button size="small" color="secondary" onClick={() => removeFromCart(product.id)}>
                             Remove from Cart
                         </Button>
                     ) : (
@@ -67,5 +68,4 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-
 
