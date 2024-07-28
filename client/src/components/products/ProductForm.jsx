@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
 import { TextField, Button, Container, Typography, Box, Paper } from '@mui/material';
+
 import { createProduct } from '../../services/productsServices';
 
 const ProductForm = () => {
@@ -7,6 +11,8 @@ const ProductForm = () => {
     const [localImages, setLocalImages] = useState([]);
     const [url, setUrl] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Controlla se i campi obbligatori sono compilati
@@ -51,6 +57,8 @@ const ProductForm = () => {
             const allImages = [...formData.imageUrls, ...localImages];
             const newProduct = await createProduct({ ...formData, imageUrls: allImages });
             alert(`Product ${newProduct.name} created successfully!`);
+
+            navigate('/products');
         } catch (error) {
             console.error(error);
         }
