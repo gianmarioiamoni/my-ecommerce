@@ -29,6 +29,7 @@ const Cart = () => {
                 variant="contained"
                 color="secondary"
                 component={Link}
+                sx={{ marginLeft: 2 }}
                 to="/checkout">
                 Proceed to Checkout
             </Button>
