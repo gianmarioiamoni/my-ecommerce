@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { createProduct, uploadImage } from '../../services/productsServices';
 
+const categories = ["Electronics", "Books", "Clothing", "Home", "Beauty"]; // Le categorie disponibili
 
 const ProductForm = () => {
-    const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [] });
+    const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [], availability: '', category: '' });
     const [localImages, setLocalImages] = useState([]);
     const [url, setUrl] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
+    const [isUploading, setIsUploading] = useState(false); // Stato per tracciare il caricamento dell'immagine
 
     const navigate = useNavigate();
 
@@ -20,8 +22,9 @@ const ProductForm = () => {
         const isDescriptionValid = formData.description.trim() !== '';
         const isPriceValid = formData.price.trim() !== '';
         const isImageUrlsValid = formData.imageUrls.some(url => url.trim() !== '') || localImages.length > 0;
+        const isAvailabilityValid = formData.availability.trim() !== '';
 
-        setIsFormValid(isNameValid && isDescriptionValid && isPriceValid && isImageUrlsValid);
+        setIsFormValid(isNameValid && isDescriptionValid && isPriceValid && isImageUrlsValid && isAvailabilityValid);
     }, [formData, localImages]);
 
     const handleChange = (e) => {
@@ -47,6 +50,7 @@ const ProductForm = () => {
 
     const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
+        setIsUploading(true); // Inizia il caricamento
         for (let file of files) {
             const formData = new FormData();
             formData.append('file', file);
@@ -65,6 +69,7 @@ const ProductForm = () => {
                 }, 3000);
             }
         }
+        setIsUploading(false); // Termina il caricamento
     };
 
     const handleSubmit = async (e) => {
@@ -116,7 +121,7 @@ const ProductForm = () => {
                     {formData.imageUrls.map((url, index) => (
                         <TextField
                             key={index}
-                            label={`Image URL ${index + 1}`}
+                            label={`Image URL ${index + 1}${index === 0 ? '*' : ''}`}
                             value={url}
                             onChange={(e) => handleImageUrlChange(index, e)}
                             fullWidth
@@ -134,8 +139,13 @@ const ProductForm = () => {
                             Add Image URL
                         </Button>
                     </Box>
-                    <Button variant="contained" component="label" sx={{ mt: 2 }}>
-                        Upload Local Images
+                    <Button
+                        variant="contained"
+                        component="label"
+                        sx={{ mt: 2 }}
+                        disabled={isUploading} // Disattiva il bottone durante il caricamento
+                    >
+                        {isUploading ? 'Loading Image...' : 'Upload Local Images'}
                         <input type="file" multiple hidden onChange={handleFileChange} />
                     </Button>
                     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
@@ -146,6 +156,35 @@ const ProductForm = () => {
                             <img key={index} src={src} alt={`Product Local ${index}`} style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
                         ))}
                     </Box>
+                    <FormControl fullWidth>
+                        <InputLabel id="availability-label">Availability*</InputLabel>
+                        <Select
+                            labelId="availability-label"
+                            name="availability"
+                            value={formData.availability}
+                            onChange={handleChange}
+                            label="Availability*"
+                            required
+                        >
+                            <MenuItem value="In Stock">In Stock</MenuItem>
+                            <MenuItem value="Out of Stock">Out of Stock</MenuItem>
+                            <MenuItem value="Pre-order">Pre-order</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <FormControl fullWidth>
+                        <InputLabel id="category-label">Category</InputLabel>
+                        <Select
+                            labelId="category-label"
+                            name="category"
+                            value={formData.category}
+                            onChange={handleChange}
+                            label="Category"
+                        >
+                            {categories.map((category, index) => (
+                                <MenuItem key={index} value={category}>{category}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <Button type="submit" variant="contained" color="primary" disabled={!isFormValid}>
                         Add Product
                     </Button>
@@ -166,5 +205,6 @@ const ProductForm = () => {
 };
 
 export default ProductForm;
+
 
 
