@@ -58,7 +58,7 @@ const EditProductForm = () => {
                 const response = await fetch(`${serverURL}/upload`, {
                     method: 'POST',
                     body: formData,
-                });
+                });   
 
                 const data = await response.json();
                 const newImageUrls = [...product.imageUrls];

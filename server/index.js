@@ -13,6 +13,7 @@ import fs from 'fs';
 import https from 'https';
 
 import { v2 as cloudinary } from 'cloudinary';
+    
 import multer from 'multer';
 
 
@@ -36,9 +37,9 @@ const httpsOptions = {
 const upload = multer({ storage: multer.memoryStorage() });
 
 cloudinary.config({
-    cloud_name: 'dzmynvqbz',
-    api_key: '412115921995178',
-    api_secret: 'WPU6mpihkcxw54I96u2-3h9EIP0'
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 app.use(cors());
