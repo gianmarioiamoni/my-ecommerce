@@ -12,6 +12,9 @@ import orderRoutes from './routes/orders.js';
 import fs from 'fs';
 import https from 'https';
 
+import { v2 as cloudinary } from 'cloudinary';
+import multer from 'multer';
+
 
 const DB_NAME = 'my-ecommerce';
 
@@ -29,12 +32,31 @@ const httpsOptions = {
     cert: fs.readFileSync('./localhost.pem')
 };
 
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+cloudinary.config({
+    cloud_name: 'dzmynvqbz',
+    api_key: '412115921995178',
+    api_secret: 'WPU6mpihkcxw54I96u2-3h9EIP0'
+});
+
 app.use(cors());
+
 app.use(bodyParser.json());
 
 
 app.get('/', (req, res) => {
     res.send('Hello from the server!');
+});
+
+app.post('/upload', upload.single('file'), (req, res) => {
+    cloudinary.uploader.upload_stream({ folder: 'my_ecommerce' }, (error, result) => {
+        if (error) {
+            return res.status(500).send(error);
+        }
+        res.status(200).send({ url: result.secure_url });
+    }).end(req.file.buffer);
 });
 
 // routes

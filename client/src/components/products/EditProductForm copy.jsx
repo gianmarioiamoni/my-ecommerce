@@ -1,11 +1,8 @@
-// src/components/EditProductForm.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getProductById, updateProduct } from '../../services/productsServices';
-
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
 const EditProductForm = () => {
     const { id } = useParams();
@@ -16,7 +13,6 @@ const EditProductForm = () => {
         imageUrls: []
     });
     const [successMessage, setSuccessMessage] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,32 +44,19 @@ const EditProductForm = () => {
         }));
     };
 
-    const handleFileChange = async (e, index) => {
+    const handleFileChange = (e, index) => {
         const file = e.target.files[0];
         if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const response = await fetch(`${serverURL}/upload`, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                const data = await response.json();
+            const reader = new FileReader();
+            reader.onloadend = () => {
                 const newImageUrls = [...product.imageUrls];
-                newImageUrls[index] = data.url;
+                newImageUrls[index] = reader.result;
                 setProduct((prevProduct) => ({
                     ...prevProduct,
                     imageUrls: newImageUrls
                 }));
-            } catch (error) {
-                console.error(error);
-                setErrorMessage(true);
-                setTimeout(() => {
-                    setErrorMessage(false);
-                }, 3000);
-            }
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -99,7 +82,7 @@ const EditProductForm = () => {
             setSuccessMessage(true);
             setTimeout(() => {
                 setSuccessMessage(false);
-            }, 3000);
+            }, 3000); // Nascondi il messaggio dopo 3 secondi
         } catch (error) {
             console.error(error);
         }
@@ -166,21 +149,16 @@ const EditProductForm = () => {
                         </IconButton>
                     </div>
                 ))}
-                <Button onClick={handleAddImage} variant="outlined" color="primary" style={{ marginBottom: '20px', display: 'block' }}>
+                <Button onClick={handleAddImage} variant="outlined" color="primary" style={{ marginBottom: '20px' }}>
                     Add Image
                 </Button>
-                <Button type="submit" variant="contained" color="primary" disabled={!isFormValid} style={{ marginTop: '10px' }}>
+                <Button type="submit" variant="contained" color="primary" disabled={!isFormValid}>
                     Save Changes
                 </Button>
             </form>
             <Snackbar open={successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage(false)}>
                 <Alert onClose={() => setSuccessMessage(false)} severity="success" sx={{ width: '100%' }}>
                     Product updated successfully!
-                </Alert>
-            </Snackbar>
-            <Snackbar open={errorMessage} autoHideDuration={3000} onClose={() => setErrorMessage(false)}>
-                <Alert onClose={() => setErrorMessage(false)} severity="error" sx={{ width: '100%' }}>
-                    Error uploading image. Please try again.
                 </Alert>
             </Snackbar>
         </Container>
