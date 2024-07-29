@@ -3,9 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getProductById, updateProduct } from '../../services/productsServices';
+import { getProductById, updateProduct, uploadImage } from '../../services/productsServices';
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
 const EditProductForm = () => {
     const { id } = useParams();
@@ -55,12 +54,7 @@ const EditProductForm = () => {
             formData.append('file', file);
 
             try {
-                const response = await fetch(`${serverURL}/upload`, {
-                    method: 'POST',
-                    body: formData,
-                });   
-
-                const data = await response.json();
+                const data = await uploadImage(formData);
                 const newImageUrls = [...product.imageUrls];
                 newImageUrls[index] = data.url;
                 setProduct((prevProduct) => ({

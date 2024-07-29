@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert } from '@mui/material';
-import { createProduct } from '../../services/productsServices';
+import { createProduct, uploadImage } from '../../services/productsServices';
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
 const ProductForm = () => {
     const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [] });
@@ -53,12 +52,7 @@ const ProductForm = () => {
             formData.append('file', file);
 
             try {
-                const response = await fetch(`${serverURL}/upload`, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                const data = await response.json();
+                const data = await uploadImage(formData);
                 setFormData((prevFormData) => ({
                     ...prevFormData,
                     imageUrls: [...prevFormData.imageUrls, data.url],

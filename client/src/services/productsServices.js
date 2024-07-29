@@ -49,3 +49,20 @@ export const createProduct = async (product) => {
     }
 }
 
+export const uploadImage = async (formData) => {
+    try {
+        const response = await axios.post(`${serverURL}/upload`, formData);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+}
+
+// const response = await fetch(`${serverURL}/upload`, {
+//     method: 'POST',
+//     body: formData,
+// });
+
+// const data = await response.json();
+
+
