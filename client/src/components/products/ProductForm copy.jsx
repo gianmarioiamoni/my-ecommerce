@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert } from '@mui/material';
-import { createProduct } from '../../services/productsServices';
 
-const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+import { useNavigate } from 'react-router-dom';
+
+import { TextField, Button, Container, Typography, Box, Paper } from '@mui/material';
+
+import { createProduct } from '../../services/productsServices';
 
 const ProductForm = () => {
     const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [] });
     const [localImages, setLocalImages] = useState([]);
     const [url, setUrl] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
-    const [successMessage, setSuccessMessage] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if mandatory fields are filled
+        // Controlla se i campi obbligatori sono compilati
         const isNameValid = formData.name.trim() !== '';
         const isDescriptionValid = formData.description.trim() !== '';
         const isPriceValid = formData.price.trim() !== '';
@@ -46,42 +45,20 @@ const ProductForm = () => {
         }
     };
 
-    const handleFileChange = async (e) => {
+    const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        for (let file of files) {
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const response = await fetch(`${serverURL}/upload`, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                const data = await response.json();
-                setFormData((prevFormData) => ({
-                    ...prevFormData,
-                    imageUrls: [...prevFormData.imageUrls, data.url],
-                }));
-            } catch (error) {
-                console.error(error);
-                setErrorMessage(true);
-                setTimeout(() => {
-                    setErrorMessage(false);
-                }, 3000);
-            }
-        }
+        const newLocalImages = files.map(file => URL.createObjectURL(file));
+        setLocalImages([...localImages, ...newLocalImages]);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const newProduct = await createProduct(formData);
-            setSuccessMessage(true);
-            setTimeout(() => {
-                setSuccessMessage(false);
-                navigate('/products');
-            }, 3000);
+            const allImages = [...formData.imageUrls, ...localImages];
+            const newProduct = await createProduct({ ...formData, imageUrls: allImages });
+            alert(`Product ${newProduct.name} created successfully!`);
+
+            navigate('/products');
         } catch (error) {
             console.error(error);
         }
@@ -126,7 +103,7 @@ const ProductForm = () => {
                             value={url}
                             onChange={(e) => handleImageUrlChange(index, e)}
                             fullWidth
-                            required={index === 0} // only the first image is required
+                            required={index === 0} // Solo il primo campo immagine è obbligatorio
                         />
                     ))}
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -157,20 +134,9 @@ const ProductForm = () => {
                     </Button>
                 </Box>
             </Paper>
-            <Snackbar open={successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage(false)}>
-                <Alert onClose={() => setSuccessMessage(false)} severity="success" sx={{ width: '100%' }}>
-                    Product created successfully!
-                </Alert>
-            </Snackbar>
-            <Snackbar open={errorMessage} autoHideDuration={3000} onClose={() => setErrorMessage(false)}>
-                <Alert onClose={() => setErrorMessage(false)} severity="error" sx={{ width: '100%' }}>
-                    Error uploading image. Please try again.
-                </Alert>
-            </Snackbar>
         </Container>
     );
 };
 
 export default ProductForm;
-
 
