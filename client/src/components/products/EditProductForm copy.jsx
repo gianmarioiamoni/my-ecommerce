@@ -1,10 +1,10 @@
+// src/components/EditProductForm.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getProductById, updateProduct, uploadImage } from '../../services/productsServices';
 
-const categories = ["Electronics", "Books", "Clothing", "Home", "Beauty"];
 
 const EditProductForm = () => {
     const { id } = useParams();
@@ -12,25 +12,16 @@ const EditProductForm = () => {
         name: '',
         description: '',
         price: '',
-        imageUrls: [],
-        availability: 'In Stock',
-        category: ''
+        imageUrls: []
     });
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
-    const [isFormValid, setIsFormValid] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const product = await getProductById(id);
-                setProduct(prevProduct => ({
-                    ...prevProduct,
-                    ...product,
-                    availability: product.availability || 'In Stock',
-                    category: product.category || ''
-                }));
+                setProduct(product);
             } catch (error) {
                 console.error(error);
             }
@@ -38,16 +29,6 @@ const EditProductForm = () => {
 
         fetchData();
     }, [id]);
-
-    useEffect(() => {
-        const isNameValid = product.name.trim() !== '';
-        const isDescriptionValid = product.description.trim() !== '';
-        const isPriceValid = product.price !== '' && !isNaN(product.price);
-        const isImageUrlsValid = product.imageUrls.some(url => url.trim() !== '');
-        const isAvailabilityValid = product.availability.trim() !== '';
-
-        setIsFormValid(isNameValid && isDescriptionValid && isPriceValid && isImageUrlsValid && isAvailabilityValid);
-    }, [product]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,7 +53,6 @@ const EditProductForm = () => {
             const formData = new FormData();
             formData.append('file', file);
 
-            setIsUploading(true); // Inizia il caricamento
             try {
                 const data = await uploadImage(formData);
                 const newImageUrls = [...product.imageUrls];
@@ -88,7 +68,6 @@ const EditProductForm = () => {
                     setErrorMessage(false);
                 }, 3000);
             }
-            setIsUploading(false); // Termina il caricamento
         }
     };
 
@@ -119,6 +98,8 @@ const EditProductForm = () => {
             console.error(error);
         }
     };
+
+    const isFormValid = product.name && product.description && product.price && product.imageUrls.length > 0;
 
     return (
         <Container>
@@ -154,36 +135,6 @@ const EditProductForm = () => {
                     margin="normal"
                     required
                 />
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="availability-label">Availability*</InputLabel>
-                    <Select
-                        labelId="availability-label"
-                        name="availability"
-                        value={product.availability}
-                        onChange={handleChange}
-                        required
-                    >
-                        <MenuItem value="In Stock">In Stock</MenuItem>
-                        <MenuItem value="Out of Stock">Out of Stock</MenuItem>
-                        <MenuItem value="Pre-order">Pre-order</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="category-label">Category</InputLabel>
-                    <Select
-                        labelId="category-label"
-                        name="category"
-                        value={product.category || ''}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        {categories.map((category, index) => (
-                            <MenuItem key={index} value={category}>{category}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
                 <Typography variant="h6" gutterBottom>
                     Images
                 </Typography>
@@ -212,8 +163,8 @@ const EditProductForm = () => {
                 <Button onClick={handleAddImage} variant="outlined" color="primary" style={{ marginBottom: '20px', display: 'block' }}>
                     Add Image
                 </Button>
-                <Button type="submit" variant="contained" color="primary" disabled={!isFormValid || isUploading} style={{ marginTop: '10px' }}>
-                    {isUploading ? 'Loading Image...' : 'Save Changes'}
+                <Button type="submit" variant="contained" color="primary" disabled={!isFormValid} style={{ marginTop: '10px' }}>
+                    Save Changes
                 </Button>
             </form>
             <Snackbar open={successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage(false)}>
@@ -231,9 +182,6 @@ const EditProductForm = () => {
 };
 
 export default EditProductForm;
-
-
-
 
 
 
