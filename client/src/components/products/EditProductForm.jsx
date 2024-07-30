@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getProductById, updateProduct, uploadImage } from '../../services/productsServices';
-
-const categories = ["Electronics", "Books", "Clothing", "Home", "Beauty"];
+import { useCategories } from '../../contexts/CategoriesContext';
 
 const EditProductForm = () => {
     const { id } = useParams();
+    const { categories } = useCategories();
     const [product, setProduct] = useState({
         name: '',
         description: '',
@@ -231,6 +231,7 @@ const EditProductForm = () => {
 };
 
 export default EditProductForm;
+
 
 
 

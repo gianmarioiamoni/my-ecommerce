@@ -37,6 +37,9 @@ const NavBar = () => {
                 <ListItem button component={Link} to="/products/edit">
                     <ListItemText primary="Edit Product" />
                 </ListItem>
+                <ListItem button component={Link} to="/manage-categories">
+                    <ListItemText primary="Config" />
+                </ListItem>
                 <ListItem button component={Link} to="/register">
                     <ListItemText primary="Register" />
                 </ListItem>
@@ -66,6 +69,9 @@ const NavBar = () => {
                         </Button>
                         <Button color="inherit" component={Link} to="/products/edit">
                             Edit Products
+                        </Button>
+                        <Button color="inherit" component={Link} to="/manage-categories">
+                            Config
                         </Button>
                         <Button color="inherit" component={Link} to="/register">
                             Register

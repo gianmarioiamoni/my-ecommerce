@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getAllProducts } from '../../services/productsServices';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, Container, Box, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { CartContext } from '../../contexts/CartContext';
+import { useCategories } from '../../contexts/CategoriesContext';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -11,7 +12,7 @@ const ProductList = () => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
 
-    const categories = ["Category 1", "Category 2", "Category 3"];
+    const { categories } = useCategories();
 
     useEffect(() => {
         const fetchData = async () => {

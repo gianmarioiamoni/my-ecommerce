@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { createProduct, uploadImage } from '../../services/productsServices';
+import { useCategories } from '../../contexts/CategoriesContext';
 
-const categories = ["Electronics", "Books", "Clothing", "Home", "Beauty"]; // Le categorie disponibili
+// const categories = ["Electronics", "Books", "Clothing", "Home", "Beauty"]; // Le categorie disponibili
 
 const ProductForm = () => {
     const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [], availability: '', category: '' });
@@ -12,7 +13,9 @@ const ProductForm = () => {
     const [isFormValid, setIsFormValid] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
-    const [isUploading, setIsUploading] = useState(false); // Stato per tracciare il caricamento dell'immagine
+    const [isUploading, setIsUploading] = useState(false);
+    
+    const { categories } = useCategories();
 
     const navigate = useNavigate();
 
@@ -143,7 +146,7 @@ const ProductForm = () => {
                         variant="contained"
                         component="label"
                         sx={{ mt: 2 }}
-                        disabled={isUploading} // Disattiva il bottone durante il caricamento
+                        disabled={isUploading} // disable the button while the image is being uploaded
                     >
                         {isUploading ? 'Loading Image...' : 'Upload Local Images'}
                         <input type="file" multiple hidden onChange={handleFileChange} />
