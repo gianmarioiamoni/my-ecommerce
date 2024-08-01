@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { getCategories, addCategory, deleteCategory, updateCategory } from '../services/categoriesServices';
 
 const CategoriesContext = createContext();
 
@@ -6,19 +7,33 @@ export const CategoriesProvider = ({ children }) => {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        // load categories from local storage on component mount
-        const savedCategories = JSON.parse(localStorage.getItem('categories')) || [];
-        setCategories(savedCategories);
+        const fetchCategories = async () => {
+            const fetchedCategories = await getCategories();
+            setCategories(fetchedCategories.map(cat => cat.name));
+        };
+        fetchCategories();
     }, []);
 
-    useEffect(() => {
-        // save categories to local storage when they change
-        localStorage.setItem('categories', JSON.stringify(categories));
-    }, [categories]);
+    const handleAddCategory = async (category) => {
+        const newCategory = await addCategory(category);
+        setCategories([...categories, newCategory.name]);
+    };
+
+    const handleDeleteCategory = async (category) => {
+        await deleteCategory(category);
+        setCategories(categories.filter(cat => cat !== category));
+    };
+
+    const handleUpdateCategory = async (oldCategory, newCategory) => {
+        const updatedCategory = await updateCategory(oldCategory, newCategory);
+        setCategories(categories.map(cat => (cat === oldCategory ? updatedCategory.name : cat)));
+    };
 
     const value = {
         categories,
-        setCategories,
+        addCategory: handleAddCategory,
+        deleteCategory: handleDeleteCategory,
+        updateCategory: handleUpdateCategory,
     };
 
     return (
@@ -29,4 +44,5 @@ export const CategoriesProvider = ({ children }) => {
 };
 
 export const useCategories = () => useContext(CategoriesContext);
+
 

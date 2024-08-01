@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/users.js';
 import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
+import categoryRoutes from './routes/categories.js';
 
 import fs from 'fs';
 import https from 'https';
@@ -64,6 +65,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+app.use('/categories', categoryRoutes);
 
 const connectDB = async () => {
     try {

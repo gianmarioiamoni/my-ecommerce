@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import { Container, TextField, Button, Typography, List, ListItem, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCategories } from '../../contexts/CategoriesContext';
 
 const ManageCategories = () => {
-    const { categories, setCategories } = useCategories();
+    const { categories, addCategory, deleteCategory, updateCategory } = useCategories();
     const [newCategory, setNewCategory] = useState('');
 
     const handleAddCategory = () => {
         if (newCategory.trim() && !categories.includes(newCategory.trim())) {
-            setCategories([...categories, newCategory.trim()]);
+            addCategory(newCategory.trim());
             setNewCategory('');
         }
     };
 
     const handleRemoveCategory = (categoryToRemove) => {
-        setCategories(categories.filter(category => category !== categoryToRemove));
+        deleteCategory(categoryToRemove);
     };
 
     const handleCategoryChange = (index, newCategoryName) => {
-        const updatedCategories = [...categories];
-        updatedCategories[index] = newCategoryName;
-        setCategories(updatedCategories);
+        const oldCategory = categories[index];
+        updateCategory(oldCategory, newCategoryName);
     };
 
     return (
@@ -59,3 +58,4 @@ const ManageCategories = () => {
 };
 
 export default ManageCategories;
+
