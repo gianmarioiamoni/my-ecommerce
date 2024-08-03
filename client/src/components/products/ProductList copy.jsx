@@ -10,8 +10,8 @@ const ProductList = () => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [sortCriteria, setSortCriteria] = useState('');
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
+
     const { categories } = useCategories();
 
     useEffect(() => {
@@ -29,11 +29,9 @@ const ProductList = () => {
         fetchData();
     }, []);
 
-    const applyFiltersAndSorting = (criteria = sortCriteria) => {
-        console.log("Applying filters and sorting...");
+    useEffect(() => {
         let filtered = products;
 
-        console.log("Search query:", searchQuery);
         if (searchQuery) {
             filtered = filtered.filter(product =>
                 product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -41,45 +39,11 @@ const ProductList = () => {
             );
         }
 
-        console.log("Selected category:", selectedCategory);
         if (selectedCategory) {
             filtered = filtered.filter(product => product.category === selectedCategory);
         }
 
-        // Ordina i prodotti in base al criterio di ordinamento selezionato
-        console.log("Sort criteria:", criteria);
-        switch (criteria) {
-            case 'price-asc':
-                console.log("Sorting by price (ascending)...");
-                filtered.sort((a, b) => a.price - b.price);
-                break;
-            case 'price-desc':
-                console.log("Sorting by price (descending)...");
-                filtered.sort((a, b) => b.price - a.price);
-                break;
-            case 'name':
-                console.log("Sorting by name...");
-                filtered.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            case 'category':
-                console.log("Sorting by category...");
-                filtered.sort((a, b) => {
-                    if (!a.category) return 1;
-                    if (!b.category) return -1;
-                    return a.category.localeCompare(b.category);
-                });
-                break;
-            default:
-                break;
-        }
-
-        console.log("Filtered products after sorting:", filtered);
         setFilteredProducts(filtered);
-        console.log("Filtered products set successfully.");
-    };
-
-    useEffect(() => {
-        applyFiltersAndSorting();
     }, [searchQuery, selectedCategory, products]);
 
     const handleSearchChange = (e) => {
@@ -88,14 +52,6 @@ const ProductList = () => {
 
     const handleCategoryChange = (e) => {
         setSelectedCategory(e.target.value);
-    };
-
-    const handleSortChange = (e) => {
-        const value = e.target.value;
-        console.log("handleSortChange: called");
-        console.log("handleSortChange: value", value);
-        setSortCriteria(value);
-        applyFiltersAndSorting(value);  // Applica immediatamente il nuovo criterio di ordinamento
     };
 
     const isInCart = (productId) => cart.some(item => item._id === productId);
@@ -129,22 +85,6 @@ const ProductList = () => {
                                 {category}
                             </MenuItem>
                         ))}
-                    </Select>
-                </FormControl>
-                <FormControl variant="outlined" sx={{ minWidth: 160 }}>
-                    <InputLabel>Sort By</InputLabel>
-                    <Select
-                        value={sortCriteria}
-                        onChange={handleSortChange}
-                        label="Sort By"
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value="price-asc">Price: Low to High</MenuItem>
-                        <MenuItem value="price-desc">Price: High to Low</MenuItem>
-                        <MenuItem value="name">Name</MenuItem>
-                        <MenuItem value="category">Category</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
@@ -204,6 +144,8 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
+
 
 
 
