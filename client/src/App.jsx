@@ -18,8 +18,12 @@ import ProductsEdit from './pages/ProductsEdit';
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
 
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
 const App = () => {
   return (
+    // <ThemeProvider theme={createTheme({ palette: { mode: 'dark' } })}>
+    <ThemeProvider theme={createTheme()}>
     <CategoriesProvider>
       <CartProvider>
         <Router>
@@ -41,7 +45,8 @@ const App = () => {
           </Routes>
         </Router>
       </CartProvider>
-    </CategoriesProvider>
+      </CategoriesProvider>
+    </ThemeProvider>
   );
 };
 
