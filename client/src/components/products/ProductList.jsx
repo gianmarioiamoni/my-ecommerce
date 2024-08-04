@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import { CartContext } from '../../contexts/CartContext';
 import { useCategories } from '../../contexts/CategoriesContext';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -16,6 +17,7 @@ const ProductList = () => {
     const [sortCriteria, setSortCriteria] = useState('');
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
     const { categories } = useCategories();
+    const { user } = useContext(AuthContext);
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -183,11 +185,12 @@ const ProductList = () => {
                                 <Button component={Link} to={`/products/${product._id}`} variant="contained" color="primary">
                                     View
                                 </Button>
-                                {isInCart(product._id) ? (
+                                {!user.isAdmin && isInCart(product._id) && (
                                     <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
                                         Remove from Cart
                                     </Button>
-                                ) : (
+                                )}
+                                {!user.isAdmin && !isInCart(product._id) && (
                                     <Button size="small" color="primary" onClick={() => addToCart(product)}>
                                         Add to Cart
                                     </Button>

@@ -5,12 +5,14 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
+import { AuthContext } from '../../contexts/AuthContext';
 import './ProductDetails.css';
 
 const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState({});
     const { addToCart, removeFromCart, cart } = useContext(CartContext);
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,11 +53,12 @@ const ProductDetails = () => {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    {isInCart ? (
+                    {!user.isAdmin && isInCart && (
                         <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
                             Remove from Cart
                         </Button>
-                    ) : (
+                    )}
+                    {!user.isAdmin && !isInCart && (
                         <Button size="small" color="primary" onClick={() => addToCart(product)}>
                             Add to Cart
                         </Button>

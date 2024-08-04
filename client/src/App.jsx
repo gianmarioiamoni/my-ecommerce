@@ -19,10 +19,10 @@ import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { AuthProvider } from './contexts/AuthContext';
+import PrivateRoute from './components/users/PrivateRoute'; 
 
 const App = () => {
   return (
-    // <ThemeProvider theme={createTheme({ palette: { mode: 'dark' } })}>
     <ThemeProvider theme={createTheme()}>
       <CategoriesProvider>
         <CartProvider>
@@ -33,15 +33,35 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/products" exact element={<ProductList />} />
-                <Route path="/products/new" element={<ProductForm />} />
-                <Route path="/products/edit" element={<ProductsEdit />} />
-                <Route path="/products/edit/:id" element={<EditProductForm />} />
                 <Route path="/products/:id" element={<ProductDetails />} />
                 <Route path="/" exact element={<ProductList />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/manage-categories" element={<ManageCategories />} />
                 <Route path="/success" element={<Success />} />
+
+                <Route
+                  path="/products/new"
+                  element={<PrivateRoute element={ProductForm} roles={['admin']} />}
+                />
+                <Route
+                  path="/products/edit"
+                  element={<PrivateRoute element={ProductsEdit} roles={['admin']} />}
+                />
+                <Route
+                  path="/products/edit/:id"
+                  element={<PrivateRoute element={EditProductForm} roles={['admin']} />}
+                />
+                <Route
+                  path="/manage-categories"
+                  element={<PrivateRoute element={ManageCategories} roles={['admin']} />}
+                />
+                <Route
+                  path="/cart"
+                  element={<PrivateRoute element={Cart} roles={['user']} />}
+                />
+                <Route
+                  path="/checkout"
+                  element={<PrivateRoute element={Checkout} roles={['user']} />}
+                />
+
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Router>
@@ -53,3 +73,4 @@ const App = () => {
 };
 
 export default App;
+
