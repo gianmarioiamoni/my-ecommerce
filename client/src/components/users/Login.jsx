@@ -1,11 +1,14 @@
-// Login.js
-import React, { useState } from 'react';
-
+// components/users/Login.js
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography } from '@mui/material';
-
+import { AuthContext } from '../../contexts/AuthContext';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
+    const { login } = useContext(AuthContext);
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,8 +17,9 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await loginUser(formData);
+            await login(formData);
             alert("User Login successful!");
+            navigate('/products');
 
         } catch (error) {
             console.error(error);
@@ -35,3 +39,4 @@ const Login = () => {
 };
 
 export default Login;
+

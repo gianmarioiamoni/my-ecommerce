@@ -1,10 +1,6 @@
-// Register.js
+// components/users/Register.js
 import React, { useState } from 'react';
-
 import { TextField, Button, Container, Typography } from '@mui/material';
-
-import { registerUser } from '../../services/usersServices';
-
 import axios from 'axios';
 
 const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
@@ -20,7 +16,7 @@ const Register = () => {
         e.preventDefault();
         try {
             const { data } = await axios.post(`${serverURL}/users/register`, formData);
-            await registerUser(formData);
+            alert("User Registration successful!");
         } catch (error) {
             console.error(error);
         }

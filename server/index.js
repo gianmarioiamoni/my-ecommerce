@@ -17,6 +17,8 @@ import { v2 as cloudinary } from 'cloudinary';
     
 import multer from 'multer';
 
+import createAdminUser from './config/initAdmin.js';
+
 
 const DB_NAME = 'my-ecommerce';
 
@@ -71,6 +73,7 @@ const connectDB = async () => {
     try {
         await mongoose.connect(CONNECTION_URL, {dbName: DB_NAME});
         console.log('MongoDB connected');
+        createAdminUser();
     } catch (error) {
         console.log(error);
     }

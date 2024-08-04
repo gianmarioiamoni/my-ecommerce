@@ -17,34 +17,36 @@ import ProductsEdit from './pages/ProductsEdit';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
-
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
   return (
     // <ThemeProvider theme={createTheme({ palette: { mode: 'dark' } })}>
     <ThemeProvider theme={createTheme()}>
-    <CategoriesProvider>
-      <CartProvider>
-        <Router>
-          <NavBar />
-          <Routes>
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/products" exact element={<ProductList />} />
-            <Route path="/products/new" element={<ProductForm />} />
-            <Route path="/products/edit" element={<ProductsEdit />} />
-            <Route path="/products/edit/:id" element={<EditProductForm />} />
-            <Route path="/products/:id" element={<ProductDetails />} />
-            <Route path="/" exact element={<ProductList />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/manage-categories" element={<ManageCategories />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Router>
-      </CartProvider>
+      <CategoriesProvider>
+        <CartProvider>
+          <AuthProvider>
+            <Router>
+              <NavBar />
+              <Routes>
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/products" exact element={<ProductList />} />
+                <Route path="/products/new" element={<ProductForm />} />
+                <Route path="/products/edit" element={<ProductsEdit />} />
+                <Route path="/products/edit/:id" element={<EditProductForm />} />
+                <Route path="/products/:id" element={<ProductDetails />} />
+                <Route path="/" exact element={<ProductList />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/manage-categories" element={<ManageCategories />} />
+                <Route path="/success" element={<Success />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Router>
+          </AuthProvider>
+        </CartProvider>
       </CategoriesProvider>
     </ThemeProvider>
   );
