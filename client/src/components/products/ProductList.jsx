@@ -185,12 +185,12 @@ const ProductList = () => {
                                 <Button component={Link} to={`/products/${product._id}`} variant="contained" color="primary">
                                     View
                                 </Button>
-                                {!user.isAdmin && isInCart(product._id) && (
+                                {user && !user.isAdmin && isInCart(product._id) && (
                                     <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
                                         Remove from Cart
                                     </Button>
                                 )}
-                                {!user.isAdmin && !isInCart(product._id) && (
+                                {user &&!user.isAdmin && !isInCart(product._id) && (
                                     <Button size="small" color="primary" onClick={() => addToCart(product)}>
                                         Add to Cart
                                     </Button>
