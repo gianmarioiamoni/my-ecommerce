@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import { loginUser } from '../services/usersServices';
+import { loginUser, registerUser, updateUser, removeUser } from '../services/usersServices';
 
 const AuthContext = createContext();
 
@@ -38,8 +38,20 @@ const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    const update = async (updateData) => {
+        const updatedUser = await updateUser(user.id, updateData);
+        setUser(data);
+    };
+
+    const remove = async () => {
+        // await axios.delete('/auth/me');
+        await removeUser(user.id);
+
+        setUser(null);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, update, remove }}>
             {children}
         </AuthContext.Provider>
     );

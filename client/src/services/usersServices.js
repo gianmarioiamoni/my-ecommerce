@@ -21,3 +21,31 @@ export const registerUser = async (userData) => {
         return { error: error.response.data.error };
     }
 }
+
+export const updateUser = async (userId, userData) => {
+    try {
+        const response = await axios.put(`${serverURL}/users/${userId}`, userData);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+}
+
+export const removeUser = async (userId) => {
+    try {
+        const response = await axios.delete(`${serverURL}/users/${userId}`);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+}
+
+export const uploadProfilePicture = async (formData) => {
+    try {
+        const response = await axios.post(`${serverURL}/uploadProfilePicture`, formData);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+}
+

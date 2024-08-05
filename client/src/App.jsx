@@ -15,6 +15,7 @@ import Checkout from './pages/Checkout';
 import Success from './pages/Success';
 import NotFound from './pages/NotFound';
 import ProductsEdit from './pages/ProductsEdit';
+import Profile from './components/users/Profile';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
@@ -61,6 +62,10 @@ const App = () => {
                 <Route
                   path="/checkout"
                   element={<PrivateRoute element={<Checkout />} roles={['user']} />}
+                />
+                <Route
+                  path="/profile"
+                  element={<PrivateRoute element={<Profile />} roles={['user', 'admin']} />}
                 />
 
                 <Route path="*" element={<NotFound />} />

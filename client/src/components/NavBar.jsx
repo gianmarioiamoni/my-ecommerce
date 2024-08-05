@@ -1,24 +1,28 @@
+// components/NavBar.js
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-
 import {
     AppBar,
     Toolbar,
     Typography,
     IconButton,
     Drawer,
-    List, ListItem, ListItemText,
-    Avatar
+    List,
+    ListItem,
+    ListItemText,
+    Avatar,
+    Menu,
+    MenuItem
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
 import { CartContext } from '../contexts/CartContext';
 import { AuthContext } from '../contexts/AuthContext';
 
 const NavBar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { cart } = useContext(CartContext);
@@ -29,6 +33,14 @@ const NavBar = () => {
             return;
         }
         setDrawerOpen(open);
+    };
+
+    const handleAvatarClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
     };
 
     const renderMenuItems = () => {
@@ -52,21 +64,12 @@ const NavBar = () => {
                         </>
                     )}
                     {!user.isAdmin && (
-                    <ListItem button component={Link} to="/cart">
-                        <ListItemText primary={`Cart (${cart.length})`} />
-                    </ListItem>
+                        <ListItem button component={Link} to="/cart">
+                            <ListItemText primary={`Cart (${cart.length})`} />
+                        </ListItem>
                     )}
                     <ListItem button onClick={logout}>
                         <ListItemText primary="Logout" />
-                    </ListItem>
-                    <ListItem>
-                        <IconButton>
-                            {user.photoUrl ? (
-                                <Avatar src={user.photoUrl} alt={user.name || user.email} />
-                            ) : (
-                                <Avatar>{user.name ? user.name.charAt(0) : user.email.charAt(0)}</Avatar>
-                            )}
-                        </IconButton>
                     </ListItem>
                 </>
             );
@@ -118,11 +121,28 @@ const NavBar = () => {
                 <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
                     {list()}
                 </Drawer>
+                {user && (
+                    <div>
+                        <IconButton onClick={handleAvatarClick}>
+                            {user.photoUrl ? (
+                                <Avatar src={user.photoUrl} alt={user.name || user.email} />
+                            ) : (
+                                <Avatar>{user.name ? user.name.charAt(0) : user.email.charAt(0)}</Avatar>
+                            )}
+                        </IconButton>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem component={Link} to="/profile">Profile</MenuItem>
+                            <MenuItem onClick={logout}>Logout</MenuItem>
+                        </Menu>
+                    </div>
+                )}
             </Toolbar>
         </AppBar>
     );
 };
 
 export default NavBar;
-
-

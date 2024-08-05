@@ -3,7 +3,6 @@ import axios from 'axios';
 import serverURL from '../config/serverURL';
 
 
-
 export const getAllProducts = async () => {
     try {
         const response = await axios.get(`${serverURL}/products`);

@@ -63,6 +63,15 @@ app.post('/upload', upload.single('file'), (req, res) => {
     }).end(req.file.buffer);
 });
 
+app.post('/uploadProfilePicture', upload.single('file'), (req, res) => {
+    cloudinary.uploader.upload_stream({ folder: 'my_ecommerce' }, (error, result) => {
+        if (error) {
+            return res.status(500).send(error);
+        }
+        res.status(200).send({ url: result.secure_url });
+    }).end(req.file.buffer);
+});
+
 // routes
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
