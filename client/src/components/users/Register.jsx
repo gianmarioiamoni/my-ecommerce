@@ -1,13 +1,20 @@
 // components/users/Register.js
-import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import React, { useState, useContext } from 'react';
+import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
 const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const { login } = useContext(AuthContext);
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,10 +24,22 @@ const Register = () => {
         e.preventDefault();
         try {
             const { data } = await axios.post(`${serverURL}/users/register`, formData);
-            alert("User Registration successful!");
+            setSnackbarMessage("User registration successful!");
+            setSnackbarSeverity('success');
+            setSnackbarOpen(true);
+
+            // Autenticare l'utente dopo la registrazione
+            await login({ email: formData.email, password: formData.password });
+            navigate('/products');
         } catch (error) {
-            console.error(error);
+            setSnackbarMessage("Registration failed. Please try again.");
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
+    };
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
     };
 
     return (
@@ -47,6 +66,15 @@ const Register = () => {
                     Already have an account? <Link to="/login">Login</Link>
                 </Typography>
             </Box>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };

@@ -1,11 +1,14 @@
 // components/users/Login.js
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
     const { login } = useContext(AuthContext);
 
     const navigate = useNavigate();
@@ -18,11 +21,19 @@ const Login = () => {
         e.preventDefault();
         try {
             await login(formData);
-            alert("User Login successful!");
+            setSnackbarMessage("User login successful!");
+            setSnackbarSeverity('success');
+            setSnackbarOpen(true);
             navigate('/products');
         } catch (error) {
-            console.error(error);
+            setSnackbarMessage("Login failed. Please check your credentials.");
+            setSnackbarSeverity('error');
+            setSnackbarOpen(true);
         }
+    };
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
     };
 
     return (
@@ -48,6 +59,15 @@ const Login = () => {
                     Don't have an account? <Link to="/register">Register</Link>
                 </Typography>
             </Box>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+            >
+                <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };
