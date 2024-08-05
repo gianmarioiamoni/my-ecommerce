@@ -1,3 +1,4 @@
+// App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
@@ -19,7 +20,7 @@ import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { AuthProvider } from './contexts/AuthContext';
-import PrivateRoute from './components/users/PrivateRoute'; 
+import PrivateRoute from './components/users/PrivateRoute';
 
 const App = () => {
   return (
@@ -39,27 +40,27 @@ const App = () => {
 
                 <Route
                   path="/products/new"
-                  element={<PrivateRoute element={ProductForm} roles={['admin']} />}
+                  element={<PrivateRoute element={<ProductForm />} roles={['admin']} />}
                 />
                 <Route
                   path="/products/edit"
-                  element={<PrivateRoute element={ProductsEdit} roles={['admin']} />}
+                  element={<PrivateRoute element={<ProductsEdit />} roles={['admin']} />}
                 />
                 <Route
                   path="/products/edit/:id"
-                  element={<PrivateRoute element={EditProductForm} roles={['admin']} />}
+                  element={<PrivateRoute element={<EditProductForm />} roles={['admin']} />}
                 />
                 <Route
                   path="/manage-categories"
-                  element={<PrivateRoute element={ManageCategories} roles={['admin']} />}
+                  element={<PrivateRoute element={<ManageCategories />} roles={['admin']} />}
                 />
                 <Route
                   path="/cart"
-                  element={<PrivateRoute element={Cart} roles={['user']} />}
+                  element={<PrivateRoute element={<Cart />} roles={['user']} />}
                 />
                 <Route
                   path="/checkout"
-                  element={<PrivateRoute element={Checkout} roles={['user']} />}
+                  element={<PrivateRoute element={<Checkout />} roles={['user']} />}
                 />
 
                 <Route path="*" element={<NotFound />} />
@@ -73,4 +74,5 @@ const App = () => {
 };
 
 export default App;
+
 
