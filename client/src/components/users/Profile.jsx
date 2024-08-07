@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -6,12 +6,16 @@ import { uploadProfilePicture } from '../../services/usersServices';
 
 const Profile = () => {
     const { user, update, remove } = useContext(AuthContext);
-    const [formData, setFormData] = useState({ name: user.name, email: user.email, password: '' });
+    const [formData, setFormData] = useState({ name: user.name, email: user.email, currentPassword: '', newPassword: '' });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setFormData({ name: user.name, email: user.email, currentPassword: '', newPassword: '' });
+    }, [user]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,7 +24,11 @@ const Profile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await update(formData);
+            const updateData = { name: formData.name, email: formData.email };
+            if (formData.newPassword) {
+                updateData.password = formData.newPassword;
+            }
+            await update(updateData, formData.currentPassword);
             setSnackbarMessage("Profile updated successfully!");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
@@ -56,7 +64,6 @@ const Profile = () => {
             setSnackbarMessage("Account deleted successfully!");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
-            // Redirect or perform any other action after account deletion
             navigate('/');
         } catch (error) {
             setSnackbarMessage("Account deletion failed. Please try again.");
@@ -68,6 +75,8 @@ const Profile = () => {
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };
+
+    const isFormValid = formData.name && formData.email && formData.currentPassword;
 
     return (
         <Container>
@@ -82,10 +91,51 @@ const Profile = () => {
                     Profile
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField name="name" label="Name" value={formData.name} onChange={handleChange} fullWidth margin="normal" />
-                    <TextField name="email" label="Email" type="email" value={formData.email} onChange={handleChange} fullWidth margin="normal" />
-                    <TextField name="password" label="Password" type="password" value={formData.password} onChange={handleChange} fullWidth margin="normal" />
-                    <Button type="submit" variant="contained" color="primary" fullWidth>
+                    <TextField
+                        name="name"
+                        label="Name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                        required
+                    />
+                    <TextField
+                        name="email"
+                        label="Email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                        required
+                    />
+                    <TextField
+                        name="currentPassword"
+                        label="Current Password"
+                        type="password"
+                        value={formData.currentPassword}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                        required
+                    />
+                    <TextField
+                        name="newPassword"
+                        label="New Password"
+                        type="password"
+                        value={formData.newPassword}
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        disabled={!isFormValid}
+                    >
                         Update Profile
                     </Button>
                 </form>
@@ -128,3 +178,5 @@ const Profile = () => {
 };
 
 export default Profile;
+
+

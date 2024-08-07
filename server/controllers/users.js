@@ -40,11 +40,15 @@ export async function loginUser(req, res) {
 
 export async function updateUser(req, res) {
     const { id } = req.params;
+    console.log("updateUser() - id: ", id);
+    console.log("updateUser() - req.body: ", req.body);
     try {
         const user = await User.findById(id);
+        console.log("updateUser() - user: ", user);
         if (!user) return res.status(404).json({ message: 'User not found' }); 
 
         const updatedUser = await User.findByIdAndUpdate(id, req.body, { new: true });
+        console.log("updateUser() - updatedUser: ", updatedUser);
         res.status(200).json(updatedUser);
     } catch (error) {
         res.status(500).json({ message: 'Something went wrong' });

@@ -127,7 +127,7 @@ const NavBar = () => {
                             {user.photoUrl ? (
                                 <Avatar src={user.photoUrl} alt={user.name || user.email} />
                             ) : (
-                                <Avatar>{user.name ? user.name.charAt(0) : user.email.charAt(0)}</Avatar>
+                                <Avatar>{user && user.name ? user.name.charAt(0) : user.email.charAt(0)}</Avatar>
                             )}
                         </IconButton>
                         <Menu

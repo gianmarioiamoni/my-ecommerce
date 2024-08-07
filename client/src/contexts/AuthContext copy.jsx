@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { loginUser, registerUser, updateUser, removeUser } from '../services/usersServices';
 
@@ -15,7 +16,7 @@ const AuthProvider = ({ children }) => {
                 email: decoded.email,
                 id: decoded.id,
                 isAdmin: decoded.isAdmin,
-                name: decoded.name || decoded.email,
+                name: decoded.name || decoded.email // Usa il campo `name` se disponibile, altrimenti usa l'email
             });
         }
     }, []);
@@ -28,7 +29,7 @@ const AuthProvider = ({ children }) => {
             email: decoded.email,
             id: decoded.id,
             isAdmin: decoded.isAdmin,
-            name: decoded.name || decoded.email,
+            name: decoded.name || decoded.email // Usa il campo `name` se disponibile, altrimenti usa l'email
         });
     };
 
@@ -37,9 +38,12 @@ const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    const update = async (updateData, currentPassword) => {
+    const update = async (updateData) => {
+        console.log("update() - updateData: ", updateData);
+        console.log("update() - user: ", user);
         try {
-            const updatedUser = await updateUser(user.id, { ...updateData, currentPassword });
+            const updatedUser = await updateUser(user.id, updateData);
+            console.log("update() - updatedUser: ", updatedUser);
             setUser(updatedUser);
         } catch (error) {
             console.error(error);
@@ -47,7 +51,9 @@ const AuthProvider = ({ children }) => {
     };
 
     const remove = async () => {
+        // await axios.delete('/auth/me');
         await removeUser(user.id);
+
         setUser(null);
     };
 
@@ -59,7 +65,5 @@ const AuthProvider = ({ children }) => {
 };
 
 export { AuthContext, AuthProvider };
-
-
 
 
