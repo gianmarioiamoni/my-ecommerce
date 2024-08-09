@@ -16,7 +16,8 @@ const AuthProvider = ({ children }) => {
                     email: decoded.email,
                     id: decoded.id,
                     isAdmin: decoded.isAdmin,
-                    name: decoded.name || decoded.email,
+                    name: decoded.name,
+                    photoUrl: decoded.photoUrl
                 });
             } catch (error) {
                 console.error("Error decoding token:", error);
@@ -24,6 +25,7 @@ const AuthProvider = ({ children }) => {
             }
         }
     }, []);
+
 
     const login = async (formData) => {
         const { token } = await loginUser(formData);
@@ -34,7 +36,8 @@ const AuthProvider = ({ children }) => {
             email: decoded.email,
             id: decoded.id,
             isAdmin: decoded.isAdmin,
-            name: decoded.name || decoded.email,
+            name: decoded.name,
+            photoUrl: decoded.photoUrl
         });
     };
 
@@ -48,25 +51,23 @@ const AuthProvider = ({ children }) => {
         try {
             const response = await updateUser(user.id, { ...updateData, currentPassword });
             if (response && !response.error) {
-                const token = localStorage.getItem('token');
-                const decoded = jwtDecode(token);
+                const { token } = response;
 
-                setUser(prevUser => ({
-                    ...prevUser,
-                    ...response // sovrascrivi le proprietà aggiornate
-                }));
-                // setUser({
-                //     email: decoded.email,
-                //     id: decoded.id,
-                //     isAdmin: decoded.isAdmin,
-                //     name: decoded.name || decoded.email,
-                // });
+                if (token) {
+                    // Aggiorna il token nel localStorage
+                    localStorage.setItem('token', token);
+
+                    // Aggiorna l'utente nel contesto
+                    setUser(prevUser => ({
+                        ...prevUser,
+                        ...response // sovrascrivi le proprietà aggiornate
+                    }));
+                }
             }
         } catch (error) {
             console.error(error);
         }
     };
-
 
     const remove = async () => {
         await removeUser(user.id);
