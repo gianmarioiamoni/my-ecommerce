@@ -26,11 +26,13 @@ const Login = () => {
             setSnackbarOpen(true);
             navigate('/products');
         } catch (error) {
+            console.error("Login error:", error);
             setSnackbarMessage("Login failed. Please check your credentials.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         }
     };
+
 
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);

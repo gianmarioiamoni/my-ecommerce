@@ -39,6 +39,7 @@ const Profile = () => {
         }
     };
 
+
     const handleProfilePictureChange = async (e) => {
         const file = e.target.files[0];
         const formData = new FormData();

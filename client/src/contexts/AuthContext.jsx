@@ -10,18 +10,24 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            const decoded = jwtDecode(token);
-            setUser({
-                email: decoded.email,
-                id: decoded.id,
-                isAdmin: decoded.isAdmin,
-                name: decoded.name || decoded.email,
-            });
+            try {
+                const decoded = jwtDecode(token);
+                setUser({
+                    email: decoded.email,
+                    id: decoded.id,
+                    isAdmin: decoded.isAdmin,
+                    name: decoded.name || decoded.email,
+                });
+            } catch (error) {
+                console.error("Error decoding token:", error);
+                localStorage.removeItem('token'); // Rimuovi il token non valido
+            }
         }
     }, []);
 
     const login = async (formData) => {
         const { token } = await loginUser(formData);
+        console.log("Received Token: ", token);
         localStorage.setItem('token', token);
         const decoded = jwtDecode(token);
         setUser({
@@ -37,14 +43,30 @@ const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+
     const update = async (updateData, currentPassword) => {
         try {
-            const updatedUser = await updateUser(user.id, { ...updateData, currentPassword });
-            setUser(updatedUser);
+            const response = await updateUser(user.id, { ...updateData, currentPassword });
+            if (response && !response.error) {
+                const token = localStorage.getItem('token');
+                const decoded = jwtDecode(token);
+
+                setUser(prevUser => ({
+                    ...prevUser,
+                    ...response // sovrascrivi le proprietà aggiornate
+                }));
+                // setUser({
+                //     email: decoded.email,
+                //     id: decoded.id,
+                //     isAdmin: decoded.isAdmin,
+                //     name: decoded.name || decoded.email,
+                // });
+            }
         } catch (error) {
             console.error(error);
         }
     };
+
 
     const remove = async () => {
         await removeUser(user.id);
