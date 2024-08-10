@@ -76,46 +76,6 @@ export async function loginUser(req, res) {
 }
 
 
-// export async function updateUser(req, res) {
-//     const { id } = req.params;
-//     const { currentPassword, password, ...otherUpdates } = req.body;
-
-//     try {
-//         console.log("updateUser() - id: ", id);
-//         console.log("updateUser() - currentPassword: ", currentPassword);
-//         console.log("updateUser() - password: ", password);
-//         console.log("updateUser() - otherUpdates: ", otherUpdates);
-
-//         const user = await User.findById(id);
-//         if (!user) {
-//             console.log("updateUser() - User not found");
-//             return res.status(404).json({ message: 'User not found' });
-//         }
-
-//         // Se una nuova password è fornita, criptala
-//         if (password) {
-//             console.log("updateUser() - Checking current password");
-//             const isPasswordCorrect = await bcrypt.compare(currentPassword, user.password);
-//             if (!isPasswordCorrect) {
-//                 console.log("updateUser() - Invalid current password");
-//                 return res.status(400).json({ message: 'Invalid current password' });
-//             }
-
-//             console.log("updateUser() - Hashing new password");
-//             otherUpdates.password = await bcrypt.hash(password, 12);
-//         }
-
-//         console.log("updateUser() - Updating user");
-//         const updatedUser = await User.findByIdAndUpdate(id, otherUpdates, { new: true });
-//         console.log("updateUser() - User updated: ", updatedUser);
-
-//         res.status(200).json(updatedUser);
-//     } catch (error) {
-//         console.log("updateUser() - Error: ", error);
-//         res.status(500).json({ message: 'Something went wrong' });
-//     }
-// }
-
 export async function updateUser(req, res) {
     const { id } = req.params;
     const { currentPassword, password, ...otherUpdates } = req.body;

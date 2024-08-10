@@ -2,10 +2,12 @@ import React, { createContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { loginUser, registerUser, updateUser, removeUser } from '../services/usersServices';
 
+
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -24,7 +26,8 @@ const AuthProvider = ({ children }) => {
                 localStorage.removeItem('token'); // Rimuovi il token non valido
             }
         }
-    }, []);
+        setLoading(false);  // Indica che il caricamento è terminato
+    }, []); 
 
 
     const login = async (formData) => {
@@ -74,8 +77,12 @@ const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    if (loading) {
+        return <div>Loading...</div>;  // Mostra un indicatore di caricamento mentre il token viene elaborato
+    }
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, update, remove }}>
+        <AuthContext.Provider value={{ user, login, logout, update, remove, loading }}>
             {children}
         </AuthContext.Provider>
     );

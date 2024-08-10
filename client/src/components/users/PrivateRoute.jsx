@@ -5,10 +5,13 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const PrivateRoute = ({ element, roles }) => {
-    const { user } = useContext(AuthContext);
+    const { user, loading } = useContext(AuthContext);
 
     if (!user) {
         // Se l'utente non è autenticato, reindirizza a /login
+        if (loading) {
+            return <div>Loading...</div>;
+        }
         return <Navigate to="/login" replace />;
     }
 

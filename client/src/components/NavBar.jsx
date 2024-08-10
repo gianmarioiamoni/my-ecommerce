@@ -43,6 +43,11 @@ const NavBar = () => {
         setAnchorEl(null);
     };
 
+    const handleMenuItemClick = (callback) => {
+        handleClose(); // Chiudi il menu
+        callback(); // Esegui il callback (es. navigazione o logout)
+    };
+
     const renderMenuItems = () => {
         if (user) {
             return (
@@ -135,7 +140,7 @@ const NavBar = () => {
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
                         >
-                            <MenuItem component={Link} to="/profile">Profile</MenuItem>
+                            <MenuItem component={Link} to="/profile" onClick={handleClose}>Profile</MenuItem>
                             <MenuItem onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </div>
