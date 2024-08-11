@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';  
+import { jwtDecode } from 'jwt-decode';
 import { loginUser, registerUser, updateUser, removeUser } from '../services/usersServices';
+
 
 const AuthContext = createContext();
 
@@ -18,9 +19,7 @@ const AuthProvider = ({ children }) => {
                     id: decoded.id,
                     isAdmin: decoded.isAdmin,
                     name: decoded.name,
-                    photoUrl: decoded.photoUrl,
-                    addresses: decoded.addresses || [],  // Assicurati che ci siano sempre valori predefiniti
-                    paymentMethods: decoded.paymentMethods || []  // Anche qui valori predefiniti
+                    photoUrl: decoded.photoUrl
                 });
             } catch (error) {
                 console.error("Error decoding token:", error);
@@ -28,7 +27,7 @@ const AuthProvider = ({ children }) => {
             }
         }
         setLoading(false);  // Indica che il caricamento è terminato
-    }, []);
+    }, []); 
 
 
     const login = async (formData) => {
@@ -41,9 +40,7 @@ const AuthProvider = ({ children }) => {
             id: decoded.id,
             isAdmin: decoded.isAdmin,
             name: decoded.name,
-            photoUrl: decoded.photoUrl,
-            addresses: decoded.addresses || [],
-            paymentMethods: decoded.paymentMethods || []
+            photoUrl: decoded.photoUrl
         });
     };
 
@@ -51,6 +48,7 @@ const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
         setUser(null);
     };
+
 
     const update = async (updateData, currentPassword) => {
         try {
@@ -62,13 +60,10 @@ const AuthProvider = ({ children }) => {
                     // Aggiorna il token nel localStorage
                     localStorage.setItem('token', token);
 
-                    // Decodifica il nuovo token per ottenere i dati aggiornati
-                    const decoded = jwtDecode(token);
-
-                    // Aggiorna l'utente nel contesto con i nuovi dati, comprese addresses e paymentMethods
+                    // Aggiorna l'utente nel contesto
                     setUser(prevUser => ({
                         ...prevUser,
-                        ...decoded // sovrascrivi le proprietà aggiornate
+                        ...response // sovrascrivi le proprietà aggiornate
                     }));
                 }
             }
@@ -94,7 +89,6 @@ const AuthProvider = ({ children }) => {
 };
 
 export { AuthContext, AuthProvider };
-
 
 
 

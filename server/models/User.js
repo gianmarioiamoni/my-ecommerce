@@ -1,14 +1,37 @@
-// models/User.js
 import mongoose from 'mongoose';
 
-const userSchema = mongoose.Schema({
+const addressSchema = new mongoose.Schema({
+    name: String,
+    addressLine1: String,
+    addressLine2: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: String,
+    isDefault: { type: Boolean, default: false }
+});
+
+const paymentMethodSchema = new mongoose.Schema({
+    cardType: String,
+    last4Digits: String,
+    expiryDate: String,
+    isDefault: { type: Boolean, default: false }
+});
+
+const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isAdmin: { type: Boolean, default: false },
     photoUrl: { type: String, default: '' },
-    resetPasswordToken: { type: String },  // Campo per memorizzare il token di reset
-    resetPasswordExpires: { type: Date }  // Campo per memorizzare la scadenza del token
+    addresses: [addressSchema],
+    paymentMethods: [paymentMethodSchema],
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 });
 
-export default mongoose.model('User', userSchema);
+
+const User = mongoose.model('User', userSchema);
+
+export default User;
+

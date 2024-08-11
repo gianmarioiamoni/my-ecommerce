@@ -183,9 +183,8 @@ const Profile = () => {
 
                     {/* Section for managing addresses */}
                     <Typography variant="h6" sx={{ mt: 3 }}>Addresses</Typography>
-                    {addresses.length === 0 && <Typography>No addresses found.</Typography>}
                     {addresses.map((address, index) => (
-                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 2, border: '1px solid red' }}>
+                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
                             <Typography sx={{ flex: 1 }}>{address.address}</Typography>
                             <Button
                                 variant="contained"
@@ -211,9 +210,8 @@ const Profile = () => {
 
                     {/* Section for managing payment methods */}
                     <Typography variant="h6" sx={{ mt: 3 }}>Payment Methods</Typography>
-                    {paymentMethods.length === 0 && <Typography>No payment methods found.</Typography>}
                     {paymentMethods.map((method, index) => (
-                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 2, border: '1px solid blue' }}>
+                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
                             <Typography sx={{ flex: 1 }}>{method.method}</Typography>
                             <Button
                                 variant="contained"
@@ -282,7 +280,7 @@ const Profile = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-        </Container>
+        </Container >
     );
 };
 

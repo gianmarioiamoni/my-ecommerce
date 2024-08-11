@@ -14,7 +14,9 @@ function generateToken(user) {
             email: user.email,
             id: user._id,
             isAdmin: user.isAdmin,
-            photoUrl: user.photoUrl
+            photoUrl: user.photoUrl,
+            addresses: user.addresses,
+            paymentMethods: user.paymentMethods
         },
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
@@ -207,5 +209,138 @@ export async function resetPassword(req, res) {
         res.status(500).json({ message: 'Something went wrong.' });
     }
 }
+
+// SHIPPING ADDRESSES AND PAYMENT METHODS
+
+// Gestione degli Indirizzi di Spedizione
+export async function addShippingAddress(req, res) {
+    const { id } = req.params;
+    const { name, addressLine1, addressLine2, city, state, zipCode, country, isDefault } = req.body;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        if (isDefault) {
+            user.addresses.forEach(addr => addr.isDefault = false);
+        }
+
+        user.addresses.push({ name, addressLine1, addressLine2, city, state, zipCode, country, isDefault });
+        await user.save();
+        res.status(200).json(user.addresses);
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+}
+
+export async function updateShippingAddress(req, res) {
+    const { id, addressId } = req.params;
+    const { name, addressLine1, addressLine2, city, state, zipCode, country, isDefault } = req.body;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const address = user.addresses.id(addressId);
+        if (!address) return res.status(404).json({ message: 'Address not found' });
+
+        if (isDefault) {
+            user.addresses.forEach(addr => addr.isDefault = false);
+        }
+
+        address.name = name || address.name;
+        address.addressLine1 = addressLine1 || address.addressLine1;
+        address.addressLine2 = addressLine2 || address.addressLine2;
+        address.city = city || address.city;
+        address.state = state || address.state;
+        address.zipCode = zipCode || address.zipCode;
+        address.country = country || address.country;
+        address.isDefault = isDefault;
+
+        await user.save();
+        res.status(200).json(user.addresses);
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+}
+
+export async function deleteShippingAddress(req, res) {
+    const { id, addressId } = req.params;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        user.addresses.id(addressId).remove();
+        await user.save();
+        res.status(200).json(user.addresses);
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+}
+
+// Gestione dei Metodi di Pagamento
+export async function addPaymentMethod(req, res) {
+    const { id } = req.params;
+    const { cardType, last4Digits, expiryDate, isDefault } = req.body;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        if (isDefault) {
+            user.paymentMethods.forEach(pm => pm.isDefault = false);
+        }
+
+        user.paymentMethods.push({ cardType, last4Digits, expiryDate, isDefault });
+        await user.save();
+        res.status(200).json(user.paymentMethods);
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+}
+
+export async function updatePaymentMethod(req, res) {
+    const { id, paymentMethodId } = req.params;
+    const { cardType, last4Digits, expiryDate, isDefault } = req.body;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const paymentMethod = user.paymentMethods.id(paymentMethodId);
+        if (!paymentMethod) return res.status(404).json({ message: 'Payment method not found' });
+
+        if (isDefault) {
+            user.paymentMethods.forEach(pm => pm.isDefault = false);
+        }
+
+        paymentMethod.cardType = cardType || paymentMethod.cardType;
+        paymentMethod.last4Digits = last4Digits || paymentMethod.last4Digits;
+        paymentMethod.expiryDate = expiryDate || paymentMethod.expiryDate;
+        paymentMethod.isDefault = isDefault;
+
+        await user.save();
+        res.status(200).json(user.paymentMethods);
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+}
+
+export async function deletePaymentMethod(req, res) {
+    const { id, paymentMethodId } = req.params;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        user.paymentMethods.id(paymentMethodId).remove();
+        await user.save();
+        res.status(200).json(user.paymentMethods);
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+}
+
 
 

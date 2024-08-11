@@ -1,28 +1,31 @@
 import express from 'express';
-// import path from 'path';
-
-import { registerUser, loginUser, updateUser, deleteUser, forgotPassword, resetPassword, getResetPasswordPage } from '../controllers/users.js';
-
+import {
+    registerUser,
+    loginUser,
+    updateUser,
+    deleteUser,
+    addShippingAddress,
+    updateShippingAddress,
+    deleteShippingAddress,
+    addPaymentMethod,
+    updatePaymentMethod,
+    deletePaymentMethod
+} from '../controllers/users.js';
 
 const router = express.Router();
 
-// Register route
-router.post('/register', registerUser)
-
-// Login route
+router.post('/register', registerUser);
 router.post('/login', loginUser);
-
-// Update route
 router.put('/:id', updateUser);
-
-// Delete route
 router.delete('/:id', deleteUser);
 
-// Password reset route
-// router.post('/forgot-password', forgotPassword);
+router.post('/:id/addresses', addShippingAddress);
+router.put('/:id/addresses/:addressId', updateShippingAddress);
+router.delete('/:id/addresses/:addressId', deleteShippingAddress);
 
-// router.get('/reset-password/:token', getResetPasswordPage);
-// router.post('/reset-password/:token', resetPassword);
-
+router.post('/:id/payment-methods', addPaymentMethod);
+router.put('/:id/payment-methods/:paymentMethodId', updatePaymentMethod);
+router.delete('/:id/payment-methods/:paymentMethodId', deletePaymentMethod);
 
 export default router;
+
