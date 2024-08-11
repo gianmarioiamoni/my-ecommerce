@@ -16,6 +16,8 @@ import Success from './pages/Success';
 import NotFound from './pages/NotFound';
 import ProductsEdit from './pages/ProductsEdit';
 import Profile from './components/users/Profile';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './components/users/ResetPassword';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
@@ -38,6 +40,8 @@ const App = () => {
                 <Route path="/products/:id" element={<ProductDetails />} />
                 <Route path="/" exact element={<ProductList />} />
                 <Route path="/success" element={<Success />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
 
                 <Route
                   path="/products/new"

@@ -3,6 +3,9 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 import mongoose from 'mongoose';
 
 import userRoutes from './routes/users.js';
@@ -19,6 +22,8 @@ import multer from 'multer';
 
 import createAdminUser from './config/initAdmin.js';
 
+import { getResetPasswordPage, resetPassword, forgotPassword } from './controllers/users.js';
+
 
 const DB_NAME = 'my-ecommerce';
 
@@ -29,6 +34,15 @@ console.log(CONNECTION_URL, DB_NAME);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Ottenere il percorso della directory corrente
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Configura il percorso corretto per la cartella dist
+const clientBuildPath = path.join(__dirname, '../client/dist');
+
+
 
 
 const httpsOptions = {
@@ -45,16 +59,16 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+
 app.use(cors());
 
 app.use(bodyParser.json());
-
 
 app.get('/', (req, res) => {
     res.send('Hello from the server!');
 });
 
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/api/upload', upload.single('file'), (req, res) => {
     cloudinary.uploader.upload_stream({ folder: 'my_ecommerce' }, (error, result) => {
         if (error) {
             return res.status(500).send(error);
@@ -63,7 +77,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     }).end(req.file.buffer);
 });
 
-app.post('/uploadProfilePicture', upload.single('file'), (req, res) => {
+app.post('/api/uploadProfilePicture', upload.single('file'), (req, res) => {
     cloudinary.uploader.upload_stream({ folder: 'my_ecommerce' }, (error, result) => {
         if (error) {
             return res.status(500).send(error);
@@ -71,12 +85,33 @@ app.post('/uploadProfilePicture', upload.single('file'), (req, res) => {
         res.status(200).send({ url: result.secure_url });
     }).end(req.file.buffer);
 });
+
+app.post('/api/forgot-password', forgotPassword);
+
+app.get('/api/reset-password/:token', getResetPasswordPage);
+// app.post('/api/reset-password/:token', resetPassword);
+app.post('/api/reset-password', resetPassword);
 
 // routes
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/categories', categoryRoutes);
+
+
+// app.use(express.static(path.join(__dirname, 'client/dist')));
+
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'client/dist', 'index.html'));
+// });
+
+// Servire i file statici da client/dist
+app.use(express.static(clientBuildPath));
+
+// Gestire tutte le altre richieste per servire index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+});
 
 const connectDB = async () => {
     try {

@@ -1,32 +1,27 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
-import { AuthContext } from '../../contexts/AuthContext';
+import { sendPasswordResetEmail } from '../services/usersServices';
 
-const Login = () => {
-    const [formData, setFormData] = useState({ email: '', password: '' });
+const ForgotPassword = () => {
+    const [email, setEmail] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-    const { login } = useContext(AuthContext);
-
-    const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setEmail(e.target.value);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(formData);
-            setSnackbarMessage("User login successful!");
+            await sendPasswordResetEmail(email);
+            setSnackbarMessage("Password reset email sent. Please check your inbox.");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
-            navigate('/products');
         } catch (error) {
-            console.error("Login error:", error);
-            setSnackbarMessage("Login failed. Please check your credentials.");
+            console.error("Error sending reset email:", error);
+            setSnackbarMessage("Failed to send reset email. Please try again.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         }
@@ -46,21 +41,14 @@ const Login = () => {
                 }}
             >
                 <Typography variant="h4" align="center" gutterBottom>
-                    Login
+                    Forgot Password
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField name="email" label="Email" type="email" onChange={handleChange} fullWidth margin="normal" />
-                    <TextField name="password" label="Password" type="password" onChange={handleChange} fullWidth margin="normal" />
                     <Button type="submit" variant="contained" color="primary" fullWidth>
-                        Login
+                        Send Reset Email
                     </Button>
                 </form>
-                <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-                    Don't have an account? <Link to="/register">Register</Link>
-                </Typography>
-                <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-                    Forgot your password? <Link to="/forgot-password">Reset it here</Link>
-                </Typography>
             </Box>
             <Snackbar
                 open={snackbarOpen}
@@ -75,5 +63,4 @@ const Login = () => {
     );
 };
 
-export default Login;
-
+export default ForgotPassword;

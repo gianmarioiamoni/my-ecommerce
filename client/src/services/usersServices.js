@@ -47,10 +47,31 @@ export const removeUser = async (userId) => {
 
 export const uploadProfilePicture = async (formData) => {
     try {
-        const response = await axios.post(`${serverURL}/uploadProfilePicture`, formData);
+        const response = await axios.post(`/api/uploadProfilePicture`, formData);
         return response.data;
     } catch (error) {
         return { error: error.response.data.error };
     }
 }
+
+export const sendPasswordResetEmail = async (email) => {
+    try {
+        const response = await axios.post(`/api/forgot-password`, { email });
+        return response.data;
+    } catch (error) {
+        console.error("Error sending password reset email:", error);
+        throw error;
+    }
+};
+
+export const resetPassword = async (token, password) => {
+    try {
+        // const response = await axios.post(`${serverURL}/users/reset-password`, { token, password });
+        const response = await axios.post(`/api/reset-password`, { token, password });
+        return response.data;
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        throw error;
+    }
+};
 
