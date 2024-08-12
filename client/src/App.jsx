@@ -18,6 +18,7 @@ import ProductsEdit from './pages/ProductsEdit';
 import Profile from './components/users/Profile';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './components/users/ResetPassword';
+import ManageAddressesPayments from './pages/ManageAddressesPayments';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
@@ -66,6 +67,10 @@ const App = () => {
                 <Route
                   path="/checkout"
                   element={<PrivateRoute element={<Checkout />} roles={['user']} />}
+                />
+                <Route
+                  path="/manage-addresses-payments"
+                  element={<PrivateRoute element={<ManageAddressesPayments />} roles={['user']} />}
                 />
                 <Route
                   path="/profile"
