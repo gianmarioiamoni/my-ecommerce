@@ -7,10 +7,6 @@ import { uploadProfilePicture } from '../../services/usersServices';
 const Profile = () => {
     const { user, update, remove } = useContext(AuthContext);
     const [formData, setFormData] = useState({ name: user.name, email: user.email, currentPassword: '', newPassword: '' });
-    const [addresses, setAddresses] = useState(user.addresses || []);
-    const [paymentMethods, setPaymentMethods] = useState(user.paymentMethods || []);
-    const [newAddress, setNewAddress] = useState('');
-    const [newPaymentMethod, setNewPaymentMethod] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -137,10 +133,12 @@ const Profile = () => {
                         fullWidth
                         margin="normal"
                     />
-
-                    <Link to="/manage-addresses-payments">
-                        Manage Shipping Addresses and Payment Methods
-                    </Link>
+                    {/* Show link to manage shipping addresses and payment methods only if user is not an admin */}
+                    {!user.isAdmin && (
+                        <Link to="/manage-addresses-payments">
+                            Manage Shipping Addresses and Payment Methods
+                        </Link> 
+                    )}
                     
                     <Button
                         type="submit"

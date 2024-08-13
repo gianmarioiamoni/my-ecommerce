@@ -212,93 +212,74 @@ export async function resetPassword(req, res) {
 
 // SHIPPING ADDRESSES AND PAYMENT METHODS
 
-// Gestione degli Indirizzi di Spedizione
-export async function addShippingAddress(req, res) {
-    const { id } = req.params;
-    const { name, addressLine1, addressLine2, city, state, zipCode, country, isDefault } = req.body;
-
+export const getShippingAddresses = async (req, res) => {
     try {
-        const user = await User.findById(id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        const user = await User.findById(req.params.id);
 
-        if (isDefault) {
-            user.addresses.forEach(addr => addr.isDefault = false);
-        }
+        if (!user) return res.status(404).send('User not found');
 
-        user.addresses.push({ name, addressLine1, addressLine2, city, state, zipCode, country, isDefault });
-        await user.save();
         res.status(200).json(user.addresses);
     } catch (error) {
-        res.status(500).json({ message: 'Something went wrong' });
+        res.status(500).json({ message: error.message });
+    }
+}
+export const addShippingAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).send('User not found');
+
+        user.addresses.push(req.body);
+        await user.save();
+        res.status(201).json(user.addresses[user.addresses.length - 1]);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const getPaymentMethods = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) return res.status(404).send('User not found');
+
+        res.status(200).json(user.paymentMethods);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 }
 
-export async function updateShippingAddress(req, res) {
-    const { id, addressId } = req.params;
-    const { name, addressLine1, addressLine2, city, state, zipCode, country, isDefault } = req.body;
-
+export const addPaymentMethod = async (req, res) => {
     try {
-        const user = await User.findById(id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).send('User not found');
 
-        const address = user.addresses.id(addressId);
-        if (!address) return res.status(404).json({ message: 'Address not found' });
-
-        if (isDefault) {
-            user.addresses.forEach(addr => addr.isDefault = false);
-        }
-
-        address.name = name || address.name;
-        address.addressLine1 = addressLine1 || address.addressLine1;
-        address.addressLine2 = addressLine2 || address.addressLine2;
-        address.city = city || address.city;
-        address.state = state || address.state;
-        address.zipCode = zipCode || address.zipCode;
-        address.country = country || address.country;
-        address.isDefault = isDefault;
-
+        user.paymentMethods.push(req.body);
         await user.save();
-        res.status(200).json(user.addresses);
+        res.status(201).json(user.paymentMethods[user.paymentMethods.length - 1]);
     } catch (error) {
-        res.status(500).json({ message: 'Something went wrong' });
+        res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 export async function deleteShippingAddress(req, res) {
     const { id, addressId } = req.params;
 
     try {
         const user = await User.findById(id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-        user.addresses.id(addressId).remove();
+        user.addresses = user.addresses.filter(address => address._id.toString() !== addressId);
         await user.save();
+        
         res.status(200).json(user.addresses);
     } catch (error) {
         res.status(500).json({ message: 'Something went wrong' });
     }
 }
 
-// Gestione dei Metodi di Pagamento
-export async function addPaymentMethod(req, res) {
-    const { id } = req.params;
-    const { cardType, last4Digits, expiryDate, isDefault } = req.body;
-
-    try {
-        const user = await User.findById(id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
-
-        if (isDefault) {
-            user.paymentMethods.forEach(pm => pm.isDefault = false);
-        }
-
-        user.paymentMethods.push({ cardType, last4Digits, expiryDate, isDefault });
-        await user.save();
-        res.status(200).json(user.paymentMethods);
-    } catch (error) {
-        res.status(500).json({ message: 'Something went wrong' });
-    }
-}
 
 export async function updatePaymentMethod(req, res) {
     const { id, paymentMethodId } = req.params;
@@ -334,7 +315,7 @@ export async function deletePaymentMethod(req, res) {
         const user = await User.findById(id);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        user.paymentMethods.id(paymentMethodId).remove();
+        user.paymentMethods = user.paymentMethods.filter(pm => pm._id.toString() !== paymentMethodId);
         await user.save();
         res.status(200).json(user.paymentMethods);
     } catch (error) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     Container,
     Typography,
@@ -23,9 +23,14 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 
+import { AuthContext } from '../contexts/AuthContext';
+import { getAddresses, addAddress, deleteAddress, getPaymentMethods, addPaymentMethod, deletePaymentMethod } from '../services/usersServices';
+
 const ManageAddressesPayments = () => {
     const [addresses, setAddresses] = useState([]);
     const [payments, setPayments] = useState([]);
+
+    const { user } = useContext(AuthContext);
 
     const [addressForm, setAddressForm] = useState({
         name: '',
@@ -49,14 +54,39 @@ const ManageAddressesPayments = () => {
 
     const [tabIndex, setTabIndex] = useState(0);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const fetchedAddresses = await getAddresses(user.id);
+                const fetchedPayments = await getPaymentMethods(user.id);
+                setAddresses(fetchedAddresses);
+                setPayments(fetchedPayments);
+            } catch (error) {
+                console.error('Error during fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, [user.id]);
+
     // Address management functions
-    const addAddress = (newAddress) => {
-        setAddresses([...addresses, newAddress]);
+    const handleAddAddress = async (newAddress) => {
+        try {
+            const response = await addAddress(user.id, newAddress);
+            setAddresses([...addresses, response]);
+        } catch (error) {
+            console.error('Error during address addition to database:', error);
+        }
+        
     };
 
-    const removeAddress = (index) => {
-        const updatedAddresses = addresses.filter((_, i) => i !== index);
-        setAddresses(updatedAddresses);
+    const handleRemoveAddress = async (index) => {
+        try {
+            await deleteAddress(user.id, addresses[index]._id);
+            setAddresses(addresses.filter((_, i) => i !== index));
+        } catch (error) {
+            console.error('Error during address removal from database:', error);
+        }
     };
 
     const setDefaultAddress = (index) => {
@@ -68,13 +98,22 @@ const ManageAddressesPayments = () => {
     };
 
     // Payment method management functions
-    const addPaymentMethod = (newPayment) => {
-        setPayments([...payments, newPayment]);
+    const handleAddPaymentMethod = async (newPayment) => {
+        try {
+            const response = await addPaymentMethod(user.id, newPayment);
+            setPayments([...payments, response]);
+        } catch (error) {
+            console.error('Error during payment method addition to database:', error);
+        }
     };
 
-    const removePaymentMethod = (index) => {
-        const updatedPayments = payments.filter((_, i) => i !== index);
-        setPayments(updatedPayments);
+    const handleRemovePaymentMethod = async (index) => {
+        try {
+            await deletePaymentMethod(user.id, payments[index]._id);
+            setPayments(payments.filter((_, i) => i !== index));
+        } catch (error) {
+            console.error('Error during payment method removal from database:', error);
+        }
     };
 
     const setDefaultPaymentMethod = (index) => {
@@ -108,9 +147,9 @@ const ManageAddressesPayments = () => {
 
     const handleDeleteConfirm = () => {
         if (deleteType === 'address') {
-            removeAddress(deleteIndex);
+            handleRemoveAddress(deleteIndex);
         } else if (deleteType === 'payment') {
-            removePaymentMethod(deleteIndex);
+            handleRemovePaymentMethod(deleteIndex);
         }
         setDeleteConfirmationOpen(false);
     };
@@ -142,7 +181,7 @@ const ManageAddressesPayments = () => {
 
                     <Box component="form" onSubmit={(e) => {
                         e.preventDefault();
-                        addAddress({ ...addressForm, isDefault: addresses.length === 0 });
+                        handleAddAddress({ ...addressForm, isDefault: addresses.length === 0 });
                         setAddressForm({
                             name: '',
                             addressLine1: '',
@@ -268,7 +307,7 @@ const ManageAddressesPayments = () => {
                     </Typography>
                     <Box component="form" onSubmit={(e) => {
                         e.preventDefault();
-                        addPaymentMethod({ ...paymentForm, isDefault: payments.length === 0 });
+                        handleAddPaymentMethod({ ...paymentForm, isDefault: payments.length === 0 });
                         setPaymentForm({
                             cardType: '',
                             last4Digits: '',

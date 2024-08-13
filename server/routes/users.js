@@ -4,11 +4,11 @@ import {
     loginUser,
     updateUser,
     deleteUser,
+    getShippingAddresses,
     addShippingAddress,
-    updateShippingAddress,
     deleteShippingAddress,
+    getPaymentMethods,
     addPaymentMethod,
-    updatePaymentMethod,
     deletePaymentMethod
 } from '../controllers/users.js';
 
@@ -19,12 +19,12 @@ router.post('/login', loginUser);
 router.put('/:id', updateUser);
 router.delete('/:id', deleteUser);
 
+router.get('/:id/addresses', getShippingAddresses);
 router.post('/:id/addresses', addShippingAddress);
-router.put('/:id/addresses/:addressId', updateShippingAddress);
 router.delete('/:id/addresses/:addressId', deleteShippingAddress);
 
+router.get('/:id/payment-methods', getPaymentMethods);
 router.post('/:id/payment-methods', addPaymentMethod);
-router.put('/:id/payment-methods/:paymentMethodId', updatePaymentMethod);
 router.delete('/:id/payment-methods/:paymentMethodId', deletePaymentMethod);
 
 export default router;

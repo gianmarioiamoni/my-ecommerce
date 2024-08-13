@@ -75,3 +75,60 @@ export const resetPassword = async (token, password) => {
     }
 };
 
+// ADDRESSES AND PAYMENT METHODS SERVICES
+
+export const getAddresses = async (userId) => {
+    try {
+        const response = await axios.get(`${serverURL}/users/${userId}/addresses`);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+};
+
+export const addAddress = async (userId, newAddress) => {
+    try {
+        const response = await axios.post(`${serverURL}/users/${userId}/addresses`, newAddress);
+        return response.data;
+    } catch (error) {
+       return { error: error.response.data.error }; 
+    }
+};
+
+export const deleteAddress = async (userId, addressId) => {
+    try {
+        const response = await axios.delete(`${serverURL}/users/${userId}/addresses/${addressId}`);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+};
+
+
+export const getPaymentMethods = async (userId) => {
+    try {
+        const response = await axios.get(`${serverURL}/users/${userId}/payment-methods`);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+};
+
+export const addPaymentMethod = async (userId, newPayment) => {
+    try {
+        const response = await axios.post(`${serverURL}/users/${userId}/payment-methods`, newPayment);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+};
+
+export const deletePaymentMethod = async (userId, paymentMethodId) => {
+    try {
+        const response = await axios.delete(`${serverURL}/users/${userId}/payment-methods/${paymentMethodId}`);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+};
+
