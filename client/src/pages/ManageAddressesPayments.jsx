@@ -45,6 +45,7 @@ const ManageAddressesPayments = () => {
     const [paymentForm, setPaymentForm] = useState({
         cardType: '',
         last4Digits: '',
+        cardNumber: '',
         expiryDate: '',
     });
 
@@ -100,6 +101,10 @@ const ManageAddressesPayments = () => {
     // Payment method management functions
     const handleAddPaymentMethod = async (newPayment) => {
         try {
+            // fill in last4Digits from cardNumber
+            const cardNumber = newPayment.cardNumber;
+            const last4Digits = cardNumber.slice(cardNumber.length - 4);
+            newPayment.last4Digits = last4Digits;
             const response = await addPaymentMethod(user.id, newPayment);
             setPayments([...payments, response]);
         } catch (error) {
@@ -310,7 +315,8 @@ const ManageAddressesPayments = () => {
                         handleAddPaymentMethod({ ...paymentForm, isDefault: payments.length === 0 });
                         setPaymentForm({
                             cardType: '',
-                            last4Digits: '',
+                            // last4Digits: '',
+                            cardNumber: '',
                             expiryDate: '',
                         });
                     }} sx={{ mb: 4 }}>
@@ -327,9 +333,9 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    label="Last 4 Digits"
-                                    name="last4Digits"
-                                    value={paymentForm.last4Digits}
+                                    label="Card Number"
+                                    name="cardNumber"
+                                    value={paymentForm.lastNumber}
                                     onChange={handlePaymentChange}
                                     fullWidth
                                     required

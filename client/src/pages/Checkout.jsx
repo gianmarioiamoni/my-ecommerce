@@ -9,6 +9,7 @@ import PaymentMethod from '../components/orders/PaymentMethod';
 import ReviewOrder from '../components/orders/ReviewOrder';
 
 import { CartContext } from '../contexts/CartContext';
+import { AuthContext } from '../contexts/AuthContext';
 
 import { createPayPalOrder, createCreditCardOrder } from '../services/ordersServices';
 
@@ -21,6 +22,7 @@ const Checkout = () => {
     const [paymentMethod, setPaymentMethod] = useState('');
     const navigate = useNavigate();
     const { cart, clearCart } = useContext(CartContext);
+    const { user } = useContext(AuthContext);
 
     const nextStep = (data) => {
         if (step === 1) {
@@ -92,15 +94,15 @@ const Checkout = () => {
     return (
         <Elements stripe={stripePromise}>
             <div>
-                {step === 1 && <ShippingForm nextStep={nextStep} />}
+                {step === 1 && <ShippingForm userId={user.id} nextStep={nextStep} />}
                 {step === 2 && <PaymentMethod nextStep={nextStep} prevStep={prevStep} />}
                 {step === 3 && (
                     <ReviewOrder
                         shippingData={shippingData}
                         paymentMethod={paymentMethod}
                         prevStep={prevStep}
-                        // placeOrder={handlePaymentSuccess}
                         placeOrder={paymentMethod === 'paypal' ? handlePayPalPaymentSuccess : handleStripePaymentSuccess}
+                        userId={user.id}
                     />
                 )}
             </div>

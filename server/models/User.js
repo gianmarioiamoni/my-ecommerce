@@ -14,6 +14,7 @@ const addressSchema = new mongoose.Schema({
 const paymentMethodSchema = new mongoose.Schema({
     cardType: String,
     last4Digits: String,
+    cardNumber: String,
     expiryDate: String,
     isDefault: { type: Boolean, default: false }
 });
