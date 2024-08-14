@@ -13,7 +13,7 @@ const PayPalButton = ({ amount, onSuccess }) => {
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
-                                value: amountNumber.toFixed(2), // Assicurati che ci siano sempre due decimali
+                                value: amountNumber.toFixed(2), // Guarantee 2 decimal places
                             },
                         }],
                     });
@@ -24,14 +24,14 @@ const PayPalButton = ({ amount, onSuccess }) => {
                     });
                 },
                 onError: (err) => {
-                    console.error("Errore durante il pagamento: ", err);
+                    console.error("Error during payment: ", err);
                 }
             }).render(paypalRef.current);
             isButtonRendered.current = true;
         }
     }, [amountNumber, onSuccess]);
 
-    return <div ref={paypalRef}></div>;
+    return <div ref={paypalRef} style={{ marginTop: '30px' }}></div>;
 };
 
 export default PayPalButton;

@@ -58,6 +58,9 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                 {/* Colonna 2: Pagamento */}
                 <Grid item xs={12} md={6}>
                     <Box style={{ padding: '20px', minHeight: '300px' }}>
+                        <Typography variant="h6" gutterBottom>
+                            Proceed to Payment
+                        </Typography>
                         {paymentMethod === 'paypal' ? (
                             <PayPalButton
                                 amount={total}

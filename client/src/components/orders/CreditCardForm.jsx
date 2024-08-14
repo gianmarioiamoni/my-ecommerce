@@ -113,7 +113,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
         <Container maxWidth="sm"> {/* Contain the form in a smaller container */}
             <Box
                 sx={{
-                    p: 3,
+                    // p: 3,
                     boxShadow: 3,
                     borderRadius: 2,
                     backgroundColor: '#fff',
