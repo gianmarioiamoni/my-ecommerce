@@ -40,6 +40,7 @@ const Checkout = () => {
     const handlePaymentSuccess = async (details) => {
         try {
             const orderData = {
+                userId: user.id,
                 shippingData,
                 paymentMethod,
                 cartItems: cart,

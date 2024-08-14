@@ -32,7 +32,7 @@ const getOrderDetails = async (orderId, paypalClient) => {
 // PayPal controllers
 
 export const createPayPalOrder = async (req, res) => {
-    const { shippingData, paymentMethod, cartItems, totalAmount, paymentDetails } = req.body;
+    const { shippingData, paymentMethod, cartItems, totalAmount, paymentDetails, userId } = req.body;
 
     if (paymentMethod === 'paypal') {
 
@@ -48,6 +48,7 @@ export const createPayPalOrder = async (req, res) => {
                 }
 
                 const newOrder = new Order({
+                    userId: userId,
                     products: cartItems.map(item => ({
                         product: item._id,
                         quantity: item.quantity,
@@ -96,7 +97,7 @@ export const createPayPalOrder = async (req, res) => {
 
 // CREDIT CARD
 export const createCreditCardOrder = async (req, res) => {
-    const { shippingData, paymentMethod, cartItems, totalAmount, paymentDetails } = req.body;
+    const { shippingData, paymentMethod, cartItems, totalAmount, paymentDetails, userId } = req.body;
     if (paymentMethod === 'credit-card') {
 
         const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -113,6 +114,7 @@ export const createCreditCardOrder = async (req, res) => {
 
                 // create new order parameters
                 const newOrderParams = {
+                    userId: userId,
                     products: cartItems.map(item => ({
                         product: item._id,
                         quantity: item.quantity,
@@ -183,4 +185,18 @@ export const confirmStripePaymentIntent = async (req, res) => {
         });
     }
 }
+
+// Orders History
+export const getOrderHistory = async (req, res) => {
+    const { userId } = req.params;
+
+    try {
+        const orders = await Order.find({ userId }).populate('products.product');
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error("Error fetching order history:", error);
+        res.status(500).json({ error: 'An error occurred while fetching the order history' });
+    }
+};
+
 

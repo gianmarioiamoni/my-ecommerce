@@ -4,7 +4,6 @@ import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert, 
 import { createProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
 
-// const categories = ["Electronics", "Books", "Clothing", "Home", "Beauty"]; // Le categorie disponibili
 
 const ProductForm = () => {
     const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [], availability: '', category: '' });
@@ -53,7 +52,7 @@ const ProductForm = () => {
 
     const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
-        setIsUploading(true); // Inizia il caricamento
+        setIsUploading(true); 
         for (let file of files) {
             const formData = new FormData();
             formData.append('file', file);
@@ -72,7 +71,7 @@ const ProductForm = () => {
                 }, 3000);
             }
         }
-        setIsUploading(false); // Termina il caricamento
+        setIsUploading(false); 
     };
 
     const handleSubmit = async (e) => {

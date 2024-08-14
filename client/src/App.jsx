@@ -19,6 +19,7 @@ import Profile from './components/users/Profile';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './components/users/ResetPassword';
 import ManageAddressesPayments from './pages/ManageAddressesPayments';
+import OrderHistory from './pages/OrderHistory';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
@@ -71,6 +72,10 @@ const App = () => {
                 <Route
                   path="/manage-addresses-payments"
                   element={<PrivateRoute element={<ManageAddressesPayments />} roles={['user']} />}
+                />
+                <Route
+                  path="/order-history"
+                  element={<PrivateRoute element={<OrderHistory />} roles={['user']} />} 
                 />
                 <Route
                   path="/profile"

@@ -141,6 +141,7 @@ const NavBar = () => {
                             onClose={handleClose}
                         >
                             <MenuItem component={Link} to="/profile" onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem component={Link} to="/order-history" onClick={handleClose}>Orders History</MenuItem>
                             <MenuItem onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </div>

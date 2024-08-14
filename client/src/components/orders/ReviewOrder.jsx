@@ -19,10 +19,10 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
             </Typography>
 
             <Grid container spacing={4} justifyContent="center">
-                {/* Colonna 1: Revisione Ordine */}
+                {/* Column 1 - Order Review */}
                 <Grid item xs={12} md={6}>
                     <Box style={{ padding: '20px', minHeight: '300px' }}>
-                        <Typography variant="h6" gutterBottom>
+                        <Typography variant="h6" gutterBottom fontWeight={'bold'}>
                             Shipping Details
                         </Typography>
                         <Typography variant="body1">{shippingData.fullName}</Typography>
@@ -55,10 +55,10 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                     </Box>
                 </Grid>
 
-                {/* Colonna 2: Pagamento */}
+                {/* Column 2 - Payment */}
                 <Grid item xs={12} md={6}>
                     <Box style={{ padding: '20px', minHeight: '300px' }}>
-                        <Typography variant="h6" gutterBottom>
+                        <Typography variant="h6" gutterBottom fontWeight={"bold"}>
                             Proceed to Payment
                         </Typography>
                         {paymentMethod === 'paypal' ? (

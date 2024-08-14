@@ -56,3 +56,12 @@ export const createCreditCardOrder = async (orderData) => {
         return { error: error.response.data.error };
     }
 }
+
+export const getOrderHistory = async (userId) => {
+    try {
+        const response = await axios.get(`${serverURL}/orders/history/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching order history:', error);
+    }
+};

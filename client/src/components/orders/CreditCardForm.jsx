@@ -113,7 +113,6 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
         <Container maxWidth="sm"> {/* Contain the form in a smaller container */}
             <Box
                 sx={{
-                    // p: 3,
                     boxShadow: 3,
                     borderRadius: 2,
                     backgroundColor: '#fff',
@@ -180,6 +179,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
                     type="submit"
                     disabled={loading}
                     style={{ marginTop: '20px', width: '100%' }}
+                    onClick={handleSubmit}
                 >
                     {loading ? 'Processing...' : 'Pay'}
                 </Button>
