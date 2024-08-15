@@ -187,16 +187,67 @@ export const confirmStripePaymentIntent = async (req, res) => {
 }
 
 // Orders History
+// export const getOrderHistory = async (req, res) => {
+//     const { userId } = req.params;
+
+//     try {
+//         const orders = await Order.find({ userId }).populate('products.product');
+//         res.status(200).json(orders);
+//     } catch (error) {
+//         console.error("Error fetching order history:", error);
+//         res.status(500).json({ error: 'An error occurred while fetching the order history' });
+//     }
+// };
+
 export const getOrderHistory = async (req, res) => {
     const { userId } = req.params;
+    const { page = 1, limit = 10, sort = 'createdAt', order = 'desc', search = '', startDate, endDate } = req.query;
+
+    console.log("getOrderHistory() - userId:", userId, "page:", page, "limit:", limit, "sort:", sort, "order:", order, "search:", search, "startDate:", startDate, "endDate:", endDate);
+
+    const query = { userId };
+
+    if (startDate || endDate) {
+        query.createdAt = {};
+        if (startDate) {
+            query.createdAt.$gte = new Date(startDate);
+            console.log("query.createdAt.$gte:", query.createdAt.$gte);
+        }
+        if (endDate) {
+            query.createdAt.$lte = new Date(endDate);
+            console.log("query.createdAt.$lte:", query.createdAt.$lte);
+        }
+    }
+
+    if (search) {
+        query['products.product.name'] = { $regex: search, $options: 'i' };
+        console.log("query['products.product.name']:", query['products.product.name']);
+    }
 
     try {
-        const orders = await Order.find({ userId }).populate('products.product');
-        res.status(200).json(orders);
+        const orders = await Order.find(query)
+            .populate('products.product')
+            .sort({ [sort]: order === 'asc' ? 1 : -1 })
+            .skip((page - 1) * limit)
+            .limit(parseInt(limit));
+
+        console.log("orders:", orders);
+
+        const totalOrders = await Order.countDocuments(query);
+
+        console.log("totalOrders:", totalOrders);
+
+        res.status(200).json({
+            orders,
+            totalOrders,
+            totalPages: Math.ceil(totalOrders / limit),
+            currentPage: page,
+        });
     } catch (error) {
         console.error("Error fetching order history:", error);
         res.status(500).json({ error: 'An error occurred while fetching the order history' });
     }
 };
+
 
 
