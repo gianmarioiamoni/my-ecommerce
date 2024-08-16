@@ -33,7 +33,6 @@ const AuthProvider = ({ children }) => {
 
     const login = async (formData) => {
         const { token } = await loginUser(formData);
-        console.log("Received Token: ", token);
         localStorage.setItem('token', token);
         const decoded = jwtDecode(token);
         setUser({

@@ -57,18 +57,27 @@ export const createCreditCardOrder = async (orderData) => {
     }
 }
 
-// export const getOrderHistory = async (userId) => {
-//     try {
-//         const response = await axios.get(`${serverURL}/orders/history/${userId}`);
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching order history:', error);
-//     }
-// };
-export const getOrderHistory = async (userId, { page = 1, limit = 10, sort = 'createdAt', order = 'desc', search = '', startDate, endDate }) => {
-    console.log("getOrderHistory() - userId:", userId, "page:", page, "limit:", limit, "sort:", sort, "order:", order, "search:", search, "startDate:", startDate, "endDate:", endDate);
+
+export const getOrderHistory = async (userId, options = {}) => {
+    const {
+        page = 1,
+        limit = 10,
+        sort = 'createdAt',
+        order = 'desc',
+        search = '',
+        startDate,
+        endDate
+    } = options;
+
+
     const response = await axios.get(`${serverURL}/orders/history/${userId}`, {
         params: { page, limit, sort, order, search, startDate, endDate }
     });
+
+    console.log("getOrderHistory() - response.data:", response.data);
+
     return response.data;
 };
+
+
+

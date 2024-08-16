@@ -4,7 +4,6 @@ import Stripe from 'stripe';
 import Order from '../models/Order.js';
 
 
-
 // PAYPAL
 
 // utility functions
@@ -186,19 +185,6 @@ export const confirmStripePaymentIntent = async (req, res) => {
     }
 }
 
-// Orders History
-// export const getOrderHistory = async (req, res) => {
-//     const { userId } = req.params;
-
-//     try {
-//         const orders = await Order.find({ userId }).populate('products.product');
-//         res.status(200).json(orders);
-//     } catch (error) {
-//         console.error("Error fetching order history:", error);
-//         res.status(500).json({ error: 'An error occurred while fetching the order history' });
-//     }
-// };
-
 export const getOrderHistory = async (req, res) => {
     const { userId } = req.params;
     const { page = 1, limit = 10, sort = 'createdAt', order = 'desc', search = '', startDate, endDate } = req.query;
@@ -219,9 +205,14 @@ export const getOrderHistory = async (req, res) => {
         }
     }
 
+    // Modifica la query per cercare all'interno dell'array di prodotti
     if (search) {
-        query['products.product.name'] = { $regex: search, $options: 'i' };
-        console.log("query['products.product.name']:", query['products.product.name']);
+        query['products'] = {
+            $elemMatch: {
+                'product.name': { $regex: search, $options: 'i' }
+            }
+        };
+        console.log("query['products']:", query['products']);
     }
 
     try {
