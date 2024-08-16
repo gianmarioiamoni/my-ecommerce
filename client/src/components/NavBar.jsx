@@ -66,6 +66,7 @@ const NavBar = () => {
                             <ListItem button component={Link} to="/manage-categories">
                                 <ListItemText primary="Config" />
                             </ListItem>
+                            
                         </>
                     )}
                     {!user.isAdmin && (
@@ -141,7 +142,13 @@ const NavBar = () => {
                             onClose={handleClose}
                         >
                             <MenuItem component={Link} to="/profile" onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem component={Link} to="/order-history" onClick={handleClose}>Orders History</MenuItem>
+
+                            {!user.isAdmin ? (
+                                <MenuItem component={Link} to="/order-history" onClick={handleClose}>Orders History</MenuItem>
+                            ) : (
+                                <MenuItem component={Link} to="/admin/orders" onClick={handleClose}>Orders Console</MenuItem>
+                            )}
+                            
                             <MenuItem onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </div>

@@ -15,7 +15,6 @@ const OrderHistory = () => {
     const [search, setSearch] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [statusFilter, setStatusFilter] = useState(''); // Nuovo stato del filtro
 
     useEffect(() => {
         const fetchOrderHistory = async () => {
@@ -62,10 +61,6 @@ const OrderHistory = () => {
             );
         }
 
-        if (statusFilter) { // Filtraggio per stato
-            filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
-        }
-
         filteredOrders = filteredOrders.sort((a, b) => {
             const aValue = a[sort];
             const bValue = b[sort];
@@ -75,7 +70,7 @@ const OrderHistory = () => {
         });
 
         setDisplayedOrders(filteredOrders.slice((page - 1) * limit, page * limit));
-    }, [allOrders, search, startDate, endDate, sort, order, statusFilter, page, limit]);
+    }, [allOrders, search, startDate, endDate, sort, order, page, limit]);
 
     const handlePageChange = (event, value) => {
         setPage(value);
@@ -101,7 +96,7 @@ const OrderHistory = () => {
             </Typography>
 
             <Grid container spacing={3} alignItems="center">
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={4}>
                     <TextField
                         label="Search Orders"
                         variant="outlined"
@@ -156,21 +151,6 @@ const OrderHistory = () => {
                         onChange={(e) => setEndDate(e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} md={3}> {/* Nuovo filtro per stato */}
-                    <FormControl fullWidth>
-                        <InputLabel>Status</InputLabel>
-                        <Select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value)}
-                            label="Status"
-                        >
-                            <MenuItem value="">All</MenuItem>
-                            <MenuItem value="In Progress">In Progress</MenuItem>
-                            <MenuItem value="Shipped">Shipped</MenuItem>
-                            <MenuItem value="Delivered">Delivered</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
             </Grid>
 
             <Grid container spacing={3} sx={{ mt: 3 }}>
@@ -182,7 +162,6 @@ const OrderHistory = () => {
                                     <Typography variant="h6">Order ID: {order._id}</Typography>
                                     <Typography variant="body1">Total Amount: ${order.totalAmount}</Typography>
                                     <Typography variant="body2">Order Date: {new Date(order.createdAt).toLocaleDateString()}</Typography>
-                                    <Typography variant="body2">Status: {order.status}</Typography> {/* Stato dell'ordine */}
                                     <Typography variant="body2" gutterBottom>Products:</Typography>
                                     <Box component="ul" sx={{ pl: 2 }}>
                                         {order.products.map((item) => (
@@ -227,7 +206,6 @@ const OrderHistory = () => {
 };
 
 export default OrderHistory;
-
 
 
 

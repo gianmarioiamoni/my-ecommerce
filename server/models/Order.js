@@ -34,8 +34,14 @@ const orderSchema = new mongoose.Schema({
     stripePaymentIntentId: {
         type: String,
     },
+    status: {
+        type: String,
+        enum: ['In Progress', 'Shipped', 'Delivered'], 
+        default: 'In Progress', 
+    },
 });
 
 const Order = mongoose.model('Order', orderSchema);
 
 export default Order;
+

@@ -20,6 +20,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './components/users/ResetPassword';
 import ManageAddressesPayments from './pages/ManageAddressesPayments';
 import OrderHistory from './pages/OrderHistory';
+import AdminOrderConsole from './pages/AdminOrderConsole';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
@@ -60,6 +61,10 @@ const App = () => {
                 <Route
                   path="/manage-categories"
                   element={<PrivateRoute element={<ManageCategories />} roles={['admin']} />}
+                />
+                <Route
+                  path="/admin/orders"
+                  element={<PrivateRoute element={<AdminOrderConsole />} roles={['admin']} />}
                 />
                 <Route
                   path="/cart"

@@ -185,6 +185,8 @@ export const confirmStripePaymentIntent = async (req, res) => {
     }
 }
 
+// ORDERS MANAGEMENT
+
 export const getOrderHistory = async (req, res) => {
     const { userId } = req.params;
     const { page = 1, limit = 10, sort = 'createdAt', order = 'desc', search = '', startDate, endDate } = req.query;
@@ -205,7 +207,7 @@ export const getOrderHistory = async (req, res) => {
         }
     }
 
-    // Modifica la query per cercare all'interno dell'array di prodotti
+    // Add search query to look for the product name
     if (search) {
         query['products'] = {
             $elemMatch: {
@@ -237,6 +239,39 @@ export const getOrderHistory = async (req, res) => {
     } catch (error) {
         console.error("Error fetching order history:", error);
         res.status(500).json({ error: 'An error occurred while fetching the order history' });
+    }
+};
+
+export const updateOrderStatus = async (req, res) => {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    if (!['In Progress', 'Shipped', 'Delivered'].includes(status)) {
+        return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    try {
+        const order = await Order.findByIdAndUpdate(orderId, { status }, { new: true });
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        res.status(200).json(order);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating order status', error });
+    }
+};
+
+export const getAllOrders = async (req, res) => {
+    try {
+        console.log("getAllOrders()");
+        // const orders = await Order.find().populate('userId', 'name email').populate('products.product');
+        const orders = await Order.find({}).populate('userId').populate('products.product');
+        console.log("getAllOrders() - orders:", orders);
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching orders', error });
     }
 };
 
