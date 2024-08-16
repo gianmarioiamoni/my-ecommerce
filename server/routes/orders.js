@@ -5,7 +5,8 @@ import {
     confirmStripePaymentIntent,
     getOrderHistory,
     updateOrderStatus,
-    getAllOrders
+    getAllOrders,
+    getAllUsersWithOrders
 } from '../controllers/orders.js';
 
 import express from 'express';
@@ -26,5 +27,6 @@ router.get('/history/:userId', getOrderHistory);
 // Admin routes
 router.patch('/update-order-status/:orderId', updateOrderStatus); 
 router.get('/', getAllOrders); 
+router.get('/users-with-orders', getAllUsersWithOrders);
 
 export default router;

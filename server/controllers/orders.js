@@ -2,6 +2,7 @@ import paypal from '@paypal/checkout-server-sdk';
 import Stripe from 'stripe';
 
 import Order from '../models/Order.js';
+import User from '../models/User.js';
 
 
 // PAYPAL
@@ -265,15 +266,24 @@ export const updateOrderStatus = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
     try {
-        console.log("getAllOrders()");
-        // const orders = await Order.find().populate('userId', 'name email').populate('products.product');
         const orders = await Order.find({}).populate('userId').populate('products.product');
-        console.log("getAllOrders() - orders:", orders);
         res.status(200).json(orders);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching orders', error });
     }
 };
 
+export const getAllUsersWithOrders = async (req, res) => {
+    try {
+        // Get IDs of users with orders
+        const usersWithOrders = await Order.distinct('userId');
 
+        // Fetch data of these users
+        const users = await User.find({ _id: { $in: usersWithOrders } });
 
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Error fetching users with orders:', error);
+        res.status(500).json({ message: 'Error fetching users with orders' });
+    }
+};

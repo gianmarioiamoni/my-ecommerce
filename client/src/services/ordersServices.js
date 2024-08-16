@@ -79,20 +79,9 @@ export const getOrderHistory = async (userId, options = {}) => {
     return response.data;
 }; 
 
-// export const getAllOrders = async () => {
-//     try {
-//         const response = await axios.get(`${serverURL}/orders`);
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching orders:', error);
-//         throw error;
-//     }
-// };
 export const getAllOrders = async () => {
     try {
         const response = await axios.get(`${serverURL}/orders`);
-        console.log("getAllOrders() - response.data:", response.data);
-        // Assicura che la risposta sia un array
         return Array.isArray(response.data) ? response.data : [];
     } catch (error) {
         console.error('Error fetching orders:', error);
@@ -106,6 +95,16 @@ export const updateOrderStatus = async (orderId, status) => {
         return response.data;
     } catch (error) {
         console.error('Error updating order status:', error);
+        throw error;
+    }
+};
+
+export const getAllUsersWithOrders = async () => {
+    try {
+        const response = await axios.get(`${serverURL}/orders/users-with-orders`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users with orders:', error);
         throw error;
     }
 };

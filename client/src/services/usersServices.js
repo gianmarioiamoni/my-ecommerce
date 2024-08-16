@@ -62,9 +62,18 @@ export const sendPasswordResetEmail = async (email) => {
     }
 };
 
+export const getAllUsers = async () => {
+    try {
+        const response = await axios.get(`${serverURL}/users`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+};
+
 export const resetPassword = async (token, password) => {
     try {
-        // const response = await axios.post(`${serverURL}/users/reset-password`, { token, password });
         const response = await axios.post(`/api/reset-password`, { token, password });
         return response.data;
     } catch (error) {
