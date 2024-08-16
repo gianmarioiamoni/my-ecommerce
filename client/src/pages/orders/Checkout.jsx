@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
-import ShippingForm from '../components/orders/ShippingForm';
-import PaymentMethod from '../components/orders/PaymentMethod';
-import ReviewOrder from '../components/orders/ReviewOrder';
+import ShippingForm from '../../components/orders/ShippingForm';
+import PaymentMethod from '../../components/orders/PaymentMethod';
+import ReviewOrder from '../../components/orders/ReviewOrder';
 
-import { CartContext } from '../contexts/CartContext';
-import { AuthContext } from '../contexts/AuthContext';
+import { CartContext } from '../../contexts/CartContext';
+import { AuthContext } from '../../contexts/AuthContext';
 
-import { createPayPalOrder, createCreditCardOrder } from '../services/ordersServices';
+import { createPayPalOrder, createCreditCardOrder } from '../../services/ordersServices';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 

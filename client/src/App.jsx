@@ -10,17 +10,17 @@ import ProductForm from './components/products/ProductForm';
 import EditProductForm from './components/products/EditProductForm';
 import NavBar from './components/NavBar';
 import ManageCategories from './components/admin/ManageCategories';
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
+import Profile from './components/users/Profile';
+import Cart from './pages/orders/Cart';
+import Checkout from './pages/orders/Checkout';
 import Success from './pages/Success';
 import NotFound from './pages/NotFound';
-import ProductsEdit from './pages/ProductsEdit';
-import Profile from './components/users/Profile';
-import ForgotPassword from './pages/ForgotPassword';
+import ProductsEdit from './pages/admin/ProductsEdit';
+import ForgotPassword from './pages/users/ForgotPassword';
 import ResetPassword from './components/users/ResetPassword';
-import ManageAddressesPayments from './pages/ManageAddressesPayments';
-import OrderHistory from './pages/OrderHistory';
-import AdminOrderConsole from './pages/AdminOrderConsole';
+import ManageAddressesPayments from './pages/users/ManageAddressesPayments';
+import OrderHistory from './pages/users/OrderHistory';
+import AdminOrderConsole from './pages/admin/AdminOrderConsole';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
@@ -80,7 +80,7 @@ const App = () => {
                 />
                 <Route
                   path="/order-history"
-                  element={<PrivateRoute element={<OrderHistory />} roles={['user']} />} 
+                  element={<PrivateRoute element={<OrderHistory />} roles={['user']} />}
                 />
                 <Route
                   path="/profile"

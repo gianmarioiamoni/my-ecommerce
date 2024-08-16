@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Typography, Button, Container, Box } from '@mui/material';
-import { CartContext } from '../contexts/CartContext';
-import CartItem from '../components/products/CartItem';
+import { CartContext } from '../../contexts/CartContext';
+import CartItem from '../../components/products/CartItem';
 
 const Cart = () => {
     const { cart, clearCart, getTotal } = useContext(CartContext);

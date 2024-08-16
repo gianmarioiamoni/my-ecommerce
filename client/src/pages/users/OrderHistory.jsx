@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Typography, Grid, Card, CardContent, CircularProgress, TextField, MenuItem, Select, InputLabel, FormControl, Box, Pagination, Avatar } from '@mui/material';
-import { AuthContext } from '../contexts/AuthContext';
-import { getOrderHistory } from '../services/ordersServices';
+import { AuthContext } from '../../contexts/AuthContext';
+import { getOrderHistory } from '../../services/ordersServices';
 
 const OrderHistory = () => {
     const { user } = useContext(AuthContext);

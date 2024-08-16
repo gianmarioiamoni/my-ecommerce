@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import { Container, Typography, Grid, Card, CardContent, CircularProgress, MenuItem, Select, FormControl, TextField, Box, Pagination } from '@mui/material';
-import { getAllOrders, getAllUsersWithOrders, updateOrderStatus } from '../services/ordersServices';
+
+import { getAllOrders, getAllUsersWithOrders, updateOrderStatus } from '../../services/ordersServices';
 
 const AdminOrderConsole = () => {
     const [orders, setOrders] = useState([]);
@@ -10,7 +12,7 @@ const AdminOrderConsole = () => {
     const [sortField, setSortField] = useState('createdAt');
     const [sortOrder, setSortOrder] = useState('desc');
     const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(10);
+    const [limit] = useState(10);
     const [statusFilter, setStatusFilter] = useState('');
     const [userFilter, setUserFilter] = useState('');
     const [users, setUsers] = useState([]);
@@ -146,7 +148,7 @@ const AdminOrderConsole = () => {
                             inputProps={{ 'aria-label': 'Without label' }}
                             renderValue={(selected) => {
                                 const selectedUser = users.find(user => user._id === selected);
-                                return selectedUser ? `${selectedUser.name} (${selectedUser.email})` : <em>All Users</em>; 
+                                return selectedUser ? `${selectedUser.name} (${selectedUser.email})` : <em>All Users</em>;
                             }}
                         >
                             <MenuItem value="">

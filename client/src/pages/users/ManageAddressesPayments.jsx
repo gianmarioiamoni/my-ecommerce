@@ -23,8 +23,8 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 
-import { AuthContext } from '../contexts/AuthContext';
-import { getAddresses, addAddress, deleteAddress, getPaymentMethods, addPaymentMethod, deletePaymentMethod } from '../services/usersServices';
+import { AuthContext } from '../../contexts/AuthContext';
+import { getAddresses, addAddress, deleteAddress, getPaymentMethods, addPaymentMethod, deletePaymentMethod } from '../../services/usersServices';
 
 const ManageAddressesPayments = () => {
     const [addresses, setAddresses] = useState([]);
@@ -78,7 +78,7 @@ const ManageAddressesPayments = () => {
         } catch (error) {
             console.error('Error during address addition to database:', error);
         }
-        
+
     };
 
     const handleRemoveAddress = async (index) => {
@@ -416,7 +416,7 @@ const ManageAddressesPayments = () => {
             </Dialog>
         </Container>
     )
-} 
+}
 
 
 

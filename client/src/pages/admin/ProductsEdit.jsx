@@ -5,7 +5,7 @@ import { Container, Grid, Card, CardContent, Typography, IconButton, Dialog, Dia
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { getAllProducts, deleteProduct } from '../services/productsServices';
+import { getAllProducts, deleteProduct } from '../../services/productsServices';
 
 const ProductsEdit = () => {
     const [products, setProducts] = useState([]);
