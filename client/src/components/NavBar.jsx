@@ -20,6 +20,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { CartContext } from '../contexts/CartContext';
 import { AuthContext } from '../contexts/AuthContext';
 
+
 const NavBar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -43,10 +44,6 @@ const NavBar = () => {
         setAnchorEl(null);
     };
 
-    const handleMenuItemClick = (callback) => {
-        handleClose(); // Chiudi il menu
-        callback(); // Esegui il callback (es. navigazione o logout)
-    };
 
     const renderMenuItems = () => {
         if (user) {

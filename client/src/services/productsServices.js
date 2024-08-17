@@ -57,5 +57,14 @@ export const uploadImage = async (formData) => {
     }
 }
 
+export const updateProductQuantity = async (id, quantityChange) => {
+    try {
+        const response = await axios.patch(`${API_URL}/products/updateQuantity/${id}`, { quantityChange });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
 
 

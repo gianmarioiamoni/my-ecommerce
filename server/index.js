@@ -43,8 +43,6 @@ const __dirname = path.dirname(__filename);
 const clientBuildPath = path.join(__dirname, '../client/dist');
 
 
-
-
 const httpsOptions = {
     key: fs.readFileSync('./localhost-key.pem'),
     cert: fs.readFileSync('./localhost.pem')
@@ -89,7 +87,6 @@ app.post('/api/uploadProfilePicture', upload.single('file'), (req, res) => {
 app.post('/api/forgot-password', forgotPassword);
 
 app.get('/api/reset-password/:token', getResetPasswordPage);
-// app.post('/api/reset-password/:token', resetPassword);
 app.post('/api/reset-password', resetPassword);
 
 // routes
@@ -99,16 +96,10 @@ app.use('/orders', orderRoutes);
 app.use('/categories', categoryRoutes);
 
 
-// app.use(express.static(path.join(__dirname, 'client/dist')));
-
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'client/dist', 'index.html'));
-// });
-
-// Servire i file statici da client/dist
+// Serving static files from client/dist
 app.use(express.static(clientBuildPath));
 
-// Gestire tutte le altre richieste per servire index.html
+// Manage 404 errors and render index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(clientBuildPath, 'index.html'));
 });

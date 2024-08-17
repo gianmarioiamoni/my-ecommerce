@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, Grid, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getProductById, updateProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
@@ -14,7 +14,8 @@ const EditProductForm = () => {
         price: '',
         imageUrls: [],
         availability: 'In Stock',
-        category: ''
+        category: '',
+        quantity: 0
     });
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
@@ -29,7 +30,8 @@ const EditProductForm = () => {
                     ...prevProduct,
                     ...product,
                     availability: product.availability || 'In Stock',
-                    category: product.category || ''
+                    category: product.category || '',
+                    quantity: product.quantity || 0
                 }));
             } catch (error) {
                 console.error(error);
@@ -121,100 +123,144 @@ const EditProductForm = () => {
     };
 
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom>
+        <Container maxWidth="md" sx={{ mt: 5 }}>
+            <Typography variant="h4" gutterBottom align="center">
                 Edit Product
             </Typography>
             <form onSubmit={handleSubmit}>
-                <TextField
-                    label="Name"
-                    name="name"
-                    value={product.name}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                />
-                <TextField
-                    label="Description"
-                    name="description"
-                    value={product.description}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                />
-                <TextField
-                    label="Price"
-                    name="price"
-                    type="number"
-                    value={product.price}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    required
-                />
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="availability-label">Availability*</InputLabel>
-                    <Select
-                        labelId="availability-label"
-                        name="availability"
-                        value={product.availability}
-                        onChange={handleChange}
-                        required
-                    >
-                        <MenuItem value="In Stock">In Stock</MenuItem>
-                        <MenuItem value="Out of Stock">Out of Stock</MenuItem>
-                        <MenuItem value="Pre-order">Pre-order</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
-                    <InputLabel id="category-label">Category</InputLabel>
-                    <Select
-                        labelId="category-label"
-                        name="category"
-                        value={product.category || ''}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        {categories.map((category, index) => (
-                            <MenuItem key={index} value={category}>{category}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Typography variant="h6" gutterBottom>
-                    Images
-                </Typography>
-                {product.imageUrls.map((url, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                        <img src={url} alt={`Product ${index + 1}`} style={{ width: '100px', height: '100px', marginRight: '10px' }} />
+                <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
                         <TextField
-                            label={`Image URL ${index + 1}`}
-                            value={url}
-                            onChange={(e) => handleImageChange(e, index)}
+                            label="Name"
+                            name="name"
+                            value={product.name}
+                            onChange={handleChange}
                             fullWidth
                             margin="normal"
                             required
+                            variant="outlined"
+                            sx={{ bgcolor: '#f9f9f9' }}
                         />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileChange(e, index)}
-                            style={{ marginLeft: '10px' }}
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Price"
+                            name="price"
+                            type="number"
+                            value={product.price}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                            variant="outlined"
+                            sx={{ bgcolor: '#f9f9f9' }}
                         />
-                        <IconButton onClick={() => handleRemoveImage(index)}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </div>
-                ))}
-                <Button onClick={handleAddImage} variant="outlined" color="primary" style={{ marginBottom: '20px', display: 'block' }}>
-                    Add Image
-                </Button>
-                <Button type="submit" variant="contained" color="primary" disabled={!isFormValid || isUploading} style={{ marginTop: '10px' }}>
-                    {isUploading ? 'Loading Image...' : 'Save Changes'}
-                </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Description"
+                            name="description"
+                            value={product.description}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                            multiline
+                            rows={4}
+                            variant="outlined"
+                            sx={{ bgcolor: '#f9f9f9' }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth margin="normal" variant="outlined">
+                            <InputLabel id="availability-label">Availability*</InputLabel>
+                            <Select
+                                labelId="availability-label"
+                                name="availability"
+                                value={product.availability}
+                                onChange={handleChange}
+                                required
+                                sx={{ bgcolor: '#f9f9f9' }}
+                            >
+                                <MenuItem value="In Stock">In Stock</MenuItem>
+                                <MenuItem value="Out of Stock">Out of Stock</MenuItem>
+                                <MenuItem value="Pre-order">Pre-order</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {product.availability === 'In Stock' && (
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Quantity"
+                                name="quantity"
+                                type="number"
+                                value={product.quantity}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                required
+                                variant="outlined"
+                                sx={{ bgcolor: '#f9f9f9' }}
+                            />
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <FormControl fullWidth margin="normal" variant="outlined">
+                            <InputLabel id="category-label">Category</InputLabel>
+                            <Select
+                                labelId="category-label"
+                                name="category"
+                                value={product.category || ''}
+                                onChange={handleChange}
+                                sx={{ bgcolor: '#f9f9f9' }}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {categories.map((category, index) => (
+                                    <MenuItem key={index} value={category}>{category}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="h6" gutterBottom>
+                            Images
+                        </Typography>
+                        {product.imageUrls.map((url, index) => (
+                            <Box key={index} display="flex" alignItems="center" mb={2}>
+                                <img src={url} alt={`Product ${index + 1}`} style={{ width: '100px', height: '100px', marginRight: '10px', borderRadius: '8px', objectFit: 'cover' }} />
+                                <TextField
+                                    label={`Image URL ${index + 1}`}
+                                    value={url}
+                                    onChange={(e) => handleImageChange(e, index)}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                    variant="outlined"
+                                    sx={{ bgcolor: '#f9f9f9' }}
+                                />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleFileChange(e, index)}
+                                    style={{ marginLeft: '10px' }}
+                                />
+                                <IconButton onClick={() => handleRemoveImage(index)} sx={{ ml: 1 }}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Box>
+                        ))}
+                        <Button onClick={handleAddImage} variant="outlined" color="primary" sx={{ mb: 2, mt: 1 }}>
+                            Add Image
+                        </Button>
+                    </Grid>
+                </Grid>
+                <Box display="flex" justifyContent="center" mt={4}>
+                    <Button type="submit" variant="contained" color="primary" disabled={!isFormValid || isUploading}>
+                        {isUploading ? 'Loading Image...' : 'Save Changes'}
+                    </Button>
+                </Box>
             </form>
             <Snackbar open={successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage(false)}>
                 <Alert onClose={() => setSuccessMessage(false)} severity="success" sx={{ width: '100%' }}>
@@ -231,6 +277,7 @@ const EditProductForm = () => {
 };
 
 export default EditProductForm;
+
 
 
 
