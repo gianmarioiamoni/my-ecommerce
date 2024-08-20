@@ -18,9 +18,6 @@ const ProductDetails = () => {
         const fetchData = async () => {
             try {
                 const product = await getProductById(id);
-                // add availableQuantity = quantity to product
-                product.availableQuantity = product.quantity;
-                
                 setProduct(product);
             } catch (error) {
                 console.error(error);
@@ -54,9 +51,6 @@ const ProductDetails = () => {
                     <Typography variant="h6">
                         ${product.price}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                        Availability: {product.availability}
-                    </Typography>
                 </CardContent>
                 <CardActions>
                     {!user.isAdmin && isInCart && (
@@ -65,12 +59,7 @@ const ProductDetails = () => {
                         </Button>
                     )}
                     {!user.isAdmin && !isInCart && (
-                        <Button
-                            size="small"
-                            color="primary"
-                            onClick={() => addToCart(product)}
-                            disabled={product.availability !== 'In Stock' || product.quantity <= 0}
-                        >
+                        <Button size="small" color="primary" onClick={() => addToCart(product)}>
                             Add to Cart
                         </Button>
                     )}
@@ -81,7 +70,6 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-
 
 
 

@@ -4,25 +4,32 @@ import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert, 
 import { createProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
 
-
-const ProductForm = () => {
-    const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [], availability: '', category: '' });
-    const [localImages, setLocalImages] = useState([]);
+const AddNewProduct = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        price: '',
+        imageUrls: [],
+        availability: '',
+        category: '',
+        quantity: ''  // Aggiunto il campo quantity
+    });
+    const [localImages] = useState([]);
     const [url, setUrl] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
     const [successMessage, setSuccessMessage] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
-    
+
     const { categories } = useCategories();
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if mandatory fields are filled
         const isNameValid = formData.name.trim() !== '';
         const isDescriptionValid = formData.description.trim() !== '';
         const isPriceValid = formData.price.trim() !== '';
+        console.log("formData.imageUrls", formData.imageUrls);
         const isImageUrlsValid = formData.imageUrls.some(url => url.trim() !== '') || localImages.length > 0;
         const isAvailabilityValid = formData.availability.trim() !== '';
 
@@ -51,27 +58,33 @@ const ProductForm = () => {
     };
 
     const handleFileChange = async (e) => {
+        console.log('handleFileChange invoked');
         const files = Array.from(e.target.files);
-        setIsUploading(true); 
+        console.log('files:', files);
+        setIsUploading(true);
         for (let file of files) {
+            console.log('Processing file:', file);
             const formData = new FormData();
             formData.append('file', file);
 
             try {
+                console.log('Uploading file...');
                 const data = await uploadImage(formData);
+                console.log('File uploaded successfully. Data:', data);
                 setFormData((prevFormData) => ({
                     ...prevFormData,
                     imageUrls: [...prevFormData.imageUrls, data.url],
                 }));
             } catch (error) {
-                console.error(error);
+                console.error('Error uploading file:', error);
                 setErrorMessage(true);
                 setTimeout(() => {
                     setErrorMessage(false);
                 }, 3000);
             }
         }
-        setIsUploading(false); 
+        setIsUploading(false);
+        console.log('handleFileChange completed');
     };
 
     const handleSubmit = async (e) => {
@@ -173,6 +186,17 @@ const ProductForm = () => {
                             <MenuItem value="Pre-order">Pre-order</MenuItem>
                         </Select>
                     </FormControl>
+                    {/* Campo per la quantità */}
+                    <TextField
+                        name="quantity"
+                        label="Quantity"
+                        type="number"
+                        onChange={handleChange}
+                        value={formData.quantity}
+                        fullWidth
+                        required
+                        disabled={formData.availability !== 'In Stock'} // Disabilita se availability non è "In Stock"
+                    />
                     <FormControl fullWidth>
                         <InputLabel id="category-label">Category</InputLabel>
                         <Select
@@ -206,7 +230,4 @@ const ProductForm = () => {
     );
 };
 
-export default ProductForm;
-
-
-
+export default AddNewProduct;

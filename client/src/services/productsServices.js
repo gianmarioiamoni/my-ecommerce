@@ -49,10 +49,13 @@ export const createProduct = async (product) => {
 }
 
 export const uploadImage = async (formData) => {
+    console.log('Uploading image: ', formData);
     try {
         const response = await axios.post(`${serverURL}/upload`, formData);
+        console.log('Image uploaded: ', response.data);
         return response.data;
     } catch (error) {
+        console.log('Error uploading image: ', error);
         return { error: error.response.data.error };
     }
 }

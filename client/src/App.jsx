@@ -6,7 +6,6 @@ import Register from './components/users/Register';
 import Login from './components/users/Login';
 import ProductList from './components/products/ProductList';
 import ProductDetails from './components/products/ProductDetails';
-import ProductForm from './components/products/ProductForm';
 import EditProductForm from './components/products/EditProductForm';
 import NavBar from './components/NavBar';
 import ManageCategories from './components/admin/ManageCategories';
@@ -15,6 +14,7 @@ import Cart from './pages/orders/Cart';
 import Checkout from './pages/orders/Checkout';
 import Success from './pages/Success';
 import NotFound from './pages/NotFound';
+import AddNewProduct from './pages/admin/AddNewProduct';
 import ProductsEdit from './pages/admin/ProductsEdit';
 import ForgotPassword from './pages/users/ForgotPassword';
 import ResetPassword from './components/users/ResetPassword';
@@ -48,7 +48,7 @@ const App = () => {
 
                 <Route
                   path="/products/new"
-                  element={<PrivateRoute element={<ProductForm />} roles={['admin']} />}
+                  element={<PrivateRoute element={<AddNewProduct />} roles={['admin']} />}
                 />
                 <Route
                   path="/products/edit"

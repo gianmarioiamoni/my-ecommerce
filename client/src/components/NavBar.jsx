@@ -1,4 +1,3 @@
-// components/NavBar.js
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -15,6 +14,7 @@ import {
     MenuItem
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { CartContext } from '../contexts/CartContext';
@@ -63,7 +63,7 @@ const NavBar = () => {
                             <ListItem button component={Link} to="/manage-categories">
                                 <ListItemText primary="Config" />
                             </ListItem>
-                            
+
                         </>
                     )}
                     {!user.isAdmin && (
@@ -126,7 +126,13 @@ const NavBar = () => {
                 </Drawer>
                 {user && (
                     <div>
-                        <IconButton onClick={handleAvatarClick}>
+                        <IconButton
+                            edge="end"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            color="inherit"
+                            onClick={handleAvatarClick}>
                             {user.photoUrl ? (
                                 <Avatar src={user.photoUrl} alt={user.name || user.email} />
                             ) : (
@@ -135,17 +141,29 @@ const NavBar = () => {
                         </IconButton>
                         <Menu
                             anchorEl={anchorEl}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
+                            PaperProps={{
+                                onClick: handleClose, 
+                            }}
                         >
-                            <MenuItem component={Link} to="/profile" onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem component={Link} to="/profile">Profile</MenuItem>
 
                             {!user.isAdmin ? (
-                                <MenuItem component={Link} to="/order-history" onClick={handleClose}>Orders History</MenuItem>
+                                <MenuItem component={Link} to="/order-history">Orders History</MenuItem>
                             ) : (
-                                <MenuItem component={Link} to="/admin/orders" onClick={handleClose}>Orders Console</MenuItem>
+                                <MenuItem component={Link} to="/admin/orders">Orders Console</MenuItem>
                             )}
-                            
+
                             <MenuItem onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </div>
@@ -156,3 +174,4 @@ const NavBar = () => {
 };
 
 export default NavBar;
+

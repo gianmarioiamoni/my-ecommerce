@@ -26,12 +26,7 @@ const ProductList = () => {
         const fetchData = async () => {
             try {
                 const products = await getAllProducts();
-
-                // per each product in products, add availableQuantity equal to quantity
-                products.forEach(product => {
-                    product.availableQuantity = product.quantity
-                });
-
+                
                 setProducts(products);
                 setFilteredProducts(products);
             } catch (error) {
@@ -56,6 +51,7 @@ const ProductList = () => {
             filtered = filtered.filter(product => product.category === selectedCategory);
         }
 
+        // Ordering products based on selected criteria 
         switch (criteria) {
             case 'price-asc':
                 filtered.sort((a, b) => a.price - b.price);
@@ -95,7 +91,7 @@ const ProductList = () => {
     const handleSortChange = (e) => {
         const value = e.target.value;
         setSortCriteria(value);
-        applyFiltersAndSorting(value);
+        applyFiltersAndSorting(value);  // Applies the new sorting criteria to the filtered products 
     };
 
     const isInCart = (productId) => cart.some(item => item._id === productId);
@@ -195,13 +191,8 @@ const ProductList = () => {
                                         Remove from Cart
                                     </Button>
                                 )}
-                                {user && !user.isAdmin && !isInCart(product._id) && (
-                                    <Button
-                                        size="small"
-                                        color="primary"
-                                        onClick={() => addToCart(product)}
-                                        disabled={product.availability !== 'In Stock' || product.quantity <= 0}
-                                    >
+                                {user &&!user.isAdmin && !isInCart(product._id) && (
+                                    <Button size="small" color="primary" onClick={() => addToCart(product)}>
                                         Add to Cart
                                     </Button>
                                 )}
@@ -215,7 +206,6 @@ const ProductList = () => {
 };
 
 export default ProductList;
-
 
 
 

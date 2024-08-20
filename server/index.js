@@ -30,7 +30,10 @@ const DB_NAME = 'my-ecommerce';
 dotenv.config();
 
 const CONNECTION_URL = process.env.MONGO_DB || 'mongodb://localhost:27017';
+const serverURL = process.env.SERVER_URL || 'https://localhost:5000'; 
+
 console.log(CONNECTION_URL, DB_NAME);
+console.log(serverURL);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -66,7 +69,8 @@ app.get('/', (req, res) => {
     res.send('Hello from the server!');
 });
 
-app.post('/api/upload', upload.single('file'), (req, res) => {
+app.post(`/api/upload`, upload.single('file'), (req, res) => {
+    console.log("Uploading file: ", req.file);
     cloudinary.uploader.upload_stream({ folder: 'my_ecommerce' }, (error, result) => {
         if (error) {
             return res.status(500).send(error);
