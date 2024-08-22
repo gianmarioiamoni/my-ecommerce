@@ -1,14 +1,20 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Card, CardContent, Typography, TextField, Grid, Box } from '@mui/material';
 import { CartContext } from '../../contexts/CartContext';
 
 const CartItem = ({ product }) => {
     const { updateQuantity, removeFromCart } = useContext(CartContext);
+    const [error, setError] = useState(false);
 
     const handleQuantityChange = (event) => {
         const quantity = parseInt(event.target.value, 10);
         if (quantity > 0) {
-            updateQuantity(product._id, quantity);
+            if (quantity > product.availableQuantity) {
+                setError(true);
+            } else {
+                setError(false);
+                updateQuantity(product._id, quantity);
+            }
         }
     };
 
@@ -31,6 +37,8 @@ const CartItem = ({ product }) => {
                         value={product.quantity}
                         onChange={handleQuantityChange}
                         inputProps={{ min: 1 }}
+                        error={error}
+                        helperText={error ? `Maximum available quantity is ${product.availableQuantity}` : ''}
                         sx={{ width: '100px', marginRight: 2 }}
                     />
                     <Button

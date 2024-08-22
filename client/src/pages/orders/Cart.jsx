@@ -1,54 +1,31 @@
-import React, { useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Button, Container, Box } from '@mui/material';
 import { CartContext } from '../../contexts/CartContext';
 import CartItem from '../../components/products/CartItem';
 
 const Cart = () => {
-    const { cart, clearCart, getTotal, checkQuantities, hasErrors } = useContext(CartContext);
+    const { cart, clearCart, getTotal, checkQuantities } = useContext(CartContext);
+    const [hasErrors, setHasErrors] = useState(false);
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     if (hasErrors !== null) {
-    //         if (!hasErrors) {
-    //             console.log('All quantities are within limits, proceeding to checkout');
-    //             // Se non ci sono errori, permetti il checkout
-    //             // navigazione verso la pagina di checkout
-    //             navigate('/checkout');
-    //         } else {
-    //             console.log('Some items have exceeded their available quantities');
-    //             // Se ci sono errori, mostra un messaggio o blocca il processo
-    //             alert('Some items have exceeded their available quantities.');
-    //         }
-    //     }
-    // }, [hasErrors, navigate]);
+    useEffect(() => {
+        checkQuantities().then((errors) => {
+            setHasErrors(errors);
+        });
+    }, [cart, checkQuantities]);
+
     const handleCheckout = () => {
-        console.log('Checkout button clicked');
-        // checkQuantities((hasErrors)); // Controlla le quantità prima del checkout
-        // console.log('hasErrors', hasErrors);
-        // if (!hasErrors) {
-        //     console.log('All quantities are within limits, proceeding to checkout');
-        //     // Se non ci sono errori, permetti il checkout
-        //     // navigazione verso la pagina di checkout
-        //     navigate('/checkout');
-        // } else {
-        //     console.log('Some items have exceeded their available quantities');
-        //     // Se ci sono errori, mostra un messaggio o blocca il processo
-        //     alert('Some items have exceeded their available quantities.');
-        // }
-        checkQuantities().then((hasErrors) => {
-            if (!hasErrors) {
+        checkQuantities().then((errors) => {
+            if (!errors) {
                 console.log('All quantities are within limits, proceeding to checkout');
-                // Se non ci sono errori, permetti il checkout
-                // navigazione verso la pagina di checkout
                 navigate('/checkout');
             } else {
-                console.log('Some items have exceeded their available quantities');
-                // Se ci sono errori, mostra un messaggio o blocca il processo
                 alert('Some items have exceeded their available quantities.');
             }
         });
     };
+
     return (
         <Container maxWidth="md">
             <Box mt={4} mb={4}>
@@ -91,7 +68,7 @@ const Cart = () => {
                                 variant="contained"
                                 color="secondary"
                                 onClick={handleCheckout}
-                                disabled={hasErrors} // Disabilita il pulsante se ci sono errori
+                                disabled={hasErrors}
                             >
                                 Proceed to Checkout
                             </Button>
@@ -104,6 +81,7 @@ const Cart = () => {
 };
 
 export default Cart;
+
 
 
 
