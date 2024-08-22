@@ -70,7 +70,6 @@ app.get('/', (req, res) => {
 });
 
 app.post(`/api/upload`, upload.single('file'), (req, res) => {
-    console.log("Uploading file: ", req.file);
     cloudinary.uploader.upload_stream({ folder: 'my_ecommerce' }, (error, result) => {
         if (error) {
             return res.status(500).send(error);

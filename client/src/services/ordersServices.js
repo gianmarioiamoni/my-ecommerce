@@ -74,8 +74,6 @@ export const getOrderHistory = async (userId, options = {}) => {
         params: { page, limit, sort, order, search, startDate, endDate }
     });
 
-    console.log("getOrderHistory() - response.data:", response.data);
-
     return response.data;
 }; 
 

@@ -209,8 +209,8 @@ export async function resetPassword(req, res) {
         const hashedPassword = await bcrypt.hash(password, 12);
 
         user.password = hashedPassword;
-        user.resetPasswordToken = undefined; // Rimuovi il token una volta utilizzato
-        user.resetPasswordExpires = undefined; // Rimuovi la scadenza
+        user.resetPasswordToken = undefined; // Remove the reset token when used 
+        user.resetPasswordExpires = undefined; // Remove expiration date
 
         await user.save();
 

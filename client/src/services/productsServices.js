@@ -49,20 +49,17 @@ export const createProduct = async (product) => {
 }
 
 export const uploadImage = async (formData) => {
-    console.log('Uploading image: ', formData);
     try {
-        const response = await axios.post(`${serverURL}/upload`, formData);
-        console.log('Image uploaded: ', response.data);
+        const response = await axios.post(`/api/upload`, formData);
         return response.data;
     } catch (error) {
-        console.log('Error uploading image: ', error);
         return { error: error.response.data.error };
     }
 }
 
 export const updateProductQuantity = async (id, quantityChange) => {
     try {
-        const response = await axios.patch(`${API_URL}/products/updateQuantity/${id}`, { quantityChange });
+        const response = await axios.patch(`${serverURL}/products/updateQuantity/${id}`, { quantityChange });
         return response.data;
     } catch (error) {
         throw error.response.data;

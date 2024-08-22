@@ -29,7 +29,6 @@ const AddNewProduct = () => {
         const isNameValid = formData.name.trim() !== '';
         const isDescriptionValid = formData.description.trim() !== '';
         const isPriceValid = formData.price.trim() !== '';
-        console.log("formData.imageUrls", formData.imageUrls);
         const isImageUrlsValid = formData.imageUrls.some(url => url.trim() !== '') || localImages.length > 0;
         const isAvailabilityValid = formData.availability.trim() !== '';
 
@@ -58,19 +57,14 @@ const AddNewProduct = () => {
     };
 
     const handleFileChange = async (e) => {
-        console.log('handleFileChange invoked');
         const files = Array.from(e.target.files);
-        console.log('files:', files);
         setIsUploading(true);
         for (let file of files) {
-            console.log('Processing file:', file);
             const formData = new FormData();
             formData.append('file', file);
 
             try {
-                console.log('Uploading file...');
                 const data = await uploadImage(formData);
-                console.log('File uploaded successfully. Data:', data);
                 setFormData((prevFormData) => ({
                     ...prevFormData,
                     imageUrls: [...prevFormData.imageUrls, data.url],
@@ -84,7 +78,6 @@ const AddNewProduct = () => {
             }
         }
         setIsUploading(false);
-        console.log('handleFileChange completed');
     };
 
     const handleSubmit = async (e) => {

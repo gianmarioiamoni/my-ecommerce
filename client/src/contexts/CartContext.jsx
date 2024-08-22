@@ -35,42 +35,6 @@ const cartReducer = (state, action) => {
                         : item
                 )
             };
-        // case 'CHECK_QUANTITIES':
-        //     const updatedCart = state.cart.map(item => {
-        //         console.log("item.quantity", item.quantity);
-        //         console.log("item.availableQuantity", item.availableQuantity);
-        //         const isExceeding = item.quantity > item.availableQuantity;
-        //         return {
-        //             ...item,
-        //             maxQuantityError: isExceeding,
-        //         };
-        //     });
-
-        //     const hasErrors = updatedCart.some(item => item.maxQuantityError);
-
-        //     return {
-        //         ...state,
-        //         cart: updatedCart,
-        //         hasErrors
-        //     };
-        // case 'CHECK_QUANTITIES':
-        //     const updatedCart = state.cart.map(item => {
-        //         console.log("item.quantity", item.quantity);
-        //         console.log("item.availableQuantity", item.availableQuantity);
-        //         const isExceeding = item.quantity > item.availableQuantity;
-        //         return {
-        //             ...item,
-        //             maxQuantityError: isExceeding,
-        //         };
-        //     });
-        
-        //     const hasErrors = updatedCart.some(item => item.maxQuantityError);
-        
-        //     return {
-        //         ...state,
-        //         cart: [...updatedCart], // Use the spread operator to create a new array
-        //         hasErrors
-        //     };
         case 'CLEAR_CART':
             return {
                 cart: [],
@@ -113,13 +77,8 @@ const CartProvider = ({ children }) => {
         dispatch({ type: 'UPDATE_QUANTITY', id, quantity });
     };
 
-    // const checkQuantities = () => {
-    //     dispatch({ type: 'CHECK_QUANTITIES' });
-    // };
     const checkQuantities = () => {
         const updatedCart = state.cart.map(item => {
-            console.log("item.quantity", item.quantity);
-            console.log("item.availableQuantity", item.availableQuantity);
             const isExceeding = item.quantity > item.availableQuantity;
             return {
                 ...item,

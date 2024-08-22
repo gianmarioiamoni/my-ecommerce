@@ -18,7 +18,6 @@ const Cart = () => {
     const handleCheckout = () => {
         checkQuantities().then((errors) => {
             if (!errors) {
-                console.log('All quantities are within limits, proceeding to checkout');
                 navigate('/checkout');
             } else {
                 alert('Some items have exceeded their available quantities.');
