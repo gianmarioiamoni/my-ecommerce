@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 
 import Order from '../models/Order.js';
 import User from '../models/User.js';
+import Product from '../models/Product.js';
 
 
 // PAYPAL
@@ -28,6 +29,33 @@ const getOrderDetails = async (orderId, paypalClient) => {
     const response = await paypalClient.execute(request);
     return response.result;
 };
+
+const saveOrder = async (newOrder) => {
+    const savedOrder = await newOrder.save();
+
+    // if order is saved successfully, update quantity per each product in the cart
+    // otherwise return error
+    if (savedOrder) {
+        // per each product in the cart, update the product quantity 
+        // in the database by subtracting the purchased quantity
+        // savedOrder.products is an array of objects { product, quantity }
+        for (const item of savedOrder.products) {
+            const product = await Product.findById(item.product);
+            // check if remaining quantity is less than 0
+            if (product.quantity - item.quantity < 0) {
+                // delete the order and return error
+                await Order.deleteOne({ _id: savedOrder._id });
+                return res.status(400).json({ status: 'error: insufficient stock' });
+            }
+            product.quantity -= item.quantity;
+            await product.save();
+        }
+        return res.status(200).json({ status: 'success' });
+    } else {
+        return res.status(400).json({ status: 'error in saving order' });
+    }
+}
+
 
 // PayPal controllers
 
@@ -57,9 +85,31 @@ export const createPayPalOrder = async (req, res) => {
                     paypalOrderId: paymentDetails.id || undefined,
                 });
 
-                await newOrder.save();
+                // const savedOrder = await newOrder.save();
+                
+                // // if order is saved successfully, update quantity per each product in the cart
+                // // otherwise return error
+                // if (savedOrder) {
+                //     // per each product in the cart, update the product quantity
+                //     // in the database by subtracting the purchased quantity
+                //     for (const item of cartItems) {
+                //         const product = await Product.findById(item._id);
+                //         // check if remaining quantity is less than 0
+                //         if (product.quantity - item.quantity < 0) {
+                //             // delete the order and return error
+                //             await Order.deleteOne({ _id: savedOrder._id });
+                //             return res.status(400).json({ status: 'error: insufficient stock' });
+                //         }
+                //         product.quantity -= item.quantity;
+                //         await product.save();
+                //     }
+                //     return res.status(200).json({ status: 'success' });
+                // } else {
+                //     return res.status(400).json({ status: 'error in saving order' });
+                // }
 
-                return res.status(200).json({ status: 'success' });
+                await saveOrder(newOrder);
+                
             } else {
                 const request = new paypal.orders.OrdersCaptureRequest(paymentDetails.id);
                 request.requestBody({});
@@ -75,7 +125,9 @@ export const createPayPalOrder = async (req, res) => {
                         paypalOrderId: paymentDetails.id || undefined,
                     });
 
-                    await newOrder.save();
+                    // await newOrder.save();
+
+                    await saveOrder(newOrder);
 
                     res.status(200).json({ status: 'success' });
                 } else {
@@ -124,7 +176,9 @@ export const createCreditCardOrder = async (req, res) => {
                 };
                 // create new order
                 const newOrder = new Order(newOrderParams);
-                await newOrder.save();
+                // await newOrder.save();
+
+                await saveOrder(newOrder);
 
                 return res.status(200).json({ status: 'success' });
             } else {
