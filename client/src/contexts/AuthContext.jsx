@@ -19,15 +19,15 @@ const AuthProvider = ({ children }) => {
                     isAdmin: decoded.isAdmin,
                     name: decoded.name,
                     photoUrl: decoded.photoUrl,
-                    addresses: decoded.addresses || [],  // Assicurati che ci siano sempre valori predefiniti
-                    paymentMethods: decoded.paymentMethods || []  // Anche qui valori predefiniti
+                    addresses: decoded.addresses || [],  // assure that the default value is an empty array
+                    paymentMethods: decoded.paymentMethods || []  
                 });
             } catch (error) {
                 console.error("Error decoding token:", error);
-                localStorage.removeItem('token'); // Rimuovi il token non valido
+                localStorage.removeItem('token'); // remove the invalid token
             }
         }
-        setLoading(false);  // Indica che il caricamento è terminato
+        setLoading(false);  // the component is ready
     }, []);
 
 
@@ -58,16 +58,16 @@ const AuthProvider = ({ children }) => {
                 const { token } = response;
 
                 if (token) {
-                    // Aggiorna il token nel localStorage
+                    // Update the token in the local storage
                     localStorage.setItem('token', token);
 
-                    // Decodifica il nuovo token per ottenere i dati aggiornati
+                    // Decode the token to get the user data
                     const decoded = jwtDecode(token);
 
-                    // Aggiorna l'utente nel contesto con i nuovi dati, comprese addresses e paymentMethods
+                    // Update the user in the context with the new data
                     setUser(prevUser => ({
                         ...prevUser,
-                        ...decoded // sovrascrivi le proprietà aggiornate
+                        ...decoded // override prevUser with decoded
                     }));
                 }
             }
@@ -82,7 +82,7 @@ const AuthProvider = ({ children }) => {
     };
 
     if (loading) {
-        return <div>Loading...</div>;  // Mostra un indicatore di caricamento mentre il token viene elaborato
+        return <div>Loading...</div>;  // Show a loading indicator while the data is being fetched 
     }
 
     return (

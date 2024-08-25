@@ -5,12 +5,19 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
+import { getProductReviews } from '../../services/reviewServices';
+
 import { AuthContext } from '../../contexts/AuthContext';
+
 import './ProductDetails.css';
+
+import ReviewForm from '../reviews/ReviewForm'; 
+import ReviewList from '../reviews/ReviewList';
 
 const ProductDetails = () => {
     const { id } = useParams();
     const [product, setProduct] = useState({});
+    const [reviews, setReviews] = useState([]);
     const { addToCart, removeFromCart, cart } = useContext(CartContext);
     const { user } = useContext(AuthContext);
 
@@ -18,10 +25,14 @@ const ProductDetails = () => {
         const fetchData = async () => {
             try {
                 const product = await getProductById(id);
+
                 // add availableQuantity = quantity to product
                 product.availableQuantity = product.quantity;
                 
                 setProduct(product);
+
+                const reviewsData = await getProductReviews(id);
+                setReviews(reviewsData);
             } catch (error) {
                 console.error(error);
             }
@@ -57,6 +68,9 @@ const ProductDetails = () => {
                     <Typography variant="body2" color="textSecondary">
                         Availability: {product.availability}
                     </Typography>
+                    {/* Review Section */}
+                    {/* <ReviewForm productId={id} />
+                    <ReviewList reviews={reviews} /> */}
                 </CardContent>
                 <CardActions>
                     {!user.isAdmin && isInCart && (
@@ -76,6 +90,8 @@ const ProductDetails = () => {
                     )}
                 </CardActions>
             </Card>
+            <ReviewForm productId={id} />
+            <ReviewList reviews={reviews} />
         </Container>
     );
 };

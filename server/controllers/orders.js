@@ -85,29 +85,6 @@ export const createPayPalOrder = async (req, res) => {
                     paypalOrderId: paymentDetails.id || undefined,
                 });
 
-                // const savedOrder = await newOrder.save();
-                
-                // // if order is saved successfully, update quantity per each product in the cart
-                // // otherwise return error
-                // if (savedOrder) {
-                //     // per each product in the cart, update the product quantity
-                //     // in the database by subtracting the purchased quantity
-                //     for (const item of cartItems) {
-                //         const product = await Product.findById(item._id);
-                //         // check if remaining quantity is less than 0
-                //         if (product.quantity - item.quantity < 0) {
-                //             // delete the order and return error
-                //             await Order.deleteOne({ _id: savedOrder._id });
-                //             return res.status(400).json({ status: 'error: insufficient stock' });
-                //         }
-                //         product.quantity -= item.quantity;
-                //         await product.save();
-                //     }
-                //     return res.status(200).json({ status: 'success' });
-                // } else {
-                //     return res.status(400).json({ status: 'error in saving order' });
-                // }
-
                 await saveOrder(newOrder);
                 
             } else {
@@ -124,8 +101,6 @@ export const createPayPalOrder = async (req, res) => {
                         totalAmount,
                         paypalOrderId: paymentDetails.id || undefined,
                     });
-
-                    // await newOrder.save();
 
                     await saveOrder(newOrder);
 

@@ -1,14 +1,16 @@
 import express from 'express';
 import multer from 'multer';
 
-import {v2 as cloudinary} from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
+
+import { isAuthenticated, isAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
 const upload = multer({ storage: multer.memoryStorage() });
 
 
-router.post('/upload', upload.single('file'), async (req, res) => {
+router.post('/upload', isAuthenticated, isAdmin, upload.single('file'), async (req, res) => {
     try {
         const result = await cloudinary.uploader.upload_stream((error, result) => {
             if (error) {
@@ -22,7 +24,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     }
 });
 
-router.post('/uploadProfilePicture', upload.single('file'), async (req, res) => {
+router.post('/uploadProfilePicture', isAuthenticated, upload.single('file'), async (req, res) => {
     try {
         const stream = await cloudinary.uploader.upload_stream((error, result) => {
             if (error) {

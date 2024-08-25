@@ -8,7 +8,7 @@ const PrivateRoute = ({ element, roles }) => {
     const { user, loading } = useContext(AuthContext);
 
     if (!user) {
-        // Se l'utente non è autenticato, reindirizza a /login
+        // if the user is not authenticated, redirect to login 
         if (loading) {
             return <div>Loading...</div>;
         }
@@ -16,7 +16,7 @@ const PrivateRoute = ({ element, roles }) => {
     }
 
     if (roles && !roles.includes(user.isAdmin ? 'admin' : 'user')) {
-        // Se l'utente non ha il ruolo richiesto, reindirizza a /products
+        // if has not the right role, redirect to products
         return <Navigate to="/products" replace />;
     }
 

@@ -9,24 +9,26 @@ import {
     getAllUsersWithOrders
 } from '../controllers/orders.js';
 
+import { isAuthenticated, isAdmin } from '../middleware/auth.js';
+
 import express from 'express';
 
 const router = express.Router();
 
 // PayPal
-router.post('/paypal-order', createPayPalOrder);
-router.post('/credit-card-order', createCreditCardOrder);
+router.post('/paypal-order', isAuthenticated, createPayPalOrder);
+router.post('/credit-card-order', isAuthenticated, createCreditCardOrder);
 
 // Credit Card
-router.post('/create-payment-intent', createStripePaymentIntent);
-router.post('/confirm-payment-intent', confirmStripePaymentIntent);
+router.post('/create-payment-intent', isAuthenticated, createStripePaymentIntent);
+router.post('/confirm-payment-intent', isAuthenticated, confirmStripePaymentIntent);
 
 // Orders history
-router.get('/history/:userId', getOrderHistory);
+router.get('/history/:userId', isAuthenticated, getOrderHistory);
 
 // Admin routes
-router.patch('/update-order-status/:orderId', updateOrderStatus); 
-router.get('/', getAllOrders); 
-router.get('/users-with-orders', getAllUsersWithOrders);
+router.patch('/update-order-status/:orderId', isAuthenticated, isAdmin, updateOrderStatus); 
+router.get('/', isAuthenticated, isAdmin, getAllOrders); 
+router.get('/users-with-orders', isAuthenticated, isAdmin, getAllUsersWithOrders);
 
 export default router;
