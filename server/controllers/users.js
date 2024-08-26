@@ -19,7 +19,8 @@ function generateToken(user) {
             paymentMethods: user.paymentMethods
         },
         process.env.JWT_SECRET,
-        { expiresIn: '1h' }
+        // { expiresIn: '1h' }
+        { expiresIn: '1w' }
     );
 }
 

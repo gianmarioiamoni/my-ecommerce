@@ -99,7 +99,8 @@ export const createReview = async (req, res) => {
             userId,
             rating,
             comment,
-            isApproved: false // Initially, the review is not approved
+            // isApproved: false // Initially, the review is not approved
+            isApproved: true // Initially, the review is approved
         });
 
         console.log('Create Review - New review created');

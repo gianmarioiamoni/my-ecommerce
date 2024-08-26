@@ -3,6 +3,8 @@ import { Box, Typography, List, ListItem, ListItemText, Avatar, Divider } from '
 import { Rating } from '@mui/material';
 
 const ReviewList = ({ reviews }) => {
+
+    console.log("ReviewList() - reviews", reviews);
     if (reviews.length === 0) {
         return <Typography>No reviews yet</Typography>;
     }

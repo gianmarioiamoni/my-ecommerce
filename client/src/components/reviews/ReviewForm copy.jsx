@@ -11,7 +11,7 @@ import {
     Snackbar
 } from '@mui/material';
 
-const ReviewForm = ({ productId, onReviewSubmit }) => {
+const ReviewForm = ({ productId }) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const { user } = useContext(AuthContext);
@@ -20,16 +20,14 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null); 
+        setError(null); // Resetta l'errore
 
         try {
-            const submittedReview = await submitReview(productId, { rating, comment });
-            const newReview = { ...submittedReview, userId: user };
-            console.log("ReviewForm() - newReview:", newReview);
+            await submitReview(productId, { rating, comment });
             setSuccessMessage('Review submitted successfully!');
+            // alert('Review submitted and awaiting approval');
             setRating(0);
             setComment('');
-            onReviewSubmit(newReview);
         } catch (error) {
             // Setup the error message to show in the Snackbar 
             setError(error.message || 'An error occurred');

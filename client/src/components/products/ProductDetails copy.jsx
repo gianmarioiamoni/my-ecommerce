@@ -1,4 +1,3 @@
-// ProductDetails.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, Card, CardContent, Button, CardActions } from '@mui/material';
@@ -12,7 +11,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 
 import './ProductDetails.css';
 
-import ReviewForm from '../reviews/ReviewForm';
+import ReviewForm from '../reviews/ReviewForm'; 
 import ReviewList from '../reviews/ReviewList';
 
 const ProductDetails = () => {
@@ -26,7 +25,10 @@ const ProductDetails = () => {
         const fetchData = async () => {
             try {
                 const product = await getProductById(id);
-                product.availableQuantity = product.quantity; 
+
+                // add availableQuantity = quantity to product
+                product.availableQuantity = product.quantity;
+                
                 setProduct(product);
 
                 const reviewsData = await getProductReviews(id);
@@ -39,17 +41,7 @@ const ProductDetails = () => {
         fetchData();
     }, [id]);
 
-    useEffect(() => {
-        console.log("Reviews updated:", reviews);
-    }, [reviews]);
-
     const isInCart = cart.some(item => item._id === product._id);
-
-    // Function to add a new review to the product
-    const addReview = (newReview) => {
-        console.log("New review added:", newReview);
-        setReviews(prevReviews => [newReview, ...prevReviews]);
-    };
 
     return (
         <Container>
@@ -96,14 +88,13 @@ const ProductDetails = () => {
                 </CardActions>
             </Card>
             {/* Reviews section */}
-            <ReviewForm productId={id} onReviewSubmit={addReview} />
+            <ReviewForm productId={id} />
             <ReviewList reviews={reviews} />
         </Container>
     );
 };
 
 export default ProductDetails;
-
 
 
 

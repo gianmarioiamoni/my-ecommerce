@@ -9,7 +9,8 @@ const reviewSchema = mongoose.Schema({
         type: Date,
         default: new Date(),
     },
-    isApproved: { type: Boolean, default: false } // Per moderazione
+    // isApproved: { type: Boolean, default: false } // with moderation
+    isApproved: { type: Boolean, default: true } // no moderation
 });
 
 const Review = mongoose.model('Review', reviewSchema);
