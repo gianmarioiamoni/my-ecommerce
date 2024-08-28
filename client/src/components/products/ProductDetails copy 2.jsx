@@ -6,7 +6,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
 import { getProductReviews } from '../../services/reviewServices';
-import { Rating } from '@mui/material';  // Importa il componente Rating
 
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -50,7 +49,7 @@ const ProductDetails = () => {
         console.log("New review added:", newReview);
         setReviews(prevReviews => [newReview, ...prevReviews]);
 
-        // Aggiorna la media delle recensioni
+        // Update the average rating and review count
         setProduct(prevProduct => ({
             ...prevProduct,
             averageRating: (prevProduct.averageRating * prevProduct.reviewCount + newReview.rating) / (prevProduct.reviewCount + 1),
@@ -83,18 +82,12 @@ const ProductDetails = () => {
                     <Typography variant="body2" color="textSecondary">
                         Availability: {product.availability}
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                        {/* Rating medio con stelle e valore numerico */}
-                        Rating:
-                        <Rating
-                            value={product.averageRating}
-                            precision={0.1}
-                            readOnly
-                            size="small"
-                            sx={{ marginLeft: 1 }}
-                        />
-                        ({product.averageRating.toFixed(1)} / 5 on {product.reviewCount} reviews)
-
+                    <Typography variant="body2" color="textSecondary">
+                        {product.averageRating && product.averageRating !== 0 && product.reviewCount && product.reviewCount !== 0 ? (
+                            `Rating: ${product.averageRating.toFixed(1)} (${product.reviewCount} reviews)`
+                        ) : (
+                            null
+                        )}
                     </Typography>
                 </CardContent>
                 <CardActions>
@@ -123,7 +116,6 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-
 
 
 

@@ -8,6 +8,8 @@ const productSchema = mongoose.Schema({
     availability: { type: String, required: true, default: 'In Stock' },
     category: { type: String, required: false },
     quantity: { type: Number, required: true, default: 0 },
+    averageRating: { type: Number, default: 0 }, 
+    reviewCount: { type: Number, default: 0 }, 
     createdAt: {
         type: Date,
         default: new Date(),
@@ -17,4 +19,3 @@ const productSchema = mongoose.Schema({
 const Product = mongoose.model('Product', productSchema);
 
 export default Product;
-

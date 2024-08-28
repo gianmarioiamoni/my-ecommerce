@@ -37,26 +37,6 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
         }
     }, [user, productId]);
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setError(null);
-
-    //     if (!canReview) {
-    //         setError('You cannot review this product because you have not purchased it.');
-    //         return;
-    //     }
-
-    //     try {
-    //         const submittedReview = await createReview(productId, { rating, comment });
-    //         const newReview = { ...submittedReview, userId: user };
-    //         setSuccessMessage('Review submitted successfully!');
-    //         setRating(0);
-    //         setComment('');
-    //         onReviewSubmit(newReview);
-    //     } catch (error) {
-    //         setError(error.response?.data?.message || 'An error occurred');
-    //     }
-    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();

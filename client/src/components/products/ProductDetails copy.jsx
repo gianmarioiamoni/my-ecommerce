@@ -1,3 +1,4 @@
+// ProductDetails.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, Card, CardContent, Button, CardActions } from '@mui/material';
@@ -6,7 +7,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
 import { getProductReviews } from '../../services/reviewServices';
-import { Rating } from '@mui/material';  // Importa il componente Rating
 
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -26,7 +26,7 @@ const ProductDetails = () => {
         const fetchData = async () => {
             try {
                 const product = await getProductById(id);
-                product.availableQuantity = product.quantity;
+                product.availableQuantity = product.quantity; 
                 setProduct(product);
 
                 const reviewsData = await getProductReviews(id);
@@ -49,13 +49,6 @@ const ProductDetails = () => {
     const addReview = (newReview) => {
         console.log("New review added:", newReview);
         setReviews(prevReviews => [newReview, ...prevReviews]);
-
-        // Aggiorna la media delle recensioni
-        setProduct(prevProduct => ({
-            ...prevProduct,
-            averageRating: (prevProduct.averageRating * prevProduct.reviewCount + newReview.rating) / (prevProduct.reviewCount + 1),
-            reviewCount: prevProduct.reviewCount + 1
-        }));
     };
 
     return (
@@ -82,19 +75,6 @@ const ProductDetails = () => {
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
                         Availability: {product.availability}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                        {/* Rating medio con stelle e valore numerico */}
-                        Rating:
-                        <Rating
-                            value={product.averageRating}
-                            precision={0.1}
-                            readOnly
-                            size="small"
-                            sx={{ marginLeft: 1 }}
-                        />
-                        ({product.averageRating.toFixed(1)} / 5 on {product.reviewCount} reviews)
-
                     </Typography>
                 </CardContent>
                 <CardActions>
@@ -123,8 +103,6 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-
-
 
 
 
