@@ -16,21 +16,25 @@ const ShippingForm = ({ userId, nextStep }) => {
 
     useEffect(() => {
         const fetchAddresses = async () => {
-            const result = await getAddresses(userId);
-            if (!result.error && result.length > 0) {
-                setAddresses(result);
+            try {
+                const result = await getAddresses(userId);
+                if (!result.error && result.length > 0) {
+                    setAddresses(result);
 
-                const defaultAddress = result.find(address => address.isDefault);
-                if (defaultAddress) {
-                    setShippingData({
-                        fullName: defaultAddress.name,
-                        address: defaultAddress.addressLine1 + ' ' + defaultAddress.addressLine2,
-                        city: defaultAddress.city,
-                        postalCode: defaultAddress.zipCode,
-                        country: defaultAddress.country,
-                    });
-                    setSelectedAddress(defaultAddress._id);
-                }
+                    const defaultAddress = result.find(address => address.isDefault);
+                    if (defaultAddress) {
+                        setShippingData({
+                            fullName: defaultAddress.name,
+                            address: defaultAddress.addressLine1 + ' ' + defaultAddress.addressLine2,
+                            city: defaultAddress.city,
+                            postalCode: defaultAddress.zipCode,
+                            country: defaultAddress.country,
+                        });
+                        setSelectedAddress(defaultAddress._id);
+                    }
+                }  
+            } catch (error) {
+                console.error(error);
             }
         };
         fetchAddresses();

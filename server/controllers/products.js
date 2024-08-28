@@ -1,5 +1,9 @@
+import mongoose from 'mongoose';
+
 import Product from '../models/Product.js';
 import Review from '../models/Review.js';
+import Order from '../models/Order.js';
+
 
 // Fetch all products
 export const getAllProducts = async (req, res) => {
@@ -65,51 +69,50 @@ export const deleteProduct = async (req, res) => {
     }
 };
 
-// Create a review for a product
 export const createReview = async (req, res) => {
-    const { productId } = req.params;
     const { rating, comment } = req.body;
+    const { productId } = req.params;
     const userId = req.user.id;
 
-    console.log('Create Review - productId:', productId);
-    console.log('Create Review - rating:', rating);
-    console.log('Create Review - comment:', comment);
-
     try {
+        console.log(`Creating review for product ID: ${productId} by user ID: ${userId}`);
+
+        // Verify if the product exists 
         const product = await Product.findById(productId);
         if (!product) {
-            console.log('Create Review - Product not found');
             return res.status(404).json({ message: 'Product not found' });
         }
 
-        console.log('Create Review - Product found');
-
-        // Verify that the user has not already reviewed the product
-        const existingReview = await Review.findOne({ productId, userId });
-        if (existingReview) {
-            console.log('Create Review - Existing review found');
-            return res.status(400).json({ message: 'You have already reviewed this product' });
-        }
-
-        console.log('Create Review - Existing review not found');
-
-        // Create a new review
-        const review = new Review({
-            productId,
-            userId,
-            rating,
-            comment,
-            // isApproved: false // Initially, the review is not approved
-            isApproved: true // Initially, the review is approved
+        // Check if the user has purchased the product
+        const hasPurchased = await Order.exists({
+            userId: new mongoose.Types.ObjectId(userId), 
+            'products.product': new mongoose.Types.ObjectId(productId), 
+            status: 'Delivered'  // Consider only delivered products
         });
 
-        console.log('Create Review - New review created');
+        if (!hasPurchased) {
+            return res.status(403).json({ message: 'You can only review products you have purchased' });
+        }
 
-        await review.save();
-        res.status(201).json(review);
+        // Create the new review
+        const newReview = new Review({
+            userId,
+            productId,
+            rating,
+            comment
+        });
+
+        // Save the review
+        await newReview.save();
+
+        // Update the product average rating
+        // product.reviews.push(newReview._id);
+        // await product.save();
+
+        return res.status(201).json(newReview);
     } catch (error) {
-        console.log('Create Review - Error', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error creating review:', error);
+        return res.status(500).json({ message: 'Server error' });
     }
 };
 

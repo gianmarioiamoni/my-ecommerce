@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
-import { submitReview } from '../../services/reviewServices';
+import { createReview, hasPurchasedProduct } from '../../services/reviewServices';
 import {
     Button,
     TextField,
@@ -17,22 +17,67 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
     const { user } = useContext(AuthContext);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
+    const [canReview, setCanReview] = useState(false);
+
+    useEffect(() => {
+        const checkPurchase = async () => {
+            try {
+                const hasPurchased = await hasPurchasedProduct(user.id, productId);
+                setCanReview(hasPurchased);
+                if (!hasPurchased) {
+                    setError('You can only review products you have purchased.');
+                }
+            } catch (err) {
+                setError('Error verifying purchase status.');
+            }
+        };
+
+        if (user) {
+            checkPurchase();
+        }
+    }, [user, productId]);
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     setError(null);
+
+    //     if (!canReview) {
+    //         setError('You cannot review this product because you have not purchased it.');
+    //         return;
+    //     }
+
+    //     try {
+    //         const submittedReview = await createReview(productId, { rating, comment });
+    //         const newReview = { ...submittedReview, userId: user };
+    //         setSuccessMessage('Review submitted successfully!');
+    //         setRating(0);
+    //         setComment('');
+    //         onReviewSubmit(newReview);
+    //     } catch (error) {
+    //         setError(error.response?.data?.message || 'An error occurred');
+    //     }
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(null); 
+        setError(null);
+
+        console.log("Submitting review for product ID:", productId); // Log per debug
+
+        if (!canReview) {
+            setError('You cannot review this product because you have not purchased it.');
+            return;
+        }
 
         try {
-            const submittedReview = await submitReview(productId, { rating, comment });
+            const submittedReview = await createReview(productId, { rating, comment });
             const newReview = { ...submittedReview, userId: user };
-            console.log("ReviewForm() - newReview:", newReview);
             setSuccessMessage('Review submitted successfully!');
             setRating(0);
             setComment('');
             onReviewSubmit(newReview);
         } catch (error) {
-            // Setup the error message to show in the Snackbar 
-            setError(error.message || 'An error occurred');
+            setError(error.response?.data?.message || 'An error occurred');
         }
     };
 
@@ -78,28 +123,24 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2 }}
+                disabled={!canReview}
             >
                 Submit Review
             </Button>
-            {/* Snackbar for the error message */}
-            {error && (
-                <Snackbar open={Boolean(error)} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="error">
-                        {error}
-                    </Alert>
-                </Snackbar>
-            )}
+            <Snackbar open={Boolean(error)} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error">
+                    {error}
+                </Alert>
+            </Snackbar>
 
-            {/* Snackbar for the success message */}
-            {successMessage && (
-                <Snackbar open={Boolean(successMessage)} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="success">
-                        {successMessage}
-                    </Alert>
-                </Snackbar>
-            )}
+            <Snackbar open={Boolean(successMessage)} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    {successMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };
 
 export default ReviewForm;
+

@@ -86,10 +86,15 @@ export const resetPassword = async (token, password) => {
 
 export const getAddresses = async (userId) => {
     try {
-        const response = await axios.get(`${serverURL}/users/${userId}/addresses`);
+        const token = localStorage.getItem('token'); 
+        const response = await axios.get(`${serverURL}/users/${userId}/addresses`, {
+            headers: {
+                Authorization: `Bearer ${token}`, 
+            },
+        });
         return response.data;
     } catch (error) {
-        return { error: error.response.data.error };
+        return { error: error.response ? error.response.data.error : error.message };
     }
 };
 
@@ -114,7 +119,12 @@ export const deleteAddress = async (userId, addressId) => {
 
 export const getPaymentMethods = async (userId) => {
     try {
-        const response = await axios.get(`${serverURL}/users/${userId}/payment-methods`);
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${serverURL}/users/${userId}/payment-methods`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return response.data;
     } catch (error) {
         return { error: error.response.data.error };

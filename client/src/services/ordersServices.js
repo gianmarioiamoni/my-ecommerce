@@ -37,6 +37,9 @@ export const confirmPaymentIntent = async (paymentIntentId) => {
 // CREATE ORDER IN DB
 export const createPayPalOrder = async (orderData) => {
     try {
+        const token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
         const response = axios.post(`${serverURL}/orders/paypal-order`, orderData, {
             headers: { 'Content-Type': 'application/json' }
         });
@@ -79,6 +82,8 @@ export const getOrderHistory = async (userId, options = {}) => {
 
 export const getAllOrders = async () => {
     try {
+        const token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         const response = await axios.get(`${serverURL}/orders`);
         return Array.isArray(response.data) ? response.data : [];
     } catch (error) {
@@ -99,6 +104,8 @@ export const updateOrderStatus = async (orderId, status) => {
 
 export const getAllUsersWithOrders = async () => {
     try {
+        const token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         const response = await axios.get(`${serverURL}/orders/users-with-orders`);
         return response.data;
     } catch (error) {

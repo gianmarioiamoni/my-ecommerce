@@ -24,7 +24,7 @@ router.post('/login', loginUser);
 router.put('/:id', isAuthenticated, updateUser);
 router.delete('/:id', isAuthenticated, deleteUser);
 
-router.get('/:id/addresses', isAuthenticated,getShippingAddresses);
+router.get('/:id/addresses', isAuthenticated, getShippingAddresses);
 router.post('/:id/addresses', isAuthenticated, addShippingAddress);
 router.delete('/:id/addresses/:addressId', isAuthenticated, deleteShippingAddress);
 

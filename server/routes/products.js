@@ -12,7 +12,7 @@ router.patch('/:id', isAuthenticated, isAdmin, updateProduct);
 router.delete('/:id', isAuthenticated, isAdmin, deleteProduct);
 
 router.post('/:productId/reviews', isAuthenticated, createReview);
-router.get('/:productId/reviews', isAuthenticated, getProductReviews);
+router.get('/:productId/reviews', getProductReviews);
 
 
 export default router;
