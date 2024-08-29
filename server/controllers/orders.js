@@ -32,6 +32,7 @@ const getOrderDetails = async (orderId, paypalClient) => {
 
 const saveOrder = async (newOrder) => {
     const savedOrder = await newOrder.save();
+    console.log('savedOrder: ', savedOrder);
 
     // if order is saved successfully, update quantity per each product in the cart
     // otherwise return error
@@ -50,9 +51,9 @@ const saveOrder = async (newOrder) => {
             product.quantity -= item.quantity;
             await product.save();
         }
-        return res.status(200).json({ status: 'success' });
+        return savedOrder; 
     } else {
-        return res.status(400).json({ status: 'error in saving order' });
+        return null;
     }
 }
 
@@ -85,7 +86,12 @@ export const createPayPalOrder = async (req, res) => {
                     paypalOrderId: paymentDetails.id || undefined,
                 });
 
-                await saveOrder(newOrder);
+                const savedOrder = await saveOrder(newOrder);
+                if (savedOrder) {
+                    res.status(200).json({ status: 'success' });
+                } else {
+                    res.status(400).json({ status: 'error' });
+                }
                 
             } else {
                 const request = new paypal.orders.OrdersCaptureRequest(paymentDetails.id);
@@ -102,9 +108,14 @@ export const createPayPalOrder = async (req, res) => {
                         paypalOrderId: paymentDetails.id || undefined,
                     });
 
-                    await saveOrder(newOrder);
+                    const savedOrder = await saveOrder(newOrder);
 
-                    res.status(200).json({ status: 'success' });
+                    if (savedOrder) {
+                        res.status(200).json({ status: 'success' });
+                    } else {
+                        res.status(400).json({ status: 'error' });
+                    }
+
                 } else {
                     res.status(400).json({ status: 'error' });
                 }
@@ -124,7 +135,7 @@ export const createPayPalOrder = async (req, res) => {
 
 // CREDIT CARD
 export const createCreditCardOrder = async (req, res) => {
-    const { shippingData, paymentMethod, cartItems, totalAmount, paymentDetails, userId } = req.body;
+    const { paymentMethod, cartItems, totalAmount, paymentDetails, userId } = req.body;
     if (paymentMethod === 'credit-card') {
 
         const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -152,10 +163,13 @@ export const createCreditCardOrder = async (req, res) => {
                 // create new order
                 const newOrder = new Order(newOrderParams);
                 // await newOrder.save();
+                const savedOrder = await saveOrder(newOrder);
+                if (savedOrder) {
+                    res.status(200).json({ status: 'success' });
+                } else {
+                    res.status(400).json({ status: 'error' });
+                }
 
-                await saveOrder(newOrder);
-
-                return res.status(200).json({ status: 'success' });
             } else {
                 res.status(400).json({ status: 'error' });
             }

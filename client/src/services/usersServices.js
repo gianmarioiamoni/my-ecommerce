@@ -2,6 +2,8 @@ import axios from "axios";
 
 import serverURL from "../config/serverURL";
 
+import { initAuthorizationHeader } from "../config/initAuthorizationHeader";
+
 
 export const loginUser = async (userData) => {
     try {
@@ -25,6 +27,7 @@ export const registerUser = async (userData) => {
 
 export const updateUser = async (userId, userData) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.put(`${serverURL}/users/${userId}`, userData);
         return response.data;
     } catch (error) {
@@ -36,6 +39,7 @@ export const updateUser = async (userId, userData) => {
 
 export const removeUser = async (userId) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.delete(`${serverURL}/users/${userId}`);
         return response.data;
     } catch (error) {
@@ -45,6 +49,7 @@ export const removeUser = async (userId) => {
 
 export const uploadProfilePicture = async (formData) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.post(`/api/uploadProfilePicture`, formData);
         return response.data;
     } catch (error) {
@@ -54,6 +59,7 @@ export const uploadProfilePicture = async (formData) => {
 
 export const sendPasswordResetEmail = async (email) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.post(`/api/forgot-password`, { email });
         return response.data;
     } catch (error) {
@@ -64,6 +70,7 @@ export const sendPasswordResetEmail = async (email) => {
 
 export const getAllUsers = async () => {
     try {
+        initAuthorizationHeader();
         const response = await axios.get(`${serverURL}/users`);
         return response.data;
     } catch (error) {
@@ -74,6 +81,7 @@ export const getAllUsers = async () => {
 
 export const resetPassword = async (token, password) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.post(`/api/reset-password`, { token, password });
         return response.data;
     } catch (error) {
@@ -86,12 +94,8 @@ export const resetPassword = async (token, password) => {
 
 export const getAddresses = async (userId) => {
     try {
-        const token = localStorage.getItem('token'); 
-        const response = await axios.get(`${serverURL}/users/${userId}/addresses`, {
-            headers: {
-                Authorization: `Bearer ${token}`, 
-            },
-        });
+        initAuthorizationHeader();
+        const response = await axios.get(`${serverURL}/users/${userId}/addresses`);
         return response.data;
     } catch (error) {
         return { error: error.response ? error.response.data.error : error.message };
@@ -100,6 +104,7 @@ export const getAddresses = async (userId) => {
 
 export const addAddress = async (userId, newAddress) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.post(`${serverURL}/users/${userId}/addresses`, newAddress);
         return response.data;
     } catch (error) {
@@ -109,6 +114,7 @@ export const addAddress = async (userId, newAddress) => {
 
 export const deleteAddress = async (userId, addressId) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.delete(`${serverURL}/users/${userId}/addresses/${addressId}`);
         return response.data;
     } catch (error) {
@@ -119,12 +125,8 @@ export const deleteAddress = async (userId, addressId) => {
 
 export const getPaymentMethods = async (userId) => {
     try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`${serverURL}/users/${userId}/payment-methods`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        initAuthorizationHeader();
+        const response = await axios.get(`${serverURL}/users/${userId}/payment-methods`);
         return response.data;
     } catch (error) {
         return { error: error.response.data.error };
@@ -133,6 +135,7 @@ export const getPaymentMethods = async (userId) => {
 
 export const addPaymentMethod = async (userId, newPayment) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.post(`${serverURL}/users/${userId}/payment-methods`, newPayment);
         return response.data;
     } catch (error) {
@@ -142,6 +145,7 @@ export const addPaymentMethod = async (userId, newPayment) => {
 
 export const deletePaymentMethod = async (userId, paymentMethodId) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.delete(`${serverURL}/users/${userId}/payment-methods/${paymentMethodId}`);
         return response.data;
     } catch (error) {

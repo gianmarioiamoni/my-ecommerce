@@ -2,6 +2,9 @@ import axios from 'axios';
 
 import serverURL from '../config/serverURL';
 
+import { initAuthorizationHeader } from '../config/initAuthorizationHeader';
+
+
 // CREDIT CARD PAYMENT
 export const createPaymentIntent = async (paymentMethodId, amount) => {
     try {
@@ -37,9 +40,10 @@ export const confirmPaymentIntent = async (paymentIntentId) => {
 // CREATE ORDER IN DB
 export const createPayPalOrder = async (orderData) => {
     try {
-        const token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        // const token = localStorage.getItem('token');
+        // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
+        initAuthorizationHeader();
         const response = axios.post(`${serverURL}/orders/paypal-order`, orderData, {
             headers: { 'Content-Type': 'application/json' }
         });
@@ -51,6 +55,7 @@ export const createPayPalOrder = async (orderData) => {
 
 export const createCreditCardOrder = async (orderData) => {
     try {
+        initAuthorizationHeader();
         const response = axios.post(`${serverURL}/orders/credit-card-order`, orderData, {
             headers: { 'Content-Type': 'application/json' }
         });
@@ -72,7 +77,7 @@ export const getOrderHistory = async (userId, options = {}) => {
         endDate
     } = options;
 
-
+    initAuthorizationHeader();
     const response = await axios.get(`${serverURL}/orders/history/${userId}`, {
         params: { page, limit, sort, order, search, startDate, endDate }
     });
@@ -82,8 +87,7 @@ export const getOrderHistory = async (userId, options = {}) => {
 
 export const getAllOrders = async () => {
     try {
-        const token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        initAuthorizationHeader();
         const response = await axios.get(`${serverURL}/orders`);
         return Array.isArray(response.data) ? response.data : [];
     } catch (error) {
@@ -94,6 +98,7 @@ export const getAllOrders = async () => {
 
 export const updateOrderStatus = async (orderId, status) => {
     try {
+        initAuthorizationHeader();
         const response = await axios.patch(`${serverURL}/orders/update-order-status/${orderId}`, { status });
         return response.data;
     } catch (error) {
@@ -104,8 +109,7 @@ export const updateOrderStatus = async (orderId, status) => {
 
 export const getAllUsersWithOrders = async () => {
     try {
-        const token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        initAuthorizationHeader();
         const response = await axios.get(`${serverURL}/orders/users-with-orders`);
         return response.data;
     } catch (error) {

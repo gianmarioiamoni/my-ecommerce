@@ -1,15 +1,12 @@
 import axios from 'axios';
 import serverURL from '../config/serverURL';
+import { initAuthorizationHeader } from '../config/initAuthorizationHeader';
 
 
 export const createReview = async (productId, review) => {
     try {
-        const token = localStorage.getItem('token');
-        const response = await axios.post(`${serverURL}/products/${productId}/reviews`, review, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        initAuthorizationHeader();
+        const response = await axios.post(`${serverURL}/products/${productId}/reviews`, review);
 
         return response.data;
     } catch (error) {
@@ -20,12 +17,7 @@ export const createReview = async (productId, review) => {
 
 export const getProductReviews = async (productId) => {
     try {
-        const token = localStorage.getItem('token');  //Retrieve the token from local storage 
-        const response = await axios.get(`${serverURL}/products/${productId}/reviews`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        const response = await axios.get(`${serverURL}/products/${productId}/reviews`);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -34,12 +26,8 @@ export const getProductReviews = async (productId) => {
 
 export const hasPurchasedProduct = async (userId, productId) => {
     try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`${serverURL}/orders/history/${userId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        initAuthorizationHeader();
+        const response = await axios.get(`${serverURL}/orders/history/${userId}`);
 
         // response.data is an object with an array of orders
         const orders = response.data.orders;
