@@ -33,7 +33,6 @@ export const getProductReviews = async (productId) => {
 }
 
 export const hasPurchasedProduct = async (userId, productId) => {
-    console.log("userId", userId, "productId", productId);
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get(`${serverURL}/orders/history/${userId}`, {
@@ -44,7 +43,6 @@ export const hasPurchasedProduct = async (userId, productId) => {
 
         // response.data is an object with an array of orders
         const orders = response.data.orders;
-        console.log("orders", orders);
 
         // verify if orders is an array
         if (!Array.isArray(orders)) {
@@ -55,7 +53,6 @@ export const hasPurchasedProduct = async (userId, productId) => {
         // verify if the productId is in any of the orders
         const result = orders.some(order =>
             order.products.some(p => p.product._id.toString() === productId));
-        console.log(result)
         
         return result;
 

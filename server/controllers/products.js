@@ -69,61 +69,12 @@ export const deleteProduct = async (req, res) => {
     }
 };
 
-// export const createReview = async (req, res) => {
-//     const { rating, comment } = req.body;
-//     const { productId } = req.params;
-//     const userId = req.user.id;
-
-//     try {
-//         console.log(`Creating review for product ID: ${productId} by user ID: ${userId}`);
-
-//         // Verify if the product exists 
-//         const product = await Product.findById(productId);
-//         if (!product) {
-//             return res.status(404).json({ message: 'Product not found' });
-//         }
-
-//         // Check if the user has purchased the product
-//         const hasPurchased = await Order.exists({
-//             userId: new mongoose.Types.ObjectId(userId), 
-//             'products.product': new mongoose.Types.ObjectId(productId), 
-//             status: 'Delivered'  // Consider only delivered products
-//         });
-
-//         if (!hasPurchased) {
-//             return res.status(403).json({ message: 'You can only review products you have purchased' });
-//         }
-
-//         // Create the new review
-//         const newReview = new Review({
-//             userId,
-//             productId,
-//             rating,
-//             comment
-//         });
-
-//         // Save the review
-//         await newReview.save();
-
-//         // Update the product average rating
-//         // product.reviews.push(newReview._id);
-//         // await product.save();
-
-//         return res.status(201).json(newReview);
-//     } catch (error) {
-//         console.error('Error creating review:', error);
-//         return res.status(500).json({ message: 'Server error' });
-//     }
-// };
-
 export const createReview = async (req, res) => {
     const { rating, comment } = req.body;
     const { productId } = req.params;
     const userId = req.user.id;
 
     try {
-        console.log(`Creating review for product ID: ${productId} by user ID: ${userId}`);
-
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });

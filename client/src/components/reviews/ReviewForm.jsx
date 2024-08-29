@@ -42,8 +42,6 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
         e.preventDefault();
         setError(null);
 
-        console.log("Submitting review for product ID:", productId); // Log per debug
-
         if (!canReview) {
             setError('You cannot review this product because you have not purchased it.');
             return;

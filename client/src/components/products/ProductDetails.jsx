@@ -6,7 +6,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
 import { getProductReviews } from '../../services/reviewServices';
-import { Rating } from '@mui/material';  // Importa il componente Rating
+import { Rating } from '@mui/material';
 
 import { AuthContext } from '../../contexts/AuthContext';
 
@@ -17,7 +17,7 @@ import ReviewList from '../reviews/ReviewList';
 
 const ProductDetails = () => {
     const { id } = useParams();
-    const [product, setProduct] = useState({});
+    const [product, setProduct] = useState(null); // Cambiato da {} a null
     const [reviews, setReviews] = useState([]);
     const { addToCart, removeFromCart, cart } = useContext(CartContext);
     const { user } = useContext(AuthContext);
@@ -26,7 +26,7 @@ const ProductDetails = () => {
         const fetchData = async () => {
             try {
                 const product = await getProductById(id);
-                product.availableQuantity = product.quantity;
+                product.availableQuantity = product.quantity; 
                 setProduct(product);
 
                 const reviewsData = await getProductReviews(id);
@@ -39,24 +39,11 @@ const ProductDetails = () => {
         fetchData();
     }, [id]);
 
-    useEffect(() => {
-        console.log("Reviews updated:", reviews);
-    }, [reviews]);
+    const isInCart = cart.some(item => item._id === product?._id); // Check if product is not null
 
-    const isInCart = cart.some(item => item._id === product._id);
-
-    // Function to add a new review to the product
-    const addReview = (newReview) => {
-        console.log("New review added:", newReview);
-        setReviews(prevReviews => [newReview, ...prevReviews]);
-
-        // Aggiorna la media delle recensioni
-        setProduct(prevProduct => ({
-            ...prevProduct,
-            averageRating: (prevProduct.averageRating * prevProduct.reviewCount + newReview.rating) / (prevProduct.reviewCount + 1),
-            reviewCount: prevProduct.reviewCount + 1
-        }));
-    };
+    if (!product) {
+        return <div>Loading...</div>; // Aggiungi un loader o messaggio di caricamento
+    }
 
     return (
         <Container>
@@ -84,17 +71,15 @@ const ProductDetails = () => {
                         Availability: {product.availability}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" sx={{ display: 'flex', alignItems: 'center' }}>
-                        {/* Rating medio con stelle e valore numerico */}
-                        Rating:
-                        <Rating
-                            value={product.averageRating}
-                            precision={0.1}
-                            readOnly
-                            size="small"
+                        Rating: 
+                        <Rating 
+                            value={product.averageRating || 0} 
+                            precision={0.1} 
+                            readOnly 
+                            size="small" 
                             sx={{ marginLeft: 1 }}
-                        />
-                        ({product.averageRating.toFixed(1)} / 5 on {product.reviewCount} reviews)
-
+                        /> 
+                        ({(product.averageRating?.toFixed(1) || 0)} / 5 su {product.reviewCount || 0} reviews)
                     </Typography>
                 </CardContent>
                 <CardActions>
@@ -115,14 +100,14 @@ const ProductDetails = () => {
                     )}
                 </CardActions>
             </Card>
-            {/* Reviews section */}
-            <ReviewForm productId={id} onReviewSubmit={addReview} />
+            <ReviewForm productId={id} onReviewSubmit={newReview => setReviews([newReview, ...reviews])} />
             <ReviewList reviews={reviews} />
         </Container>
     );
 };
 
 export default ProductDetails;
+
 
 
 
