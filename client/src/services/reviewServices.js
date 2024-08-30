@@ -14,6 +14,15 @@ export const createReview = async (productId, review) => {
     }
 };
 
+export const updateReview = async (reviewId, review) => {
+    try {
+        initAuthorizationHeader();
+        const response = await axios.put(`${serverURL}/reviews/${reviewId}`, review);
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : new Error("Server Error");
+    }
+}
 
 export const getProductReviews = async (productId) => {
     try {
@@ -49,3 +58,22 @@ export const hasPurchasedProduct = async (userId, productId) => {
         throw error;
     }
 };
+
+// return true if an user has already reviewed the product
+export const hasReviewedProduct = async (userId, productId) => {
+    try {
+        initAuthorizationHeader();
+        const response = await axios.get(`${serverURL}/products/${productId}/reviews`);
+        const reviews = response.data;
+        if (!Array.isArray(reviews)) {
+            console.error('Expected an array of reviews, but received:', reviews);
+            return false;
+        }
+        console.log('reviews:', reviews);
+        const result = reviews.some(review => review.userId._id.toString() === userId);
+        return result;
+    } catch (error) {
+        console.error('Error checking product review:', error);
+        throw error;
+    }
+}

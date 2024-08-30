@@ -120,6 +120,7 @@ export const createReview = async (req, res) => {
 };
 
 
+
 // Get all reviews for a product
 export const getProductReviews = async (req, res) => {
     const { productId } = req.params;

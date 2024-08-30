@@ -5,7 +5,7 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
-import { getProductReviews } from '../../services/reviewServices';
+import { getProductReviews, updateReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
 import { Rating } from '@mui/material';
 
 import { AuthContext } from '../../contexts/AuthContext';
@@ -17,8 +17,9 @@ import ReviewList from '../reviews/ReviewList';
 
 const ProductDetails = () => {
     const { id } = useParams();
-    const [product, setProduct] = useState(null); // Cambiato da {} a null
+    const [product, setProduct] = useState(null); 
     const [reviews, setReviews] = useState([]);
+    const [canReview, setCanReview] = useState(false);
     const { addToCart, removeFromCart, cart } = useContext(CartContext);
     const { user } = useContext(AuthContext);
 
@@ -39,15 +40,61 @@ const ProductDetails = () => {
         fetchData();
     }, [id]);
 
+    /////
+    useEffect(() => {
+        const checkPermissions = async () => {
+            try {
+                const hasPurchased = await hasPurchasedProduct(user.id, product._id);
+                const reviewed = await hasReviewedProduct(user.id, product._id);
+                console.log("hasPurchased: ", hasPurchased);
+                console.log("reviewed: ", reviewed);
+
+                setCanReview(hasPurchased && !reviewed);
+
+                // if (!hasPurchased) {
+                //     setError('You can only review products you have purchased.');
+                // } else if (reviewed) {
+                //     setError('You have already reviewed this product.');
+                // }
+            } catch (err) {
+                console.error(err);
+                // setError('Error verifying purchase or review status.');
+            }
+        };
+
+        if (user && product) {
+            checkPermissions();
+        }
+    }, [user, product]);
+
+    /////
+
+    const onEditReview = async (updatedReview) => {
+        try {
+            // Call the API to update the review in the backend
+            const updated = await updateReview(updatedReview._id, updatedReview);
+
+            // Update the local state with the updated review
+            setReviews((prevReviews) =>
+                prevReviews.map((review) =>
+                    review._id === updated._id ? updated : review
+                )
+            );
+        } catch (error) {
+            console.error('Failed to update review:', error);
+        }
+    };
+
     const isInCart = cart.some(item => item._id === product?._id); // Check if product is not null
 
     if (!product) {
-        return <div>Loading...</div>; // Aggiungi un loader o messaggio di caricamento
+        return <div>Loading...</div>; // Add a loader or a loading message 
     }
 
     return (
         <Container>
             <Card className="product-card">
+                {/* Product Images section */}
                 <div className="product-image-container">
                     <Carousel showThumbs={product.imageUrls && product.imageUrls.length > 1} dynamicHeight={true} showArrows={true}>
                         {product.imageUrls && product.imageUrls.map((url, index) => (
@@ -57,6 +104,7 @@ const ProductDetails = () => {
                         ))}
                     </Carousel>
                 </div>
+                {/* Product Info section  */}
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
                         {product.name}
@@ -83,12 +131,12 @@ const ProductDetails = () => {
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    {!user.isAdmin && isInCart && (
+                    {user && !user.isAdmin && isInCart && (
                         <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
                             Remove from Cart
                         </Button>
                     )}
-                    {!user.isAdmin && !isInCart && (
+                    {user &&!user.isAdmin && !isInCart && (
                         <Button
                             size="small"
                             color="primary"
@@ -100,8 +148,12 @@ const ProductDetails = () => {
                     )}
                 </CardActions>
             </Card>
-            <ReviewForm productId={id} onReviewSubmit={newReview => setReviews([newReview, ...reviews])} />
-            <ReviewList reviews={reviews} />
+            {/* Reviews section */}
+            {/* If there is an user logged in and the user is not an Admin, show review form  */}
+            {user && !user.isAdmin && canReview &&
+                <ReviewForm productId={id} onReviewSubmit={newReview => setReviews([newReview, ...reviews])} />
+            }
+            <ReviewList reviews={reviews} onEditReview={onEditReview}/>
         </Container>
     );
 };

@@ -1,8 +1,11 @@
-import React from 'react';
-import { Box, Typography, List, ListItem, ListItemText, Avatar, Divider } from '@mui/material';
+import React, { useContext } from 'react';
+import { Box, Typography, List, ListItem, ListItemText, Avatar, Divider, Button } from '@mui/material';
 import { Rating } from '@mui/material';
+import { AuthContext } from '../../contexts/AuthContext';  
 
-const ReviewList = ({ reviews }) => {
+
+const ReviewList = ({ reviews, onEditReview }) => {
+    const { user } = useContext(AuthContext);  
 
     if (reviews.length === 0) {
         return <Typography>No reviews yet</Typography>;
@@ -27,7 +30,22 @@ const ReviewList = ({ reviews }) => {
                                         <Rating value={review.rating} readOnly precision={0.5} />
                                     </>
                                 }
-                                secondary={review.comment}
+                                secondary={
+                                    <>
+                                        {review.comment}
+                                        {/* Show edit button only if the user is the author of the review */}
+                                        {user && review.userId._id === user.id && (
+                                            <Button
+                                                variant="text"
+                                                color="primary"
+                                                sx={{ mt: 1 }}
+                                                onClick={() => onEditReview(review)}
+                                            >
+                                                Edit
+                                            </Button>
+                                        )}
+                                    </>
+                                }
                                 sx={{ ml: 2 }}
                             />
                         </ListItem>
@@ -40,3 +58,4 @@ const ReviewList = ({ reviews }) => {
 };
 
 export default ReviewList;
+

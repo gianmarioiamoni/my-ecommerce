@@ -19,15 +19,16 @@ const router = express.Router();
 
 router.get('/', getAllUsers);
 
+// User management
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.put('/:id', isAuthenticated, updateUser);
 router.delete('/:id', isAuthenticated, deleteUser);
-
+// Addresses management
 router.get('/:id/addresses', isAuthenticated, getShippingAddresses);
 router.post('/:id/addresses', isAuthenticated, addShippingAddress);
 router.delete('/:id/addresses/:addressId', isAuthenticated, deleteShippingAddress);
-
+// Payment methods management
 router.get('/:id/payment-methods', isAuthenticated, getPaymentMethods);
 router.post('/:id/payment-methods', isAuthenticated, addPaymentMethod);
 router.delete('/:id/payment-methods/:paymentMethodId', isAuthenticated,deletePaymentMethod);

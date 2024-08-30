@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
-import { createReview, hasPurchasedProduct } from '../../services/reviewServices';
+import { createReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
 import {
     Button,
     TextField,
@@ -18,32 +18,40 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
     const [canReview, setCanReview] = useState(false);
+    const [alreadyReviewed, setAlreadyReviewed] = useState(false);
 
     useEffect(() => {
-        const checkPurchase = async () => {
+        const checkPermissions = async () => {
             try {
                 const hasPurchased = await hasPurchasedProduct(user.id, productId);
-                setCanReview(hasPurchased);
+                const reviewed = await hasReviewedProduct(user.id, productId);
+                console.log("hasPurchased: ", hasPurchased);
+                console.log("reviewed: ", reviewed);
+
+                setCanReview(hasPurchased && !reviewed);
+                setAlreadyReviewed(reviewed);
+
                 if (!hasPurchased) {
                     setError('You can only review products you have purchased.');
+                } else if (reviewed) {
+                    setError('You have already reviewed this product.');
                 }
             } catch (err) {
-                setError('Error verifying purchase status.');
+                setError('Error verifying purchase or review status.');
             }
         };
 
         if (user) {
-            checkPurchase();
+            checkPermissions();
         }
     }, [user, productId]);
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
 
         if (!canReview) {
-            setError('You cannot review this product because you have not purchased it.');
+            setError('You cannot review this product because you have not purchased it or have already reviewed it.');
             return;
         }
 
@@ -83,6 +91,8 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
                 onChange={(e, newValue) => setRating(newValue)}
                 precision={1}
                 required
+                // disabled={alreadyReviewed}
+                disabled={!canReview}
             />
             <TextField
                 fullWidth
@@ -94,6 +104,8 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
                 onChange={(e) => setComment(e.target.value)}
                 required
                 sx={{ mt: 2 }}
+                // disabled={alreadyReviewed}
+                disabled={!canReview}
             />
             {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
             <Button
@@ -121,4 +133,5 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
 };
 
 export default ReviewForm;
+
 
