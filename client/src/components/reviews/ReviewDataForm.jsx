@@ -11,7 +11,7 @@ import {
     Snackbar
 } from '@mui/material';
 
-const ReviewForm = ({ productId, onReviewSubmit }) => {
+const ReviewDataForm = ({ productId, onReviewSubmit }) => {
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const { user } = useContext(AuthContext);
@@ -57,7 +57,8 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
 
         try {
             const submittedReview = await createReview(productId, { rating, comment });
-            const newReview = { ...submittedReview, userId: user };
+            // const newReview = { ...submittedReview, userId: user };
+            const newReview = { ...submittedReview, userId: { _id: user.id, name: user.name, photoUrl: user.photoUrl } };
             setSuccessMessage('Review submitted successfully!');
             setRating(0);
             setComment('');
@@ -132,6 +133,6 @@ const ReviewForm = ({ productId, onReviewSubmit }) => {
     );
 };
 
-export default ReviewForm;
+export default ReviewDataForm;
 
 

@@ -10,7 +10,7 @@ export const updateReview = async (req, res) => {
         const { reviewId } = req.params;
         const { rating, comment } = req.body;
 
-        const review = await Review.findById(reviewId);
+        const review = await Review.findById(reviewId).populate('userId');
 
         if (!review) {
             console.log('Review not found');
@@ -19,7 +19,7 @@ export const updateReview = async (req, res) => {
         console.log('review:', review);
 
         // Check if the user is authorized to edit the review 
-        if (review.userId.toString() !== req.user.id.toString()) {
+        if (review.userId._id.toString() !== req.user.id.toString()) {
             console.log('Unauthorized to edit review');
             return res.status(403).json({ message: 'You are not authorized to edit this review' });
         }

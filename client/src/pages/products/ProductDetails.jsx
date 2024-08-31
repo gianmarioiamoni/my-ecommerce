@@ -12,8 +12,8 @@ import { AuthContext } from '../../contexts/AuthContext';
 
 import './ProductDetails.css';
 
-import ReviewForm from '../reviews/ReviewForm';
-import ReviewList from '../reviews/ReviewList';
+import ReviewDataForm from '../../components/reviews/ReviewDataForm';
+import ReviewList from '../../components/reviews/ReviewList';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -40,7 +40,7 @@ const ProductDetails = () => {
         fetchData();
     }, [id]);
 
-    /////
+    
     useEffect(() => {
         const checkPermissions = async () => {
             try {
@@ -50,15 +50,8 @@ const ProductDetails = () => {
                 console.log("reviewed: ", reviewed);
 
                 setCanReview(hasPurchased && !reviewed);
-
-                // if (!hasPurchased) {
-                //     setError('You can only review products you have purchased.');
-                // } else if (reviewed) {
-                //     setError('You have already reviewed this product.');
-                // }
             } catch (err) {
                 console.error(err);
-                // setError('Error verifying purchase or review status.');
             }
         };
 
@@ -67,13 +60,12 @@ const ProductDetails = () => {
         }
     }, [user, product]);
 
-    /////
-
     const onEditReview = async (updatedReview) => {
         try {
             // Call the API to update the review in the backend
             const updated = await updateReview(updatedReview._id, updatedReview);
-
+            console.log('updated:', updated);
+            console.log('updatedReview:', updatedReview);
             // Update the local state with the updated review
             setReviews((prevReviews) =>
                 prevReviews.map((review) =>
@@ -151,7 +143,7 @@ const ProductDetails = () => {
             {/* Reviews section */}
             {/* If there is an user logged in and the user is not an Admin, show review form  */}
             {user && !user.isAdmin && canReview &&
-                <ReviewForm productId={id} onReviewSubmit={newReview => setReviews([newReview, ...reviews])} />
+                <ReviewDataForm productId={id} onReviewSubmit={newReview => setReviews([newReview, ...reviews])} />
             }
             <ReviewList reviews={reviews} onEditReview={onEditReview}/>
         </Container>

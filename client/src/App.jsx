@@ -4,12 +4,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Register from './components/users/Register';
 import Login from './components/users/Login';
-import ProductList from './components/products/ProductList';
-import ProductDetails from './components/products/ProductDetails';
 import EditProductForm from './components/products/EditProductForm';
 import NavBar from './components/NavBar';
 import ManageCategories from './components/admin/ManageCategories';
 import Profile from './components/users/Profile';
+
+import ProductList from './pages/products/ProductList';
+import ProductDetails from './pages/products/ProductDetails';
 import Cart from './pages/orders/Cart';
 import Checkout from './pages/orders/Checkout';
 import Success from './pages/Success';
