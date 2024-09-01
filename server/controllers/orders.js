@@ -32,7 +32,6 @@ const getOrderDetails = async (orderId, paypalClient) => {
 
 const saveOrder = async (newOrder) => {
     const savedOrder = await newOrder.save();
-    console.log('savedOrder: ', savedOrder);
 
     // if order is saved successfully, update quantity per each product in the cart
     // otherwise return error

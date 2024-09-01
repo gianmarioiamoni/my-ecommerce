@@ -1,4 +1,72 @@
 import Review from '../models/Review.js';
+import Product from '../models/Product.js';
+import Order from '../models/Order.js';
+
+import mongoose from 'mongoose';
+
+// Get all reviews for a product
+export const getProductReviews = async (req, res) => {
+    const { productId } = req.params;
+
+    try {
+        const reviews = await Review.find({ productId, isApproved: true }).populate('userId', 'name photoUrl');
+        res.status(200).json(reviews);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+export const createReview = async (req, res) => {
+    const { rating, comment } = req.body;
+    const { productId } = req.params;
+    const userId = req.user.id;
+
+    try {
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Check if the user has purchased the product 
+        const hasPurchased = await Order.exists({
+            userId: new mongoose.Types.ObjectId(userId),
+            'products.product': new mongoose.Types.ObjectId(productId),
+            status: 'Delivered'  // Consider only delivered products
+        });
+
+        if (!hasPurchased) {
+            return res.status(403).json({ message: 'You can only review delivered products you have purchased' });
+        }
+
+        // Create the new review
+        const newReview = new Review({
+            userId,
+            productId,
+            rating,
+            comment
+        });
+
+        await newReview.save();
+
+        // Update the product average rating and review count 
+        const totalReviews = await Review.countDocuments({ productId });
+        const avgRating = await Review.aggregate([
+            { $match: { productId: new mongoose.Types.ObjectId(productId) } },
+            { $group: { _id: null, avgRating: { $avg: '$rating' } } }
+        ]);
+
+        product.reviewCount = totalReviews;
+        product.averageRating = avgRating[0]?.avgRating || 0;
+        await product.save();
+
+        return res.status(201).json(newReview);
+    } catch (error) {
+        console.error('Error creating review:', error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+
 
 // update a review
 export const updateReview = async (req, res) => {

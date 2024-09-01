@@ -6,8 +6,13 @@ import { initAuthorizationHeader } from '../config/initAuthorizationHeader';
 export const createReview = async (productId, review) => {
     try {
         initAuthorizationHeader();
-        const response = await axios.post(`${serverURL}/products/${productId}/reviews`, review);
+        const response = await axios.post(`${serverURL}/reviews/product/${productId}`, review);
+        // if status = 403 then throw error message returned by server 
+        if (response.status === 403) {
+            // throw error
 
+            throw new Error("You are not allowed to review this product: " + response.data.message);
+        }
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : new Error("Server Error");
@@ -26,7 +31,7 @@ export const updateReview = async (reviewId, review) => {
 
 export const getProductReviews = async (productId) => {
     try {
-        const response = await axios.get(`${serverURL}/products/${productId}/reviews`);
+        const response = await axios.get(`${serverURL}/reviews/product/${productId}`);
         return response.data;
     } catch (error) {
         console.log(error);
@@ -63,7 +68,7 @@ export const hasPurchasedProduct = async (userId, productId) => {
 export const hasReviewedProduct = async (userId, productId) => {
     try {
         initAuthorizationHeader();
-        const response = await axios.get(`${serverURL}/products/${productId}/reviews`);
+        const response = await axios.get(`${serverURL}/reviews/product/${productId}`);
         const reviews = response.data;
         if (!Array.isArray(reviews)) {
             console.error('Expected an array of reviews, but received:', reviews);
