@@ -2,9 +2,6 @@ import Review from '../models/Review.js';
 
 // update a review
 export const updateReview = async (req, res) => {
-    console.log('updateReview called');
-    console.log('req.params:', req.params);
-    console.log('req.body:', req.body);
 
     try {
         const { reviewId } = req.params;
@@ -16,7 +13,6 @@ export const updateReview = async (req, res) => {
             console.log('Review not found');
             return res.status(404).json({ message: 'Review not found' });
         }
-        console.log('review:', review);
 
         // Check if the user is authorized to edit the review 
         if (review.userId._id.toString() !== req.user.id.toString()) {
@@ -27,11 +23,9 @@ export const updateReview = async (req, res) => {
         // Update the review and update the rating and comment in the database
         review.rating = rating;
         review.comment = comment;
-        console.log('review after update:', review);
 
         await review.save();
 
-        console.log('Review updated successfully');
         return res.status(200).json(review);
     } catch (error) {
         console.error('Error in updateReview:', error);

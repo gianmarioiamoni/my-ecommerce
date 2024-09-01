@@ -69,7 +69,6 @@ export const hasReviewedProduct = async (userId, productId) => {
             console.error('Expected an array of reviews, but received:', reviews);
             return false;
         }
-        console.log('reviews:', reviews);
         const result = reviews.some(review => review.userId._id.toString() === userId);
         return result;
     } catch (error) {

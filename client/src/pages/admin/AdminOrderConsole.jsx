@@ -78,6 +78,7 @@ const AdminOrderConsole = () => {
         });
 
         setDisplayedOrders(filteredOrders.slice((page - 1) * limit, page * limit));
+
     }, [orders, search, statusFilter, userFilter, sortField, sortOrder, page, limit]);
 
     const handleStatusChange = async (orderId, status) => {
@@ -128,8 +129,9 @@ const AdminOrderConsole = () => {
             <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
                 Admin Order Console
             </Typography>
-
+            {/* Searching and filtering */}
             <Grid container spacing={2} sx={{ mb: 3 }}>
+                {/* Search */}
                 <Grid item xs={12} sm={6} md={3}>
                     <TextField
                         label="Search Products"
@@ -139,6 +141,7 @@ const AdminOrderConsole = () => {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </Grid>
+                {/* User filter */}
                 <Grid item xs={12} sm={6} md={3}>
                     <FormControl fullWidth>
                         <Select
@@ -162,6 +165,7 @@ const AdminOrderConsole = () => {
                         </Select>
                     </FormControl>
                 </Grid>
+                {/* Status Filter */}
                 <Grid item xs={12} sm={6} md={3}>
                     <FormControl fullWidth>
                         <Select
@@ -176,6 +180,7 @@ const AdminOrderConsole = () => {
                         </Select>
                     </FormControl>
                 </Grid>
+                {/* Sorting */}
                 <Grid item xs={12} sm={6} md={3}>
                     <FormControl fullWidth>
                         <Select
@@ -205,10 +210,17 @@ const AdminOrderConsole = () => {
                     <Grid item xs={12} sm={6} md={4} key={order._id}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                             <CardContent>
+                                {/* Order Details */}
                                 <Typography variant="h6" gutterBottom>Order ID: {order._id}</Typography>
                                 <Typography variant="body1"><strong>Total Amount:</strong> ${order.totalAmount}</Typography>
                                 <Typography variant="body2"><strong>Order Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</Typography>
                                 <Typography variant="body2"><strong>User:</strong> {order.userId.name} ({order.userId.email})</Typography>
+                                {/* Product names list */}
+                                <Typography variant="body2"><strong>Products:</strong></Typography>
+                                {order.products.map((product) => (
+                                    <Typography key={product._id} variant="body2">{product.product.name}</Typography>
+                                ))}
+                                {/* Order status */}
                                 <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
                                     <Select
                                         value={order.status}

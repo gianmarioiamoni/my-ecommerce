@@ -46,8 +46,6 @@ const ProductDetails = () => {
             try {
                 const hasPurchased = await hasPurchasedProduct(user.id, product._id);
                 const reviewed = await hasReviewedProduct(user.id, product._id);
-                console.log("hasPurchased: ", hasPurchased);
-                console.log("reviewed: ", reviewed);
 
                 setCanReview(hasPurchased && !reviewed);
             } catch (err) {

@@ -25,8 +25,6 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
             try {
                 const hasPurchased = await hasPurchasedProduct(user.id, productId);
                 const reviewed = await hasReviewedProduct(user.id, productId);
-                console.log("hasPurchased: ", hasPurchased);
-                console.log("reviewed: ", reviewed);
 
                 setCanReview(hasPurchased && !reviewed);
                 setAlreadyReviewed(reviewed);
