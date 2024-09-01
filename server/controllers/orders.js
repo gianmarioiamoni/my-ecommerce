@@ -320,3 +320,24 @@ export const getAllUsersWithOrders = async (req, res) => {
         res.status(500).json({ message: 'Error fetching users with orders' });
     }
 };
+
+// check if an order has been delivered
+export const isOrderDelivered = async (req, res) => {
+    const { productId, userId } = req.params;
+
+    try {
+        const order = await Order.findOne({
+            'products.product': productId,
+            userId
+        });
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        if (order.status !== 'Delivered') {
+            return res.status(400).json({ message: 'Order not delivered' });
+        }
+        res.status(200).json({ message: 'Order delivered' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+};

@@ -6,6 +6,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
 import { getProductReviews, updateReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
+import { isOrderDelivered} from '../../services/ordersServices';
 import { Rating } from '@mui/material';
 
 import { AuthContext } from '../../contexts/AuthContext';
@@ -46,8 +47,10 @@ const ProductDetails = () => {
             try {
                 const hasPurchased = await hasPurchasedProduct(user.id, product._id);
                 const reviewed = await hasReviewedProduct(user.id, product._id);
+                // check if there is an order for this product done by the user is in the "Delivered" state
+                const isOrderDelivered = await isOrderDelivered(user.id, product._id);
 
-                setCanReview(hasPurchased && !reviewed);
+                setCanReview(hasPurchased && !reviewed && isOrderDelivered);
             } catch (err) {
                 console.error(err);
             }

@@ -73,5 +73,15 @@ export const updateProductQuantity = async (id, quantityChange) => {
     }
 };
 
+export const isOrderDelivered = async (userId, productId) => {
+    try {
+        initAuthorizationHeader();
+        const response = await axios.get(`${serverURL}/orders/delivered/${userId}/${productId}`);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}
+
 
 

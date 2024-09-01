@@ -6,7 +6,8 @@ import {
     getOrderHistory,
     updateOrderStatus,
     getAllOrders,
-    getAllUsersWithOrders
+    getAllUsersWithOrders,
+    isOrderDelivered
 } from '../controllers/orders.js';
 
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
@@ -25,6 +26,9 @@ router.post('/confirm-payment-intent', isAuthenticated, confirmStripePaymentInte
 
 // Orders history
 router.get('/history/:userId', isAuthenticated, getOrderHistory);
+
+// Orders management
+router.get('/delivered/:productId,:userId', isAuthenticated, isOrderDelivered);
 
 // Admin routes
 router.patch('/update-order-status/:orderId', isAuthenticated, isAdmin, updateOrderStatus); 

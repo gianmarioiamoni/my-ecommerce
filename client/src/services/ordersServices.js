@@ -118,5 +118,18 @@ export const getAllUsersWithOrders = async () => {
     }
 };
 
+export const isOrderDelivered = async (productId, userId) => {
+    try {
+        initAuthorizationHeader();
+        const response = await axios.get(`${serverURL}/orders/delivered/${productId}/${userId}`);
+        // if returned status is = 200 return true
+        // else return false
+        return response.data.status === 200;
+    } catch (error) {
+        console.error('Error checking if order is delivered:', error);
+        throw error;
+    }
+};
+
 
 
