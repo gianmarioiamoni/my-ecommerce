@@ -22,6 +22,7 @@ import ResetPassword from './components/users/ResetPassword';
 import ManageAddressesPayments from './pages/users/ManageAddressesPayments';
 import OrderHistory from './pages/users/OrderHistory';
 import AdminOrderConsole from './pages/admin/AdminOrderConsole';
+import WishlistPage from './pages/wishList/WishListPage';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
@@ -82,6 +83,10 @@ const App = () => {
                 <Route
                   path="/order-history"
                   element={<PrivateRoute element={<OrderHistory />} roles={['user']} />}
+                />
+                <Route
+                  path="/wishlists"
+                  element={<PrivateRoute element={<WishlistPage />} roles={['user']} />}
                 />
                 <Route
                   path="/profile"

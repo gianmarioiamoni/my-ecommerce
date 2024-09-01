@@ -5,9 +5,12 @@ import {
     Grid, Card, CardContent, CardMedia, Typography, Button, Container, Box,
     TextField, Select, MenuItem, FormControl, InputLabel, useMediaQuery, useTheme
 } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
 import { CartContext } from '../../contexts/CartContext';
 import { useCategories } from '../../contexts/CategoriesContext';
 import { AuthContext } from '../../contexts/AuthContext';
+import { useWishlist } from '../../contexts/WishListContext';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -18,6 +21,7 @@ const ProductList = () => {
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
     const { categories } = useCategories();
     const { user } = useContext(AuthContext);
+    const { wishlists, handleAddToWishlist } = useWishlist();
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -98,6 +102,24 @@ const ProductList = () => {
         applyFiltersAndSorting(value);
     };
 
+    const handleWishlistClick = (productId) => {
+        // if the user has a wishlist, ask to select one
+        if (wishlists.length > 0) {
+            const wishlistId = prompt("Select a wishlist:", wishlists[0]._id);
+            if (wishlistId) {
+                handleAddToWishlist(wishlistId, productId);
+            }
+        } else {
+            // Create a new wishlist if none exists
+            const wishlistName = prompt("Create a new wishlist:");
+            if (wishlistName) {
+                handleCreateWishlist(wishlistName).then(newWishlist => {
+                    handleAddToWishlist(newWishlist._id, productId);
+                });
+            }
+        }
+    };
+
     const isInCart = (productId) => cart.some(item => item._id === productId);
 
     return (
@@ -174,7 +196,9 @@ const ProductList = () => {
                                     }}
                                 />
                             </Box>
+
                             <CardContent sx={{ flexGrow: 1 }}>
+                                {/* Product info */}
                                 <Typography gutterBottom variant="h5" component="div">
                                     {product.name}
                                 </Typography>
@@ -190,6 +214,7 @@ const ProductList = () => {
                                 <Button component={Link} to={`/products/${product._id}`} variant="contained" color="primary">
                                     View
                                 </Button>
+                                {/* Add to cart / remove from cartbutton */}
                                 {user && !user.isAdmin && isInCart(product._id) && (
                                     <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
                                         Remove from Cart
@@ -203,6 +228,17 @@ const ProductList = () => {
                                         disabled={product.availability !== 'In Stock' || product.quantity <= 0}
                                     >
                                         Add to Cart
+                                    </Button>
+                                )}
+                                {/* Add wishlist button */}
+                                {user && !user.isAdmin && (
+                                    <Button
+                                        size="small"
+                                        color="primary"
+                                        onClick={() => handleWishlistClick(product._id)}
+                                        startIcon={<FavoriteIcon />}
+                                    >
+                                        Add to Wishlist
                                     </Button>
                                 )}
                             </CardContent>

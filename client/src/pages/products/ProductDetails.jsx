@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, Card, CardContent, Button, CardActions } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { CartContext } from '../../contexts/CartContext';
 import { getProductById } from '../../services/productsServices';
 import { getProductReviews, updateReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
 import { isOrderDelivered} from '../../services/ordersServices';
 import { Rating } from '@mui/material';
 
 import { AuthContext } from '../../contexts/AuthContext';
+import { CartContext } from '../../contexts/CartContext';
+import { useWishlist } from '../../contexts/WishListContext';
 
 import './ProductDetails.css';
 
@@ -21,8 +24,10 @@ const ProductDetails = () => {
     const [product, setProduct] = useState(null); 
     const [reviews, setReviews] = useState([]);
     const [canReview, setCanReview] = useState(false);
+
     const { addToCart, removeFromCart, cart } = useContext(CartContext);
     const { user } = useContext(AuthContext);
+    const { wishlists, handleAddToWishlist } = useWishlist();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,9 +53,9 @@ const ProductDetails = () => {
                 const hasPurchased = await hasPurchasedProduct(user.id, product._id);
                 const reviewed = await hasReviewedProduct(user.id, product._id);
                 // check if there is an order for this product done by the user is in the "Delivered" state
-                const isOrderDelivered = await isOrderDelivered(user.id, product._id);
+                const isDelivered = await isOrderDelivered(user.id, product._id);
 
-                setCanReview(hasPurchased && !reviewed && isOrderDelivered);
+                setCanReview(hasPurchased && !reviewed && isDelivered);
             } catch (err) {
                 console.error(err);
             }
@@ -75,6 +80,24 @@ const ProductDetails = () => {
             );
         } catch (error) {
             console.error('Failed to update review:', error);
+        }
+    };
+
+    const handleWishlistClick = (productId) => {
+        // if the user has a wishlist, ask to select one
+        if (wishlists.length > 0) {
+            const wishlistId = prompt("Select a wishlist:", wishlists[0]._id);
+            if (wishlistId) {
+                handleAddToWishlist(wishlistId, productId);
+            }
+        } else {
+            // Create a new wishlist if none exists
+            const wishlistName = prompt("Create a new wishlist:");
+            if (wishlistName) {
+                handleCreateWishlist(wishlistName).then(newWishlist => {
+                    handleAddToWishlist(newWishlist._id, productId);
+                });
+            }
         }
     };
 
@@ -137,6 +160,17 @@ const ProductDetails = () => {
                             disabled={product.availability !== 'In Stock' || product.quantity <= 0}
                         >
                             Add to Cart
+                        </Button>
+                    )}
+                    {/* Add wishlist button */}
+                    {user && !user.isAdmin && (
+                        <Button
+                            size="small"
+                            color="primary"
+                            onClick={() => handleWishlistClick(product._id)}
+                            startIcon={<FavoriteIcon />}
+                        >
+                            Add to Wishlist
                         </Button>
                     )}
                 </CardActions>

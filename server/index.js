@@ -13,6 +13,7 @@ import productRoutes from './routes/products.js';
 import orderRoutes from './routes/orders.js';
 import categoryRoutes from './routes/categories.js';
 import reviewRoutes from './routes/reviews.js';
+import wishListRoutes from './routes/wishLists.js';
 
 import fs from 'fs';
 import https from 'https';
@@ -99,6 +100,7 @@ app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/reviews', reviewRoutes);
+app.use('/wishlists', wishListRoutes);
 
 
 // Serving static files from client/dist
