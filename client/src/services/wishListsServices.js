@@ -1,14 +1,16 @@
 // wishListsServices.js
 import axios from 'axios';
 
-import { serverURL } from '../config/config';
+import serverURL from "../config/serverURL";
 
 import { initAuthorizationHeader } from '../config/initAuthorizationHeader';
 
-export const getUserWishlists = async () => {
+export const getUserWishlists = async (user) => {
+    console.log("getUserWishLists() - user:", user);
     try {
         initAuthorizationHeader();
-        const response = await axios.get(`/${serverURL}/wishlists`);
+        const response = await axios.get(`${serverURL}/wishlists`, { user });
+        console.log("getUserWishLists() - response.data:", response.data);
         return response.data;
     } catch (error) {
         return { error: error.response.data.error };
@@ -19,7 +21,7 @@ export const getUserWishlists = async () => {
 export const createWishlist = async (wishlistName) => {
     try {
         initAuthorizationHeader();
-        const response = await axios.post(`/${serverURL}/wishlists`, { name: wishlistName });
+        const response = await axios.post(`${serverURL}/wishlists`, { name: wishlistName });
         return response.data;
     } catch (error) {
         return { error: error.response.data.error };
@@ -29,7 +31,12 @@ export const createWishlist = async (wishlistName) => {
 export const addToWishlist = async (wishlistId, productId) => {
     try {
         initAuthorizationHeader();
-        const response = await axios.put(`/${serverURL}/wishlists/${wishlistId}`, { productId });
+        // get wishlist
+        const wishlist = await axios.get(`${serverURL}/wishlists/${wishlistId}`);
+        // add product to wishlist product array
+        const products = [...wishlist.data.products, productId];
+        // update wishlist
+        const response = await axios.put(`${serverURL}/wishlists/${wishlistId}`, { products });
         return response.data;
     } catch (error) {
         return { error: error.response.data.error };
@@ -39,19 +46,40 @@ export const addToWishlist = async (wishlistId, productId) => {
 export const removeFromWishlist = async (wishlistId, productId) => {
     try {
         initAuthorizationHeader();
-        const response = await axios.put(`/${serverURL}/wishlists/${wishlistId}/product`, { productId });
-        return response.data;
+        // get wishlist
+        const wishlist = await axios.get(`${serverURL}/wishlists/${wishlistId}`);
+        // remove product from wishlist product array
+        const products = wishlist.data.products.filter(p => p._id !== productId);
+        // remove from wishlist object the items with products with _id !== productId
+        const filteredWishlist = { ...wishlist.data, products };
+        // update wishlist
+        await axios.put(`${serverURL}/wishlists/${wishlistId}`, { products });
+        return filteredWishlist;
     } catch (error) {
         return { error: error.response.data.error };
     }
 };
 
-export const deleteWishlist = async (wishlistId) => {
+
+export const editWishlistName = async (wishlistId, name) => {
     try {
         initAuthorizationHeader();
-        const response = await axios.delete(`/${serverURL}/wishlists/${wishlistId}`);
+        // update wishlist with new name
+        const response = await axios.put(`${serverURL}/wishlists/${wishlistId}`, { name });
         return response.data;
     } catch (error) {
         return { error: error.response.data.error };
     }
 }
+
+
+export const deleteWishlist = async (wishlistId) => {
+    try {
+        initAuthorizationHeader();
+        const response = await axios.delete(`${serverURL}/wishlists/${wishlistId}`);
+        return response.data;
+    } catch (error) {
+        return { error: error.response.data.error };
+    }
+}
+

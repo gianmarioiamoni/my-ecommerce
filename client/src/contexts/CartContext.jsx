@@ -86,15 +86,6 @@ const CartProvider = ({ children }) => {
             };
         });
 
-        // const hasErrors = updatedCart.some(item => item.maxQuantityError);
-
-        // return {
-        //     ...state,
-        //     cart: [...updatedCart], // Use the spread operator to create a new array
-        //     hasErrors
-        // };
-        // ... existing code ...
-    
         const hasErrors = updatedCart.some(item => item.maxQuantityError);
     
         return new Promise((resolve) => {

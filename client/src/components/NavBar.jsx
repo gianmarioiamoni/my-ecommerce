@@ -14,7 +14,6 @@ import {
     MenuItem
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { CartContext } from '../contexts/CartContext';
@@ -162,6 +161,12 @@ const NavBar = () => {
                                 <MenuItem component={Link} to="/order-history">Orders History</MenuItem>
                             ) : (
                                 <MenuItem component={Link} to="/admin/orders">Orders Console</MenuItem>
+                            )}
+
+                            {!user.isAdmin ? (
+                                <MenuItem component={Link} to="/wishlists">Wishlists</MenuItem>
+                            ) : (
+                                <MenuItem component={Link} to="/manage-categories">Manage Categories</MenuItem>
                             )}
 
                             <MenuItem onClick={logout}>Logout</MenuItem>

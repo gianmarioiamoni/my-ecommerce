@@ -30,12 +30,15 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/users/PrivateRoute';
 
+import { WishlistProvider } from './contexts/WishListContext';
+
 const App = () => {
   return (
     <ThemeProvider theme={createTheme()}>
       <CategoriesProvider>
         <CartProvider>
           <AuthProvider>
+            <WishlistProvider>
             <Router>
               <NavBar />
               <Routes>
@@ -95,7 +98,8 @@ const App = () => {
 
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </Router>
+              </Router>
+            </WishlistProvider>
           </AuthProvider>
         </CartProvider>
       </CategoriesProvider>

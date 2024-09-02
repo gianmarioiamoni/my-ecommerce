@@ -21,7 +21,7 @@ const ProductList = () => {
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
     const { categories } = useCategories();
     const { user } = useContext(AuthContext);
-    const { wishlists, handleAddToWishlist } = useWishlist();
+    const { wishlists, handleCreateWishlist, handleAddToWishlist } = useWishlist();
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -102,20 +102,28 @@ const ProductList = () => {
         applyFiltersAndSorting(value);
     };
 
-    const handleWishlistClick = (productId) => {
+    const handleWishlistClick = async (productId) => {
+        console.log("handleWishlistClick called");
+        console.log("wishlists:", wishlists);
         // if the user has a wishlist, ask to select one
         if (wishlists.length > 0) {
             const wishlistId = prompt("Select a wishlist:", wishlists[0]._id);
+            console.log("selected wishlistId:", wishlistId);
             if (wishlistId) {
                 handleAddToWishlist(wishlistId, productId);
             }
         } else {
             // Create a new wishlist if none exists
             const wishlistName = prompt("Create a new wishlist:");
+            console.log("selected wishlistName:", wishlistName);
             if (wishlistName) {
-                handleCreateWishlist(wishlistName).then(newWishlist => {
-                    handleAddToWishlist(newWishlist._id, productId);
-                });
+                const newWishList = await handleCreateWishlist(wishlistName);
+                console.log("newWishList:", newWishList);
+                await handleAddToWishlist(newWishList._id, productId);
+                // handleCreateWishlist(wishlistName).then(newWishlist => {
+                //     console.log("newWishlist:", newWishlist);
+                //     handleAddToWishlist(newWishlist._id, productId);
+                // });
             }
         }
     };

@@ -27,7 +27,7 @@ const ProductDetails = () => {
 
     const { addToCart, removeFromCart, cart } = useContext(CartContext);
     const { user } = useContext(AuthContext);
-    const { wishlists, handleAddToWishlist } = useWishlist();
+    const { wishlists, handleCreateWishlist, handleAddToWishlist } = useWishlist();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -100,6 +100,8 @@ const ProductDetails = () => {
             }
         }
     };
+
+
 
     const isInCart = cart.some(item => item._id === product?._id); // Check if product is not null
 
