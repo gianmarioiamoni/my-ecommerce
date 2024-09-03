@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import { getAllProducts } from '../../services/productsServices';
 import {
     Grid, Card, CardContent, CardMedia, Typography, Button, Container, Box,
-    TextField, Select, MenuItem, FormControl, InputLabel, useMediaQuery, useTheme
+    TextField, Select, MenuItem, FormControl, InputLabel, useMediaQuery, useTheme,
+    IconButton, Menu, MenuItem as DropdownItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider,
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import AddIcon from '@mui/icons-material/Add';
 
 import { CartContext } from '../../contexts/CartContext';
 import { useCategories } from '../../contexts/CategoriesContext';
@@ -18,10 +21,17 @@ const ProductList = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [sortCriteria, setSortCriteria] = useState('');
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [openCreateDialog, setOpenCreateDialog] = useState(false);
+    const [newWishlistName, setNewWishlistName] = useState('');
+    const [forceUpdate, setForceUpdate] = useState(0); // to be removed if wishlist will be in separated component
+    const [localWishlists, setLocalWishlists] = useState([]);
+
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
     const { categories } = useCategories();
     const { user } = useContext(AuthContext);
-    const { wishlists, handleCreateWishlist, handleAddToWishlist } = useWishlist();
+    const { wishlists, handleCreateWishlist, handleAddToWishlist, isProductInAnyWishlist } = useWishlist();
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -30,21 +40,22 @@ const ProductList = () => {
         const fetchData = async () => {
             try {
                 const products = await getAllProducts();
-
-                // per each product in products, add availableQuantity equal to quantity
                 products.forEach(product => {
-                    product.availableQuantity = product.quantity
+                    product.availableQuantity = product.quantity;
                 });
-
                 setProducts(products);
                 setFilteredProducts(products);
             } catch (error) {
                 console.error(error);
             }
         };
-
         fetchData();
     }, []);
+
+    useEffect(() => {
+        // Sync local wishlists with global state
+        setLocalWishlists(wishlists);
+    }, [wishlists]);
 
     const applyFiltersAndSorting = (criteria = sortCriteria) => {
         let filtered = products;
@@ -102,30 +113,39 @@ const ProductList = () => {
         applyFiltersAndSorting(value);
     };
 
-    const handleWishlistClick = async (productId) => {
-        console.log("handleWishlistClick called");
-        console.log("wishlists:", wishlists);
-        // if the user has a wishlist, ask to select one
-        if (wishlists.length > 0) {
-            const wishlistId = prompt("Select a wishlist:", wishlists[0]._id);
-            console.log("selected wishlistId:", wishlistId);
-            if (wishlistId) {
-                handleAddToWishlist(wishlistId, productId);
-            }
+    const handleWishlistMenuOpen = (event, product) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedProduct(product);
+    };
+
+    const handleWishlistMenuClose = () => {
+        setAnchorEl(null);
+        setSelectedProduct(null);
+    };
+
+    const handleWishlistSelection = async (wishlistId) => {
+        if (wishlistId === 'create-new') {
+            setOpenCreateDialog(true);
         } else {
-            // Create a new wishlist if none exists
-            const wishlistName = prompt("Create a new wishlist:");
-            console.log("selected wishlistName:", wishlistName);
-            if (wishlistName) {
-                const newWishList = await handleCreateWishlist(wishlistName);
-                console.log("newWishList:", newWishList);
-                await handleAddToWishlist(newWishList._id, productId);
-                // handleCreateWishlist(wishlistName).then(newWishlist => {
-                //     console.log("newWishlist:", newWishlist);
-                //     handleAddToWishlist(newWishlist._id, productId);
-                // });
-            }
+            await handleAddToWishlist(wishlistId, selectedProduct._id);
+            setForceUpdate((prev) => prev + 1);
+            handleWishlistMenuClose();
         }
+    };
+
+    const handleCreateNewWishlist = async () => {
+        if (newWishlistName.trim()) {
+            const newWishlist = await handleCreateWishlist(newWishlistName);
+            await handleAddToWishlist(newWishlist._id, selectedProduct._id);
+            setForceUpdate((prev) => prev + 1);
+            handleCloseCreateDialog();
+        }
+    };
+
+    const handleCloseCreateDialog = () => {
+        setOpenCreateDialog(false);
+        setNewWishlistName('');
+        handleWishlistMenuClose();
     };
 
     const isInCart = (productId) => cart.some(item => item._id === productId);
@@ -136,6 +156,7 @@ const ProductList = () => {
                 Product Catalog
             </Typography>
 
+            {/* Searching and filtering */}
             <Box sx={{
                 display: 'flex',
                 flexDirection: isSmallScreen ? 'column' : 'row',
@@ -183,7 +204,8 @@ const ProductList = () => {
                     </Select>
                 </FormControl>
             </Box>
-
+            
+            {/* Product list */}
             <Grid container spacing={4}>
                 {filteredProducts.map((product) => (
                     <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
@@ -222,7 +244,8 @@ const ProductList = () => {
                                 <Button component={Link} to={`/products/${product._id}`} variant="contained" color="primary">
                                     View
                                 </Button>
-                                {/* Add to cart / remove from cartbutton */}
+
+                                {/* Add to cart / remove from cart button */}
                                 {user && !user.isAdmin && isInCart(product._id) && (
                                     <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
                                         Remove from Cart
@@ -238,27 +261,80 @@ const ProductList = () => {
                                         Add to Cart
                                     </Button>
                                 )}
-                                {/* Add wishlist button */}
+
+                                {/* Add to wishlist button */}
                                 {user && !user.isAdmin && (
-                                    <Button
-                                        size="small"
-                                        color="primary"
-                                        onClick={() => handleWishlistClick(product._id)}
-                                        startIcon={<FavoriteIcon />}
-                                    >
-                                        Add to Wishlist
-                                    </Button>
+                                    <>
+                                        <IconButton
+                                            size="small"
+                                            color="primary"
+                                            onClick={(event) => handleWishlistMenuOpen(event, product)}
+                                        >
+                                            {isProductInAnyWishlist(product._id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                                        </IconButton>
+                                        <Menu
+                                            anchorEl={anchorEl}
+                                            open={Boolean(anchorEl)}
+                                            onClose={handleWishlistMenuClose}
+                                        >
+                                            <DropdownItem
+                                                onClick={() => handleWishlistSelection('create-new')}
+                                            >
+                                                <AddIcon fontSize="small" sx={{ marginRight: 1 }} />
+                                                Create New Wishlist
+                                            </DropdownItem>
+                                            <Divider />
+                                            {wishlists.map((wishlist) => (
+                                                <DropdownItem
+                                                    key={wishlist._id}
+                                                    onClick={() => handleWishlistSelection(wishlist._id)}
+                                                >
+                                                    {wishlist.name}
+                                                </DropdownItem>
+                                            ))}
+                                        </Menu>
+                                    </>
                                 )}
                             </CardContent>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
+
+            {/* Dialog for creating new wishlist */}
+            <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog}>
+                <DialogTitle>Create New Wishlist</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Please enter a name for your new wishlist.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Wishlist Name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={newWishlistName}
+                        onChange={(e) => setNewWishlistName(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseCreateDialog} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleCreateNewWishlist} color="primary">
+                        Create
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
 
 export default ProductList;
+
+
 
 
 

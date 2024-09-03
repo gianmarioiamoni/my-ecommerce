@@ -67,11 +67,15 @@ export const deleteWishlist = async (req, res) => {
     try {
         const wishlist = await Wishlist.findById(req.params.id);
 
-        if (!wishlist || wishlist.user.toString() !== req.user.id) {
+        if (!wishlist) {
             return res.status(404).json({ error: 'Wishlist not found' });
         }
 
-        await wishlist.remove();
+        if (wishlist.user.toString() !== req.user.id) {
+            return res.status(401).json({ error: 'Unauthorized to delete the wishlist' });
+        }
+        // delete wishlist from database
+        await Wishlist.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: 'Wishlist deleted' });
     } catch (error) {
         res.status(500).json({ error: error.message });
