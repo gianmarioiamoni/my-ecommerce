@@ -15,8 +15,6 @@ import { useCategories } from '../../contexts/CategoriesContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useWishlist } from '../../contexts/WishListContext';
 
-import AddToCartButton from '../../components/products/AddToCartButton';
-
 const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -207,7 +205,7 @@ const ProductList = () => {
                     </Select>
                 </FormControl>
             </Box>
-
+            
             {/* Product list */}
             <Grid container spacing={4}>
                 {filteredProducts.map((product) => (
@@ -249,7 +247,7 @@ const ProductList = () => {
                                 </Button>
 
                                 {/* Add to cart / remove from cart button */}
-                                {/* {user && !user.isAdmin && isInCart(product._id) && (
+                                {user && !user.isAdmin && isInCart(product._id) && (
                                     <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
                                         Remove from Cart
                                     </Button>
@@ -263,16 +261,8 @@ const ProductList = () => {
                                     >
                                         Add to Cart
                                     </Button>
-                                )} */}
-                                {/* const AddToCartButton = ({isInCart, addToCart, removeFromCart, product, user}) => { */}
-                                {user && !user.isAdmin &&
-                                    <AddToCartButton
-                                        isInCart={isInCart(product._id)}
-                                        addToCart={() => addToCart(product)}
-                                        removeFromCart={() => removeFromCart(product._id)}
-                                        isDisabled={product.availability !== 'In Stock' || product.quantity <= 0}
-                                    />
-                                }
+                                )}
+
                                 {/* Add to wishlist button */}
                                 {user && !user.isAdmin && (
                                     <>
@@ -344,7 +334,6 @@ const ProductList = () => {
 };
 
 export default ProductList;
-
 
 
 
