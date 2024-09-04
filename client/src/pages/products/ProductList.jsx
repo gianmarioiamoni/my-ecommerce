@@ -16,6 +16,8 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { useWishlist } from '../../contexts/WishListContext';
 
 import AddToCartButton from '../../components/products/AddToCartButton';
+import AddToWishlistButton from '../../components/products/AddToWishlistButton';
+import CreateNewWishlistDialog from '../../components/products/CreateNewWishlistDialog';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -249,22 +251,6 @@ const ProductList = () => {
                                 </Button>
 
                                 {/* Add to cart / remove from cart button */}
-                                {/* {user && !user.isAdmin && isInCart(product._id) && (
-                                    <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
-                                        Remove from Cart
-                                    </Button>
-                                )}
-                                {user && !user.isAdmin && !isInCart(product._id) && (
-                                    <Button
-                                        size="small"
-                                        color="primary"
-                                        onClick={() => addToCart(product)}
-                                        disabled={product.availability !== 'In Stock' || product.quantity <= 0}
-                                    >
-                                        Add to Cart
-                                    </Button>
-                                )} */}
-                                {/* const AddToCartButton = ({isInCart, addToCart, removeFromCart, product, user}) => { */}
                                 {user && !user.isAdmin &&
                                     <AddToCartButton
                                         isInCart={isInCart(product._id)}
@@ -273,72 +259,33 @@ const ProductList = () => {
                                         isDisabled={product.availability !== 'In Stock' || product.quantity <= 0}
                                     />
                                 }
+
                                 {/* Add to wishlist button */}
-                                {user && !user.isAdmin && (
-                                    <>
-                                        <IconButton
-                                            size="small"
-                                            color="primary"
-                                            onClick={(event) => handleWishlistMenuOpen(event, product)}
-                                        >
-                                            {isProductInAnyWishlist(product._id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                                        </IconButton>
-                                        <Menu
-                                            anchorEl={anchorEl}
-                                            open={Boolean(anchorEl)}
-                                            onClose={handleWishlistMenuClose}
-                                        >
-                                            <DropdownItem
-                                                onClick={() => handleWishlistSelection('create-new')}
-                                            >
-                                                <AddIcon fontSize="small" sx={{ marginRight: 1 }} />
-                                                Create New Wishlist
-                                            </DropdownItem>
-                                            <Divider />
-                                            {wishlists.map((wishlist) => (
-                                                <DropdownItem
-                                                    key={wishlist._id}
-                                                    onClick={() => handleWishlistSelection(wishlist._id)}
-                                                >
-                                                    {wishlist.name}
-                                                </DropdownItem>
-                                            ))}
-                                        </Menu>
-                                    </>
-                                )}
+                                {user && !user.isAdmin && 
+                                    <AddToWishlistButton
+                                    product={product}
+                                    isInWishlist={isProductInAnyWishlist(product._id)}
+                                    handleWishlistSelection={handleWishlistSelection}
+                                    handleWishlistMenuOpen={handleWishlistMenuOpen}
+                                    handleWishlistMenuClose={handleWishlistMenuClose}
+                                    anchorEl={anchorEl}
+                                    wishlists={wishlists}
+                                    />
+                                }
                             </CardContent>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
-
-            {/* Dialog for creating new wishlist */}
-            <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog}>
-                <DialogTitle>Create New Wishlist</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Please enter a name for your new wishlist.
-                    </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Wishlist Name"
-                        type="text"
-                        fullWidth
-                        variant="standard"
-                        value={newWishlistName}
-                        onChange={(e) => setNewWishlistName(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseCreateDialog} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleCreateNewWishlist} color="primary">
-                        Create
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            
+            {/* Create New Wishlist Dialog */}
+            <CreateNewWishlistDialog
+                openCreateDialog={openCreateDialog}
+                handleCloseCreateDialog={handleCloseCreateDialog}
+                newWishlistName={newWishlistName}
+                setNewWishlistName={setNewWishlistName}
+                handleCreateNewWishlist={handleCreateNewWishlist}
+            />
         </Container>
     );
 };

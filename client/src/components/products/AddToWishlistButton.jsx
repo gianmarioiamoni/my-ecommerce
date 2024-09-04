@@ -4,17 +4,16 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AddIcon from '@mui/icons-material/Add';
 
+
 const AddToWishlistButton = ({
-    user,
     product,
-    isProductInAnyWishlist,
+    isInWishlist,
     handleWishlistMenuOpen,
     handleWishlistMenuClose,
     anchorEl,
     handleWishlistSelection,
     wishlists,
 }) => {
-    if (!user || user.isAdmin) return null;
 
     return (
         <>
@@ -23,7 +22,7 @@ const AddToWishlistButton = ({
                 color="primary"
                 onClick={(event) => handleWishlistMenuOpen(event, product)}
             >
-                {isProductInAnyWishlist(product._id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                {isInWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
             </IconButton>
             <Menu
                 anchorEl={anchorEl}
