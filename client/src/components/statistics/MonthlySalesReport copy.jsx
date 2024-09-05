@@ -112,14 +112,13 @@ const MonthlySalesReport = () => {
                             <Typography variant="h6" align="center" gutterBottom>
                                 Sales Summary
                             </Typography>
-                            {/* <TableContainer component={Paper}> */}
-                            <TableContainer >
-                                <Table sx={{ borderCollapse: 'collapse' }}>
+                            <TableContainer component={Paper}>
+                                <Table>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell align="center" sx={{ borderBottom: '1px solid rgba(224, 224, 224, 1)' }}>Month</TableCell>
-                                            <TableCell align="center" sx={{ borderBottom: '1px solid rgba(224, 224, 224, 1)' }}>Total Sales (€)</TableCell>
-                                            <TableCell align="center" sx={{ borderBottom: '1px solid rgba(224, 224, 224, 1)' }}>Total Orders</TableCell>
+                                            <TableCell align="center">Month</TableCell>
+                                            <TableCell align="center">Total Sales (€)</TableCell>
+                                            <TableCell align="center">Total Orders</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -142,7 +141,5 @@ const MonthlySalesReport = () => {
 };
 
 export default MonthlySalesReport;
-
-
 
 
