@@ -8,6 +8,7 @@ import EditProductForm from './components/products/EditProductForm';
 import NavBar from './components/NavBar';
 import ManageCategories from './components/admin/ManageCategories';
 import Profile from './components/users/Profile';
+import MonthlySalesReport from './components/statistics/MonthlySalesReport';
 
 import ProductList from './pages/products/ProductList';
 import ProductDetails from './pages/products/ProductDetails';
@@ -72,6 +73,11 @@ const App = () => {
                   element={<PrivateRoute element={<AdminOrderConsole />} roles={['admin']} />}
                 />
                 <Route
+                  path="/sales-reports"
+                  element={<PrivateRoute element={<MonthlySalesReport />} roles={['admin']} />}
+                />
+                  
+                <Route
                   path="/cart"
                   element={<PrivateRoute element={<Cart />} roles={['user']} />}
                 />
@@ -91,6 +97,7 @@ const App = () => {
                   path="/wishlists"
                   element={<PrivateRoute element={<WishlistPage />} roles={['user']} />}
                 />
+                  
                 <Route
                   path="/profile"
                   element={<PrivateRoute element={<Profile />} roles={['user', 'admin']} />}

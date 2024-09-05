@@ -7,7 +7,7 @@ import {
     updateOrderStatus,
     getAllOrders,
     getAllUsersWithOrders,
-    isOrderDelivered
+    isOrderDelivered,
 } from '../controllers/orders.js';
 
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
@@ -34,5 +34,6 @@ router.get('/delivered/:productId,:userId', isAuthenticated, isOrderDelivered);
 router.patch('/update-order-status/:orderId', isAuthenticated, isAdmin, updateOrderStatus); 
 router.get('/', isAuthenticated, isAdmin, getAllOrders); 
 router.get('/users-with-orders', isAuthenticated, isAdmin, getAllUsersWithOrders);
+
 
 export default router;

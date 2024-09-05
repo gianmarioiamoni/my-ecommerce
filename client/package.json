@@ -23,7 +23,8 @@
     "react-dom": "^18.3.1",
     "react-medium-image-zoom": "^5.2.8",
     "react-responsive-carousel": "^3.2.23",
-    "react-router-dom": "^6.25.0"
+    "react-router-dom": "^6.25.0",
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

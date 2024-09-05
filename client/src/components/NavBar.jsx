@@ -59,6 +59,9 @@ const NavBar = () => {
                             <ListItem button component={Link} to="/products/edit">
                                 <ListItemText primary="Edit Products" />
                             </ListItem>
+                            <ListItem button component={Link} to="/sales-reports">
+                                <ListItemText primary="Sales Reports" />
+                            </ListItem>
                             <ListItem button component={Link} to="/manage-categories">
                                 <ListItemText primary="Config" />
                             </ListItem>

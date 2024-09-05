@@ -14,6 +14,7 @@ import orderRoutes from './routes/orders.js';
 import categoryRoutes from './routes/categories.js';
 import reviewRoutes from './routes/reviews.js';
 import wishListRoutes from './routes/wishLists.js';
+import statisticsRoutes from './routes/statistics.js';
 
 import fs from 'fs';
 import https from 'https';
@@ -101,6 +102,7 @@ app.use('/orders', orderRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/wishlists', wishListRoutes);
+app.use('/statistics', statisticsRoutes);
 
 
 // Serving static files from client/dist

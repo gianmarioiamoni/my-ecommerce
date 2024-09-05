@@ -29,8 +29,6 @@ const ProductList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [openCreateDialog, setOpenCreateDialog] = useState(false);
     const [newWishlistName, setNewWishlistName] = useState('');
-    const [forceUpdate, setForceUpdate] = useState(0); // to be removed if wishlist will be in separated component
-    const [localWishlists, setLocalWishlists] = useState([]);
 
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
     const { categories } = useCategories();
@@ -57,10 +55,6 @@ const ProductList = () => {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        // Sync local wishlists with global state
-        setLocalWishlists(wishlists);
-    }, [wishlists]);
 
     const applyFiltersAndSorting = (criteria = sortCriteria) => {
         let filtered = products;
@@ -133,7 +127,6 @@ const ProductList = () => {
             setOpenCreateDialog(true);
         } else {
             await handleAddToWishlist(wishlistId, selectedProduct._id);
-            setForceUpdate((prev) => prev + 1);
             handleWishlistMenuClose();
         }
     };
@@ -142,7 +135,6 @@ const ProductList = () => {
         if (newWishlistName.trim()) {
             const newWishlist = await handleCreateWishlist(newWishlistName);
             await handleAddToWishlist(newWishlist._id, selectedProduct._id);
-            setForceUpdate((prev) => prev + 1);
             handleCloseCreateDialog();
         }
     };
