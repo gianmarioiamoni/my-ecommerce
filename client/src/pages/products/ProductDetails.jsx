@@ -7,7 +7,9 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { getProductById } from '../../services/productsServices';
 import { getProductReviews, updateReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
-import { isOrderDelivered} from '../../services/ordersServices';
+import { isOrderDelivered } from '../../services/ordersServices';
+import { trackEvent } from '../../services/eventsServices';
+
 import { Rating } from '@mui/material';
 
 import { AuthContext } from '../../contexts/AuthContext';
@@ -56,6 +58,9 @@ const ProductDetails = () => {
                 const isDelivered = await isOrderDelivered(user.id, product._id);
 
                 setCanReview(hasPurchased && !reviewed && isDelivered);
+
+                // track event
+                trackEvent('view', product._id, { source: 'homepage' })
             } catch (err) {
                 console.error(err);
             }
@@ -64,6 +69,7 @@ const ProductDetails = () => {
         if (user && product) {
             checkPermissions();
         }
+
     }, [user, product]);
 
     const onEditReview = async (updatedReview) => {

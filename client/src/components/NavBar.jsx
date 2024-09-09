@@ -62,6 +62,9 @@ const NavBar = () => {
                             <ListItem button component={Link} to="/sales-reports">
                                 <ListItemText primary="Sales Reports" />
                             </ListItem>
+                            <ListItem button component={Link} to="/user-behavior-dashboard">
+                                <ListItemText primary="User Behavior Dashboard" />
+                            </ListItem>
                             <ListItem button component={Link} to="/manage-categories">
                                 <ListItemText primary="Config" />
                             </ListItem>

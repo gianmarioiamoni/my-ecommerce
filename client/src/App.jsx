@@ -24,6 +24,7 @@ import OrderHistory from './pages/users/OrderHistory';
 import AdminOrderConsole from './pages/admin/AdminOrderConsole';
 import WishlistPage from './pages/wishList/WishListPage';
 import SalesReportsPage from './pages/statistics/SalesReportsPage';
+import UserBehaviorDashboard from './pages/events/UserBehaviorDashboard';
 
 import { CartProvider } from './contexts/CartContext';
 import { CategoriesProvider } from './contexts/CategoriesContext';
@@ -75,6 +76,10 @@ const App = () => {
                   <Route
                     path="/sales-reports"
                     element={<PrivateRoute element={<SalesReportsPage />} roles={['admin']} />}
+                  />
+                  <Route
+                    path="/user-behavior-dashboard"
+                    element={<PrivateRoute element={<UserBehaviorDashboard />} roles={['admin']} />}
                   />
                   <Route
                     path="/cart"
