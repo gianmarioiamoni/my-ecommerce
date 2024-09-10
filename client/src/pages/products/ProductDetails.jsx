@@ -60,7 +60,7 @@ const ProductDetails = () => {
                 setCanReview(hasPurchased && !reviewed && isDelivered);
 
                 // track event
-                trackEvent('view', product._id, { source: 'homepage' })
+                trackEvent('view', product._id, user.id, { source: 'homepage' })
             } catch (err) {
                 console.error(err);
             }

@@ -6,8 +6,9 @@ import { initAuthorizationHeader } from '../config/initAuthorizationHeader';
 
 export const getEvents = async (startDate, endDate) => {
     try {
-        const response = await axios.get(`${serverURL}/events`, initAuthorizationHeader(), {
-            params: { startDate, endDate }
+        const response = await axios.get(`${serverURL}/events`, {
+            ...initAuthorizationHeader(),
+            params: { startDate, endDate } // I parametri vanno passati qui
         });
         return response.data;
     } catch (error) {
@@ -16,11 +17,11 @@ export const getEvents = async (startDate, endDate) => {
     }
 };
 
-export const trackEvent = async (eventType, productId, metadata) => {
+export const trackEvent = async (eventType, productId, userId, metadata) => {
     try {
         initAuthorizationHeader();
         const response = await axios.post(`${serverURL}/events`, {
-            userId: localStorage.getItem('userId'), // Assuming you have the user ID in localStorage
+            userId, 
             eventType,
             productId,
             metadata,

@@ -1,4 +1,3 @@
-// src/pages/UserBehaviorDashboard.js
 import React, { useState, useEffect } from 'react';
 import {
     Container,
@@ -14,21 +13,46 @@ import {
 import { Line } from 'react-chartjs-2';
 import { useTheme } from '@mui/material/styles';
 
-import { getEvents } from '../services/eventService';
+import {
+    Chart as ChartJS,
+    LineElement,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+
+import { getEvents } from '../../services/eventsServices';
+
+// Registra i componenti necessari
+ChartJS.register(
+    LineElement,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    Tooltip,
+    Legend
+);
 
 const UserBehaviorDashboard = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [startDate, setStartDate] = useState(() => {
+        const today = new Date();
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(today.getDate() - 7);
+        return sevenDaysAgo.toISOString().split('T')[0];
+    });
+    const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
 
     const fetchData = async () => {
         setLoading(true);
         try {
             const result = await getEvents(startDate, endDate);
+            console.log(result);
             setData(result);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -37,23 +61,75 @@ const UserBehaviorDashboard = () => {
     };
 
     useEffect(() => {
-        // Initial data fetching
         fetchData();
-    }, []);
+    }, [startDate, endDate]);
 
-    // Data for the chart
-    const chartData = {
-        labels: data.map((event) => new Date(event.timestamp).toLocaleDateString()),
-        datasets: [
-            {
-                label: 'Product Clicks',
-                data: data.map((event) => event.productId), // Modifica in base ai tuoi dati
-                borderColor: theme.palette.primary.main,
-                backgroundColor: theme.palette.primary.light,
-                fill: false,
-                tension: 0.1,
+    const aggregateData = (events) => {
+        const aggregation = {};
+
+        events.forEach(event => {
+            const date = new Date(event.timestamp).toLocaleDateString();
+            if (!aggregation[date]) {
+                aggregation[date] = 0;
+            }
+            aggregation[date] += 1; // Incrementa il conteggio per questa data
+        });
+
+        return {
+            labels: Object.keys(aggregation),
+            data: Object.values(aggregation),
+        };
+    };
+
+    // Calcola i dati per il grafico
+    const chartData = () => {
+        if (data.length === 0) return { labels: [], datasets: [] }; // Default if no data
+
+        const aggregatedData = aggregateData(data);
+
+        return {
+            labels: aggregatedData.labels,
+            datasets: [
+                {
+                    label: 'Product Clicks',
+                    data: aggregatedData.data,
+                    borderColor: theme.palette.primary.main,
+                    backgroundColor: theme.palette.primary.light,
+                    fill: false,
+                    tension: 0.1,
+                },
+            ],
+        };
+    };
+
+    const options = {
+        scales: {
+            x: {
+                type: 'category',
+                title: {
+                    display: true,
+                    text: 'Date',
+                },
             },
-        ],
+            y: {
+                title: {
+                    display: true,
+                    text: 'Number of Clicks',
+                },
+            },
+        },
+        plugins: {
+            legend: {
+                display: true,
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `Clicks: ${context.raw}`;
+                    },
+                },
+            },
+        },
     };
 
     return (
@@ -62,7 +138,6 @@ const UserBehaviorDashboard = () => {
                 User Behavior Dashboard
             </Typography>
 
-            {/* Dates selection section */}
             <Grid container spacing={2} justifyContent="center">
                 <Grid item xs={12} sm={6}>
                     <TextField
@@ -97,7 +172,6 @@ const UserBehaviorDashboard = () => {
                 </Grid>
             </Grid>
 
-            {/* Chart section */}
             <Grid container spacing={2} style={{ marginTop: '2rem' }}>
                 <Grid item xs={12}>
                     <Card>
@@ -105,7 +179,7 @@ const UserBehaviorDashboard = () => {
                             {loading ? (
                                 <CircularProgress />
                             ) : (
-                                <Line data={chartData} />
+                                <Line data={chartData()} options={options} />
                             )}
                         </CardContent>
                     </Card>
