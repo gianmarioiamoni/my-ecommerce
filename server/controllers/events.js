@@ -31,7 +31,6 @@ const getEvents = async (req, res) => {
 
 const logEvent = async (req, res) => {
     const { userId, eventType, productId, metadata } = req.body;
-    console.log('logEvent called with:', { userId, eventType, productId, metadata });
     try {
         const newEvent = new Event({
             userId,
@@ -41,7 +40,6 @@ const logEvent = async (req, res) => {
         });
 
         const savedEvent = await newEvent.save();
-        console.log('Event saved:', savedEvent);
         res.status(201).json(savedEvent);
     } catch (error) {
         console.error('Error in logEvent:', error);

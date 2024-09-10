@@ -60,7 +60,11 @@ const ProductDetails = () => {
                 setCanReview(hasPurchased && !reviewed && isDelivered);
 
                 // track event
-                trackEvent('view', product._id, user.id, { source: 'homepage' })
+                if (!user.isAdmin) {
+                    // track event for client users only
+                    trackEvent('view', product._id, user.id, { source: 'product_details' })
+                }
+
             } catch (err) {
                 console.error(err);
             }
@@ -76,8 +80,6 @@ const ProductDetails = () => {
         try {
             // Call the API to update the review in the backend
             const updated = await updateReview(updatedReview._id, updatedReview);
-            console.log('updated:', updated);
-            console.log('updatedReview:', updatedReview);
             // Update the local state with the updated review
             setReviews((prevReviews) =>
                 prevReviews.map((review) =>
@@ -164,7 +166,7 @@ const ProductDetails = () => {
                         <Button
                             size="small"
                             color="primary"
-                            onClick={() => addToCart(product)}
+                            onClick={() => addToCart(product, user)}
                             disabled={product.availability !== 'In Stock' || product.quantity <= 0}
                         >
                             Add to Cart

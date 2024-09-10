@@ -25,7 +25,6 @@ export const getWeeklySales = async (req, res) => {
 }
 
 export const getMonthlySales = async (req, res) => {
-    console.log('Fetching monthly sales...');
     try {
         const sales = await Order.aggregate([
             {
@@ -42,7 +41,6 @@ export const getMonthlySales = async (req, res) => {
             },
             { $sort: { _id: 1 } }, // Order by month
         ]);
-        console.log('Received monthly data:', sales);
         res.json(sales);
     } catch (error) {
         console.error('Error fetching monthly sales:', error);
@@ -52,7 +50,6 @@ export const getMonthlySales = async (req, res) => {
 
 
 export const getQuarterlySales = async (req, res) => {
-    console.log('Fetching quarterly sales...');
     try {
         const sales = await Order.aggregate([
             {
@@ -91,7 +88,6 @@ export const getQuarterlySales = async (req, res) => {
             { $sort: { '_id.quarter': 1 } }, // Ordina per trimestre
         ]);
 
-        console.log('Received quarterly data:', sales);
         res.json(sales);
     } catch (error) {
         console.error('Error fetching quarterly sales:', error);

@@ -8,7 +8,7 @@ export const getEvents = async (startDate, endDate) => {
     try {
         const response = await axios.get(`${serverURL}/events`, {
             ...initAuthorizationHeader(),
-            params: { startDate, endDate } // I parametri vanno passati qui
+            params: { startDate, endDate } 
         });
         return response.data;
     } catch (error) {

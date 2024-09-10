@@ -6,11 +6,9 @@ import serverURL from "../config/serverURL";
 import { initAuthorizationHeader } from '../config/initAuthorizationHeader';
 
 export const getUserWishlists = async (user) => {
-    console.log("getUserWishLists() - user:", user);
     try {
         initAuthorizationHeader();
         const response = await axios.get(`${serverURL}/wishlists`, { user });
-        console.log("getUserWishLists() - response.data:", response.data);
         return response.data;
     } catch (error) {
         return { error: error.response.data.error };

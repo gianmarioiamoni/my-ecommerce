@@ -1,5 +1,8 @@
 import React, { createContext, useReducer, useEffect } from 'react';
 
+import { trackEvent } from '../services/eventsServices';
+
+
 const CartContext = createContext();
 
 const cartReducer = (state, action) => {
@@ -7,6 +10,7 @@ const cartReducer = (state, action) => {
         case 'ADD_TO_CART':
             const existingProduct = state.cart.find(item => item._id === action.product._id);
             if (existingProduct) {
+                // track event
                 return {
                     ...state,
                     cart: state.cart.map(item =>
@@ -16,12 +20,16 @@ const cartReducer = (state, action) => {
                     )
                 };
             } else {
+                // track event
+                trackEvent('add_to_cart_new', action.product._id, action.user.id, action.product.quantity);
                 return {
                     ...state,
                     cart: [...state.cart, { ...action.product, quantity: 1, maxQuantityError: false }]
                 };
             }
         case 'REMOVE_FROM_CART':
+            // track event
+            trackEvent('remove_from_cart', action.product._id, user.id, action.product.quantity);
             return {
                 ...state,
                 cart: state.cart.filter(product => product._id !== action.productId)
@@ -65,8 +73,8 @@ const CartProvider = ({ children }) => {
         localStorage.setItem('cart', JSON.stringify(state.cart));
     }, [state.cart]);
 
-    const addToCart = (product) => {
-        dispatch({ type: 'ADD_TO_CART', product });
+    const addToCart = (product, user) => {
+        dispatch({ type: 'ADD_TO_CART', product, user });
     };
 
     const removeFromCart = (productId) => {

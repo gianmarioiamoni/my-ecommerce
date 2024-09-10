@@ -16,7 +16,6 @@ export const getWeeklySales = async () => {
 export const getMonthlySales = async () => {
     try {
         const response = await axios.get(`${serverURL}/statistics/sales/monthly`, initAuthorizationHeader());
-        console.log("response.data", response.data);
         return response.data;
     } catch (error) {
         console.error(error);

@@ -3,12 +3,8 @@ import { Link } from 'react-router-dom';
 import { getAllProducts } from '../../services/productsServices';
 import {
     Grid, Card, CardContent, CardMedia, Typography, Button, Container, Box,
-    TextField, Select, MenuItem, FormControl, InputLabel, useMediaQuery, useTheme,
-    IconButton, Menu, MenuItem as DropdownItem, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider,
+    TextField, Select, MenuItem, FormControl, InputLabel, useMediaQuery, useTheme
 } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import AddIcon from '@mui/icons-material/Add';
 
 import { CartContext } from '../../contexts/CartContext';
 import { useCategories } from '../../contexts/CategoriesContext';
@@ -47,7 +43,6 @@ const ProductList = () => {
                 });
                 setProducts(products);
                 setFilteredProducts(products);
-                console.log("products: ", products)
             } catch (error) {
                 console.error(error);
             }
@@ -246,7 +241,7 @@ const ProductList = () => {
                                 {user && !user.isAdmin &&
                                     <AddToCartButton
                                         isInCart={isInCart(product._id)}
-                                        addToCart={() => addToCart(product)}
+                                        addToCart={() => addToCart(product, user)}
                                         removeFromCart={() => removeFromCart(product._id)}
                                         isDisabled={product.availability !== 'In Stock' || product.quantity <= 0}
                                     />

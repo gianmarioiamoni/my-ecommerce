@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useWishlist } from '../../contexts/WishListContext';
-import { CartContext } from '../../contexts/CartContext';
+
 import {
     Container, List, ListItem, ListItemText, IconButton, Typography, Box, Paper, Button,
     Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Tooltip, TextField
@@ -8,6 +7,11 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+
+import { useWishlist } from '../../contexts/WishListContext';
+import { CartContext } from '../../contexts/CartContext';
+import { AuthContext } from '../../contexts/AuthContext';
+
 
 const WishlistPage = () => {
     const {
@@ -19,6 +23,7 @@ const WishlistPage = () => {
     } = useWishlist();
     
     const { addToCart } = useContext(CartContext);
+    const { user } = useContext(AuthContext);
 
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openCreateDialog, setOpenCreateDialog] = useState(false);
@@ -105,7 +110,7 @@ const WishlistPage = () => {
 
                                     <Box sx={{ display: 'flex', gap: 1 }}>
                                         <Tooltip title="Add to Cart">
-                                            <IconButton onClick={() => addToCart(product)} size="small">
+                                            <IconButton onClick={() => addToCart(product, user)} size="small">
                                                 <AddShoppingCartIcon fontSize="small" />
                                             </IconButton>
                                         </Tooltip>
