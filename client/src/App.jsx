@@ -2,6 +2,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import en from './locales/en.json';
+import it from './locales/it.json';
+
 import Register from './components/users/Register';
 import Login from './components/users/Login';
 import EditProductForm from './components/products/EditProductForm';
@@ -33,6 +39,20 @@ import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/users/PrivateRoute';
 
 import { WishlistProvider } from './contexts/WishListContext';
+
+
+// i18next initialization
+i18n.use(initReactI18next).init({
+  resources: {
+    en: { translation: en },
+    it: { translation: it },
+  },
+  lng: 'en', // default language 
+  fallbackLng: 'en', // fallback language
+  interpolation: {
+    escapeValue: false, // not needed for react as it escapes by default to prevent xss attack
+  },
+});
 
 const App = () => {
   return (

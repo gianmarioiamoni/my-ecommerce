@@ -21,7 +21,7 @@ const cartReducer = (state, action) => {
                 };
             } else {
                 // track event
-                trackEvent('add_to_cart_new', action.product._id, action.user.id, action.product.quantity);
+                trackEvent('add_to_cart_new', action.product._id, action.user.id);
                 return {
                     ...state,
                     cart: [...state.cart, { ...action.product, quantity: 1, maxQuantityError: false }]
@@ -29,7 +29,7 @@ const cartReducer = (state, action) => {
             }
         case 'REMOVE_FROM_CART':
             // track event
-            trackEvent('remove_from_cart', action.product._id, user.id, action.product.quantity);
+            trackEvent('remove_from_cart', action.productId, action.user.id);
             return {
                 ...state,
                 cart: state.cart.filter(product => product._id !== action.productId)
@@ -77,8 +77,8 @@ const CartProvider = ({ children }) => {
         dispatch({ type: 'ADD_TO_CART', product, user });
     };
 
-    const removeFromCart = (productId) => {
-        dispatch({ type: 'REMOVE_FROM_CART', productId });
+    const removeFromCart = (productId, user) => {
+        dispatch({ type: 'REMOVE_FROM_CART', productId, user });
     };
 
     const updateQuantity = (id, quantity) => {

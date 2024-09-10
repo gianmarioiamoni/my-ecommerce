@@ -158,7 +158,7 @@ const ProductDetails = () => {
                 </CardContent>
                 <CardActions>
                     {user && !user.isAdmin && isInCart && (
-                        <Button size="small" color="secondary" onClick={() => removeFromCart(product._id)}>
+                        <Button size="small" color="secondary" onClick={() => removeFromCart(product._id, user)}>
                             Remove from Cart
                         </Button>
                     )}

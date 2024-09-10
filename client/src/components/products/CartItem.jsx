@@ -1,10 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { Button, Card, CardContent, Typography, TextField, Grid, Box } from '@mui/material';
+import { Button, Card, CardContent, Typography, TextField, Box } from '@mui/material';
 import { CartContext } from '../../contexts/CartContext';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const CartItem = ({ product }) => {
     const { updateQuantity, removeFromCart } = useContext(CartContext);
     const [error, setError] = useState(false);
+    const { user } = useContext(AuthContext);
 
     const handleQuantityChange = (event) => {
         const quantity = parseInt(event.target.value, 10);
@@ -42,7 +44,7 @@ const CartItem = ({ product }) => {
                         sx={{ width: '100px', marginRight: 2 }}
                     />
                     <Button
-                        onClick={() => removeFromCart(product._id)}
+                        onClick={() => removeFromCart(product._id, user)}
                         variant="contained"
                         color="secondary"
                     >

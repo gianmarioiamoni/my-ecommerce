@@ -6,6 +6,8 @@ import {
     TextField, Select, MenuItem, FormControl, InputLabel, useMediaQuery, useTheme
 } from '@mui/material';
 
+import { useTranslation } from 'react-i18next';
+
 import { CartContext } from '../../contexts/CartContext';
 import { useCategories } from '../../contexts/CategoriesContext';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -33,6 +35,10 @@ const ProductList = () => {
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+    // translation 
+    const { t, i18n } = useTranslation();
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -92,6 +98,11 @@ const ProductList = () => {
     useEffect(() => {
         applyFiltersAndSorting();
     }, [searchQuery, selectedCategory, products]);
+    
+
+    const handleLanguageChange = (lang) => {
+        i18n.changeLanguage(lang); 
+    };
 
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
@@ -242,7 +253,7 @@ const ProductList = () => {
                                     <AddToCartButton
                                         isInCart={isInCart(product._id)}
                                         addToCart={() => addToCart(product, user)}
-                                        removeFromCart={() => removeFromCart(product._id)}
+                                        removeFromCart={() => removeFromCart(product._id, user)}
                                         isDisabled={product.availability !== 'In Stock' || product.quantity <= 0}
                                     />
                                 }

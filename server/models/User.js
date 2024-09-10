@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema({
     photoUrl: { type: String, default: '' },
     addresses: [addressSchema],
     paymentMethods: [paymentMethodSchema],
+    language: { type: String, default: 'en' }, // en, it
+    currency: { type: String, default: 'EUR' }, // EUR, USD
     resetPasswordToken: String,
     resetPasswordExpires: Date
 });

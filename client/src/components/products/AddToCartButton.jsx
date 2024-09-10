@@ -1,11 +1,16 @@
 import React from 'react';
 import { Button } from '@mui/material';
 
+import { useTranslation } from 'react-i18next';
+
 const AddToCartButton = ({ isInCart, addToCart, removeFromCart, isDisabled }) => {
+
+    const { t, i18n } = useTranslation();
 
     return isInCart ? (
         <Button size="small" color="secondary" onClick={removeFromCart}>
-            Remove from Cart
+            {/* Remove from Cart */}
+            {t('removeFromCart')}
         </Button>
     ) : (
         <Button
@@ -14,7 +19,7 @@ const AddToCartButton = ({ isInCart, addToCart, removeFromCart, isDisabled }) =>
             onClick={addToCart}
             disabled={isDisabled}
         >
-            Add to Cart
+            {t('addToCart')}
         </Button>
     );
 };
