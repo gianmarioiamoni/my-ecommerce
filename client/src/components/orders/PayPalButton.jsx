@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const PayPalButton = ({ amount, onSuccess }) => {
+    const { t } = useTranslation();
     const paypalRef = useRef(null);
     const isButtonRendered = useRef(false);
 
@@ -24,12 +26,12 @@ const PayPalButton = ({ amount, onSuccess }) => {
                     });
                 },
                 onError: (err) => {
-                    console.error("Error during payment: ", err);
+                    console.error(t('paypal.error_during_payment'), err);
                 }
             }).render(paypalRef.current);
             isButtonRendered.current = true;
         }
-    }, [amountNumber, onSuccess]);
+    }, [amountNumber, onSuccess, t]);
 
     return <div ref={paypalRef} style={{ marginTop: '30px' }}></div>;
 };

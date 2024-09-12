@@ -1,8 +1,9 @@
+// Quando l'utente clicca sul link di reset della password, verrà reindirizzato a una pagina dove potrà inserire una nuova password. Creiamo un nuovo componente `ResetPassword.js` per gestire questa funzionalità.
+
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
 import { resetPassword } from '../../services/usersServices';
-import { useTranslation } from 'react-i18next';
 
 const ResetPassword = () => {
     const { token } = useParams(); // Ottieni il token dalla URL
@@ -12,7 +13,6 @@ const ResetPassword = () => {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
     const navigate = useNavigate();
-    const { t } = useTranslation();
 
     const handleChange = (e) => {
         if (e.target.name === 'password') {
@@ -25,7 +25,7 @@ const ResetPassword = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            setSnackbarMessage(t('resetPassword.passwordMismatch'));
+            setSnackbarMessage("Passwords do not match.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
             return;
@@ -33,13 +33,13 @@ const ResetPassword = () => {
 
         try {
             await resetPassword(token, password);
-            setSnackbarMessage(t('resetPassword.resetSuccess'));
+            setSnackbarMessage("Password reset successful. You can now login with your new password.");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
             navigate('/login');
         } catch (error) {
             console.error("Error resetting password:", error);
-            setSnackbarMessage(t('resetPassword.resetFailed'));
+            setSnackbarMessage("Failed to reset password. Please try again.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         }
@@ -59,32 +59,13 @@ const ResetPassword = () => {
                 }}
             >
                 <Typography variant="h4" align="center" gutterBottom>
-                    {t('resetPassword.title')}
+                    Reset Password
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField
-                        name="password"
-                        label={t('resetPassword.newPassword')}
-                        type="password"
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        name="confirmPassword"
-                        label={t('resetPassword.confirmPassword')}
-                        type="password"
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                    >
-                        {t('resetPassword.resetButton')}
+                    <TextField name="password" label="New Password" type="password" onChange={handleChange} fullWidth margin="normal" />
+                    <TextField name="confirmPassword" label="Confirm New Password" type="password" onChange={handleChange} fullWidth margin="normal" />
+                    <Button type="submit" variant="contained" color="primary" fullWidth>
+                        Reset Password
                     </Button>
                 </form>
             </Box>
@@ -102,4 +83,3 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
-

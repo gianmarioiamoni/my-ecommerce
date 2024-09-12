@@ -4,9 +4,16 @@ import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert, 
 import { createProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
 
-
 const AddNewProduct = () => {
-    const [formData, setFormData] = useState({ name: '', description: '', price: '', imageUrls: [], availability: '', category: '' });
+    const [formData, setFormData] = useState({
+        name: '',
+        description: '',
+        price: '',
+        imageUrls: [],
+        availability: '',
+        category: '',
+        quantity: ''  // Aggiunto il campo quantity
+    });
     const [localImages] = useState([]);
     const [url, setUrl] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
@@ -19,7 +26,6 @@ const AddNewProduct = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if mandatory fields are filled
         const isNameValid = formData.name.trim() !== '';
         const isDescriptionValid = formData.description.trim() !== '';
         const isPriceValid = formData.price.trim() !== '';
@@ -64,7 +70,7 @@ const AddNewProduct = () => {
                     imageUrls: [...prevFormData.imageUrls, data.url],
                 }));
             } catch (error) {
-                console.error(error);
+                console.error('Error uploading file:', error);
                 setErrorMessage(true);
                 setTimeout(() => {
                     setErrorMessage(false);
@@ -173,6 +179,17 @@ const AddNewProduct = () => {
                             <MenuItem value="Pre-order">Pre-order</MenuItem>
                         </Select>
                     </FormControl>
+                    {/* Campo per la quantità */}
+                    <TextField
+                        name="quantity"
+                        label="Quantity"
+                        type="number"
+                        onChange={handleChange}
+                        value={formData.quantity}
+                        fullWidth
+                        required
+                        disabled={formData.availability !== 'In Stock'} // Disabilita se availability non è "In Stock"
+                    />
                     <FormControl fullWidth>
                         <InputLabel id="category-label">Category</InputLabel>
                         <Select

@@ -1,13 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Container, Typography, Button, List, ListItem, ListItemText, Grid, Box } from '@mui/material';
 import { CartContext } from '../../contexts/CartContext';
-import { useTranslation } from 'react-i18next';
 import PayPalButton from './PayPalButton';
 import CreditCardForm from './CreditCardForm';
 
 const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId }) => {
     const { cart } = useContext(CartContext);
-    const { t } = useTranslation();
     const [total, setTotal] = useState(0);
 
     useEffect(() => {
@@ -17,7 +15,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
     return (
         <Container maxWidth="lg" style={{ marginTop: '40px' }}>
             <Typography variant="h4" component="h1" gutterBottom align="center">
-                {t('reviewOrder.title')}
+                Review and Payment
             </Typography>
 
             <Grid container spacing={4} justifyContent="center">
@@ -25,7 +23,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                 <Grid item xs={12} md={6}>
                     <Box style={{ padding: '20px', minHeight: '300px' }}>
                         <Typography variant="h6" gutterBottom fontWeight={'bold'}>
-                            {t('reviewOrder.shippingDetails')}
+                            Shipping Details
                         </Typography>
                         <Typography variant="body1">{shippingData.fullName}</Typography>
                         <Typography variant="body1">{shippingData.address}</Typography>
@@ -33,13 +31,13 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                             {shippingData.city}, {shippingData.postalCode}, {shippingData.country}
                         </Typography>
                         <Typography variant="h6" gutterBottom style={{ marginTop: '20px' }}>
-                            {t('reviewOrder.paymentMethod')}
+                            Payment Method
                         </Typography>
                         <Typography variant="body1">
-                            {paymentMethod === 'paypal' ? t('reviewOrder.paypal') : t('reviewOrder.creditCard')}
+                            {paymentMethod === 'paypal' ? 'PayPal' : 'Credit Card'}
                         </Typography>
                         <Typography variant="h6" gutterBottom style={{ marginTop: '20px' }}>
-                            {t('reviewOrder.orderItems')}
+                            Order Items
                         </Typography>
                         <List>
                             {cart.map((product) => (
@@ -49,10 +47,10 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                             ))}
                         </List>
                         <Typography variant="h6" gutterBottom>
-                            {t('reviewOrder.total')}: ${total}
+                            Total: ${total}
                         </Typography>
                         <Button variant="contained" color="secondary" onClick={prevStep} style={{ marginTop: '20px' }}>
-                            {t('reviewOrder.back')}
+                            Back
                         </Button>
                     </Box>
                 </Grid>
@@ -61,7 +59,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                 <Grid item xs={12} md={6}>
                     <Box style={{ padding: '20px', minHeight: '300px' }}>
                         <Typography variant="h6" gutterBottom fontWeight={"bold"}>
-                            {t('reviewOrder.proceedToPayment')}
+                            Proceed to Payment
                         </Typography>
                         {paymentMethod === 'paypal' ? (
                             <PayPalButton

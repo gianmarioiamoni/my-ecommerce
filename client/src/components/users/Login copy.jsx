@@ -1,11 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const Login = () => {
-    const { t } = useTranslation();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -22,13 +20,13 @@ const Login = () => {
         e.preventDefault();
         try {
             await login(formData);
-            setSnackbarMessage(t('login.successMessage'));
+            setSnackbarMessage("User login successful!");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
             navigate('/products');
         } catch (error) {
             console.error("Login error:", error);
-            setSnackbarMessage(t('login.errorMessage'));
+            setSnackbarMessage("Login failed. Please check your credentials.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         }
@@ -48,34 +46,20 @@ const Login = () => {
                 }}
             >
                 <Typography variant="h4" align="center" gutterBottom>
-                    {t('login.title')}
+                    Login
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField
-                        name="email"
-                        label={t('login.emailLabel')}
-                        type="email"
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        name="password"
-                        label={t('login.passwordLabel')}
-                        type="password"
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
+                    <TextField name="email" label="Email" type="email" onChange={handleChange} fullWidth margin="normal" />
+                    <TextField name="password" label="Password" type="password" onChange={handleChange} fullWidth margin="normal" />
                     <Button type="submit" variant="contained" color="primary" fullWidth>
-                        {t('login.button')}
+                        Login
                     </Button>
                 </form>
                 <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-                    {t('login.registerPrompt')} <Link to="/register">{t('login.registerLink')}</Link>
+                    Don't have an account? <Link to="/register">Register</Link>
                 </Typography>
                 <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-                    {t('login.forgotPasswordPrompt')} <Link to="/forgot-password">{t('login.forgotPasswordLink')}</Link>
+                    Forgot your password? <Link to="/forgot-password">Reset it here</Link>
                 </Typography>
             </Box>
             <Snackbar
@@ -92,3 +76,4 @@ const Login = () => {
 };
 
 export default Login;
+

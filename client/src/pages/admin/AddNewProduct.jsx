@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Paper, Snackbar, Alert, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { createProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
+import { useTranslation } from 'react-i18next';
 
 const AddNewProduct = () => {
+    const { t } = useTranslation();
+
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -22,7 +25,6 @@ const AddNewProduct = () => {
     const [isUploading, setIsUploading] = useState(false);
 
     const { categories } = useCategories();
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -98,12 +100,12 @@ const AddNewProduct = () => {
         <Container maxWidth="sm">
             <Paper elevation={3} sx={{ padding: 4, mt: 4 }}>
                 <Typography variant="h4" gutterBottom align="center">
-                    Add a New Product
+                    {t('addProduct.title')}
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <TextField
                         name="name"
-                        label="Name"
+                        label={t('addProduct.name')}
                         onChange={handleChange}
                         value={formData.name}
                         fullWidth
@@ -111,7 +113,7 @@ const AddNewProduct = () => {
                     />
                     <TextField
                         name="description"
-                        label="Description"
+                        label={t('addProduct.description')}
                         onChange={handleChange}
                         value={formData.description}
                         fullWidth
@@ -119,7 +121,7 @@ const AddNewProduct = () => {
                     />
                     <TextField
                         name="price"
-                        label="Price"
+                        label={t('addProduct.price')}
                         type="number"
                         onChange={handleChange}
                         value={formData.price}
@@ -129,7 +131,7 @@ const AddNewProduct = () => {
                     {formData.imageUrls.map((url, index) => (
                         <TextField
                             key={index}
-                            label={`Image URL ${index + 1}${index === 0 ? '*' : ''}`}
+                            label={`${t('addProduct.imageUrl')} ${index + 1}${index === 0 ? '*' : ''}`}
                             value={url}
                             onChange={(e) => handleImageUrlChange(index, e)}
                             fullWidth
@@ -138,13 +140,13 @@ const AddNewProduct = () => {
                     ))}
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                         <TextField
-                            label="New Image URL"
+                            label={t('addProduct.newImageUrl')}
                             value={url}
                             onChange={handleUrlChange}
                             fullWidth
                         />
                         <Button type="button" variant="outlined" onClick={handleAddUrl}>
-                            Add Image URL
+                            {t('addProduct.addImageUrl')}
                         </Button>
                     </Box>
                     <Button
@@ -153,7 +155,7 @@ const AddNewProduct = () => {
                         sx={{ mt: 2 }}
                         disabled={isUploading} // disable the button while the image is being uploaded
                     >
-                        {isUploading ? 'Loading Image...' : 'Upload Local Images'}
+                        {isUploading ? t('addProduct.loadingImage') : t('addProduct.uploadLocalImages')}
                         <input type="file" multiple hidden onChange={handleFileChange} />
                     </Button>
                     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 2 }}>
@@ -165,24 +167,24 @@ const AddNewProduct = () => {
                         ))}
                     </Box>
                     <FormControl fullWidth>
-                        <InputLabel id="availability-label">Availability*</InputLabel>
+                        <InputLabel id="availability-label">{t('addProduct.availability')}*</InputLabel>
                         <Select
                             labelId="availability-label"
                             name="availability"
                             value={formData.availability}
                             onChange={handleChange}
-                            label="Availability*"
+                            label={t('addProduct.availability') + '*'}
                             required
                         >
-                            <MenuItem value="In Stock">In Stock</MenuItem>
-                            <MenuItem value="Out of Stock">Out of Stock</MenuItem>
-                            <MenuItem value="Pre-order">Pre-order</MenuItem>
+                            <MenuItem value="In Stock">{t('addProduct.inStock')}</MenuItem>
+                            <MenuItem value="Out of Stock">{t('addProduct.outOfStock')}</MenuItem>
+                            <MenuItem value="Pre-order">{t('addProduct.preOrder')}</MenuItem>
                         </Select>
                     </FormControl>
                     {/* Campo per la quantità */}
                     <TextField
                         name="quantity"
-                        label="Quantity"
+                        label={t('addProduct.quantity')}
                         type="number"
                         onChange={handleChange}
                         value={formData.quantity}
@@ -191,13 +193,13 @@ const AddNewProduct = () => {
                         disabled={formData.availability !== 'In Stock'} // Disabilita se availability non è "In Stock"
                     />
                     <FormControl fullWidth>
-                        <InputLabel id="category-label">Category</InputLabel>
+                        <InputLabel id="category-label">{t('addProduct.category')}</InputLabel>
                         <Select
                             labelId="category-label"
                             name="category"
                             value={formData.category}
                             onChange={handleChange}
-                            label="Category"
+                            label={t('addProduct.category')}
                         >
                             {categories.map((category, index) => (
                                 <MenuItem key={index} value={category}>{category}</MenuItem>
@@ -205,18 +207,18 @@ const AddNewProduct = () => {
                         </Select>
                     </FormControl>
                     <Button type="submit" variant="contained" color="primary" disabled={!isFormValid}>
-                        Add Product
+                        {t('addProduct.addProduct')}
                     </Button>
                 </Box>
             </Paper>
             <Snackbar open={successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage(false)}>
                 <Alert onClose={() => setSuccessMessage(false)} severity="success" sx={{ width: '100%' }}>
-                    Product created successfully!
+                    {t('addProduct.successMessage')}
                 </Alert>
             </Snackbar>
             <Snackbar open={errorMessage} autoHideDuration={3000} onClose={() => setErrorMessage(false)}>
                 <Alert onClose={() => setErrorMessage(false)} severity="error" sx={{ width: '100%' }}>
-                    Error uploading image. Please try again.
+                    {t('addProduct.errorMessage')}
                 </Alert>
             </Snackbar>
         </Container>
@@ -224,3 +226,4 @@ const AddNewProduct = () => {
 };
 
 export default AddNewProduct;
+

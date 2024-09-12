@@ -4,10 +4,8 @@ import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert, 
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getProductById, updateProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
-import { useTranslation } from 'react-i18next'; // Importa useTranslation
 
 const EditProductForm = () => {
-    const { t } = useTranslation(); // Usa useTranslation
     const { id } = useParams();
     const { categories } = useCategories();
     const [product, setProduct] = useState({
@@ -127,13 +125,13 @@ const EditProductForm = () => {
     return (
         <Container maxWidth="md" sx={{ mt: 5 }}>
             <Typography variant="h4" gutterBottom align="center">
-                {t('editProduct.editProduct')}
+                Edit Product
             </Typography>
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label={t('editProduct.name')}
+                            label="Name"
                             name="name"
                             value={product.name}
                             onChange={handleChange}
@@ -146,7 +144,7 @@ const EditProductForm = () => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField
-                            label={t('editProduct.price')}
+                            label="Price"
                             name="price"
                             type="number"
                             value={product.price}
@@ -160,7 +158,7 @@ const EditProductForm = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
-                            label={t('editProduct.description')}
+                            label="Description"
                             name="description"
                             value={product.description}
                             onChange={handleChange}
@@ -175,7 +173,7 @@ const EditProductForm = () => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <FormControl fullWidth margin="normal" variant="outlined">
-                            <InputLabel id="availability-label">{t('editProduct.availability')}*</InputLabel>
+                            <InputLabel id="availability-label">Availability*</InputLabel>
                             <Select
                                 labelId="availability-label"
                                 name="availability"
@@ -184,113 +182,101 @@ const EditProductForm = () => {
                                 required
                                 sx={{ bgcolor: '#f9f9f9' }}
                             >
-                                <MenuItem value="In Stock">{t('editProduct.inStock')}</MenuItem>
-                                <MenuItem value="Out of Stock">{t('editProduct.outOfStock')}</MenuItem>
-                                <MenuItem value="Pre-order">{t('editProduct.preOrder')}</MenuItem>
+                                <MenuItem value="In Stock">In Stock</MenuItem>
+                                <MenuItem value="Out of Stock">Out of Stock</MenuItem>
+                                <MenuItem value="Pre-order">Pre-order</MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    {product.availability === 'In Stock' && (
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Quantity"
+                                name="quantity"
+                                type="number"
+                                value={product.quantity}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                                required
+                                variant="outlined"
+                                sx={{ bgcolor: '#f9f9f9' }}
+                            />
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
                         <FormControl fullWidth margin="normal" variant="outlined">
-                            <InputLabel id="category-label">{t('editProduct.category')}</InputLabel>
+                            <InputLabel id="category-label">Category</InputLabel>
                             <Select
                                 labelId="category-label"
                                 name="category"
-                                value={product.category}
+                                value={product.category || ''}
                                 onChange={handleChange}
-                                required
                                 sx={{ bgcolor: '#f9f9f9' }}
                             >
-                                {categories.map(cat => (
-                                    <MenuItem key={cat._id} value={cat._id}>{cat.name}</MenuItem>
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {categories.map((category, index) => (
+                                    <MenuItem key={index} value={category}>{category}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            label={t('editProduct.quantity')}
-                            name="quantity"
-                            type="number"
-                            value={product.quantity}
-                            onChange={handleChange}
-                            fullWidth
-                            margin="normal"
-                            required
-                            variant="outlined"
-                            sx={{ bgcolor: '#f9f9f9' }}
-                        />
-                    </Grid>
                     <Grid item xs={12}>
-                        <Box mb={2}>
-                            {product.imageUrls.map((url, index) => (
-                                <Box key={index} mb={2} display="flex" alignItems="center">
-                                    <TextField
-                                        label={t('editProduct.images')}
-                                        value={url}
-                                        onChange={(e) => handleImageChange(e, index)}
-                                        fullWidth
-                                        margin="normal"
-                                        variant="outlined"
-                                        sx={{ bgcolor: '#f9f9f9' }}
-                                    />
-                                    <Button
-                                        component="label"
-                                        variant="contained"
-                                        color="primary"
-                                        sx={{ ml: 2 }}
-                                    >
-                                        {t('editProduct.addImage')}
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            hidden
-                                            onChange={(e) => handleFileChange(e, index)}
-                                        />
-                                    </Button>
-                                    <IconButton
-                                        color="secondary"
-                                        onClick={() => handleRemoveImage(index)}
-                                        sx={{ ml: 2 }}
-                                    >
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Box>
-                            ))}
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                onClick={handleAddImage}
-                                sx={{ mb: 2 }}
-                            >
-                                {t('editProduct.addImage')}
-                            </Button>
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            disabled={!isFormValid || isUploading}
-                        >
-                            {t('editProduct.saveChanges')}
+                        <Typography variant="h6" gutterBottom>
+                            Images
+                        </Typography>
+                        {product.imageUrls.map((url, index) => (
+                            <Box key={index} display="flex" alignItems="center" mb={2}>
+                                <img src={url} alt={`Product ${index + 1}`} style={{ width: '100px', height: '100px', marginRight: '10px', borderRadius: '8px', objectFit: 'cover' }} />
+                                <TextField
+                                    label={`Image URL ${index + 1}`}
+                                    value={url}
+                                    onChange={(e) => handleImageChange(e, index)}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                    variant="outlined"
+                                    sx={{ bgcolor: '#f9f9f9' }}
+                                />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleFileChange(e, index)}
+                                    style={{ marginLeft: '10px' }}
+                                />
+                                <IconButton onClick={() => handleRemoveImage(index)} sx={{ ml: 1 }}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Box>
+                        ))}
+                        <Button onClick={handleAddImage} variant="outlined" color="primary" sx={{ mb: 2, mt: 1 }}>
+                            Add Image
                         </Button>
                     </Grid>
                 </Grid>
+                <Box display="flex" justifyContent="center" mt={4}>
+                    <Button type="submit" variant="contained" color="primary" disabled={!isFormValid || isUploading}>
+                        {isUploading ? 'Loading Image...' : 'Save Changes'}
+                    </Button>
+                </Box>
             </form>
-            <Snackbar open={successMessage} autoHideDuration={3000}>
-                <Alert severity="success">{t('editProduct.successMessage')}</Alert>
+            <Snackbar open={successMessage} autoHideDuration={3000} onClose={() => setSuccessMessage(false)}>
+                <Alert onClose={() => setSuccessMessage(false)} severity="success" sx={{ width: '100%' }}>
+                    Product updated successfully!
+                </Alert>
             </Snackbar>
-            <Snackbar open={errorMessage} autoHideDuration={3000}>
-                <Alert severity="error">{t('editProduct.errorMessage')}</Alert>
+            <Snackbar open={errorMessage} autoHideDuration={3000} onClose={() => setErrorMessage(false)}>
+                <Alert onClose={() => setErrorMessage(false)} severity="error" sx={{ width: '100%' }}>
+                    Error uploading image. Please try again.
+                </Alert>
             </Snackbar>
         </Container>
     );
 };
 
 export default EditProductForm;
-
 
 
 

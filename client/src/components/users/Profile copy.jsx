@@ -3,11 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
 import { uploadProfilePicture } from '../../services/usersServices';
-import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
     const { user, update, remove } = useContext(AuthContext);
-    const { t } = useTranslation();
     const [formData, setFormData] = useState({ name: user.name, email: user.email, currentPassword: '', newPassword: '' });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -23,6 +21,7 @@ const Profile = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -34,11 +33,11 @@ const Profile = () => {
                 updateData.password = formData.newPassword;
             }
             await update(updateData, formData.currentPassword);
-            setSnackbarMessage(t('profile.snackbarUpdateSuccess'));
+            setSnackbarMessage("Profile updated successfully!");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
         } catch (error) {
-            setSnackbarMessage(t('profile.snackbarUpdateError'));
+            setSnackbarMessage("Profile update failed. Please try again.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         }
@@ -53,11 +52,11 @@ const Profile = () => {
             const response = await uploadProfilePicture(formData);
             const photoUrl = response.url;
             await update({ photoUrl });
-            setSnackbarMessage(t('profile.snackbarPictureUpdateSuccess'));
+            setSnackbarMessage("Profile picture updated successfully!");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
         } catch (error) {
-            setSnackbarMessage(t('profile.snackbarPictureUpdateError'));
+            setSnackbarMessage("Profile picture update failed. Please try again.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         }
@@ -66,12 +65,12 @@ const Profile = () => {
     const handleDeleteAccount = async () => {
         try {
             await remove();
-            setSnackbarMessage(t('profile.snackbarDeleteSuccess'));
+            setSnackbarMessage("Account deleted successfully!");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
             navigate('/');
         } catch (error) {
-            setSnackbarMessage(t('profile.snackbarDeleteError'));
+            setSnackbarMessage("Account deletion failed. Please try again.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         }
@@ -93,12 +92,12 @@ const Profile = () => {
                 }}
             >
                 <Typography variant="h4" align="center" gutterBottom>
-                    {t('profile.title')}
+                    Profile
                 </Typography>
                 <form onSubmit={handleSubmit}>
                     <TextField
                         name="name"
-                        label={t('profile.name')}
+                        label="Name"
                         value={formData.name}
                         onChange={handleChange}
                         fullWidth
@@ -107,7 +106,7 @@ const Profile = () => {
                     />
                     <TextField
                         name="email"
-                        label={t('profile.email')}
+                        label="Email"
                         type="email"
                         value={formData.email}
                         onChange={handleChange}
@@ -117,7 +116,7 @@ const Profile = () => {
                     />
                     <TextField
                         name="currentPassword"
-                        label={t('profile.currentPassword')}
+                        label="Current Password"
                         type="password"
                         value={formData.currentPassword}
                         onChange={handleChange}
@@ -127,19 +126,20 @@ const Profile = () => {
                     />
                     <TextField
                         name="newPassword"
-                        label={t('profile.newPassword')}
+                        label="New Password"
                         type="password"
                         value={formData.newPassword}
                         onChange={handleChange}
                         fullWidth
                         margin="normal"
                     />
+                    {/* Show link to manage shipping addresses and payment methods only if user is not an admin */}
                     {!user.isAdmin && (
                         <Link to="/manage-addresses-payments">
-                            {t('profile.manageAddresses')}
-                        </Link>
+                            Manage Shipping Addresses and Payment Methods
+                        </Link> 
                     )}
-
+                    
                     <Button
                         type="submit"
                         variant="contained"
@@ -148,7 +148,7 @@ const Profile = () => {
                         disabled={!isFormValid}
                         sx={{ mt: 4 }}
                     >
-                        {t('profile.updateProfile')}
+                        Update Profile
                     </Button>
                 </form>
                 <Button
@@ -157,7 +157,7 @@ const Profile = () => {
                     fullWidth
                     sx={{ mt: 2 }}
                 >
-                    {t('profile.uploadPicture')}
+                    Upload Profile Picture
                     <input
                         type="file"
                         hidden
@@ -172,7 +172,7 @@ const Profile = () => {
                         sx={{ mt: 2 }}
                         onClick={handleDeleteAccount}
                     >
-                        {t('profile.deleteAccount')}
+                        Delete Account
                     </Button>
                 )}
             </Box>

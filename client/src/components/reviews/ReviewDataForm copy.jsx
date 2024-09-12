@@ -1,11 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { createReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
-import { Button, TextField, Typography, Box, Rating, Alert, Snackbar } from '@mui/material';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import {
+    Button,
+    TextField,
+    Typography,
+    Box,
+    Rating,
+    Alert,
+    Snackbar
+} from '@mui/material';
 
 const ReviewDataForm = ({ productId, onReviewSubmit }) => {
-    const { t } = useTranslation(); // No need to specify a namespace here
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const { user } = useContext(AuthContext);
@@ -24,38 +30,38 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
                 setAlreadyReviewed(reviewed);
 
                 if (!hasPurchased) {
-                    setError(t('reviews.purchaseError'));
+                    setError('You can only review products you have purchased.');
                 } else if (reviewed) {
-                    setError(t('reviews.alreadyReviewedError'));
+                    setError('You have already reviewed this product.');
                 }
             } catch (err) {
-                setError(t('reviews.verificationError'));
+                setError('Error verifying purchase or review status.');
             }
         };
 
         if (user) {
             checkPermissions();
         }
-    }, [user, productId, t]);
+    }, [user, productId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
 
         if (!canReview) {
-            setError(t('reviews.cannotReviewError'));
+            setError('You cannot review this product because you have not purchased it or have already reviewed it.');
             return;
         }
 
         try {
             const submittedReview = await createReview(productId, { rating, comment });
             const newReview = { ...submittedReview, userId: { _id: user.id, name: user.name, photoUrl: user.photoUrl } };
-            setSuccessMessage(t('reviews.reviewSuccess'));
+            setSuccessMessage('Review submitted successfully!');
             setRating(0);
             setComment('');
             onReviewSubmit(newReview);
         } catch (error) {
-            setError(error.response?.data?.message || t('reviews.genericError'));
+            setError(error.response?.data?.message || 'An error occurred');
         }
     };
 
@@ -65,7 +71,7 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
     };
 
     if (!user) {
-        return <Alert severity="warning">{t('reviews.loginWarning')}</Alert>;
+        return <Alert severity="warning">You must be logged in to leave a review</Alert>;
     }
 
     return (
@@ -75,7 +81,7 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
             sx={{ mt: 3, p: 2, border: '1px solid #ccc', borderRadius: 2 }}
         >
             <Typography variant="h6" gutterBottom>
-                {t('reviews.leaveReview')}
+                Leave a Review
             </Typography>
             <Rating
                 name="rating"
@@ -83,18 +89,20 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
                 onChange={(e, newValue) => setRating(newValue)}
                 precision={1}
                 required
+                // disabled={alreadyReviewed}
                 disabled={!canReview}
             />
             <TextField
                 fullWidth
                 variant="outlined"
-                label={t('reviews.commentLabel')}
+                label="Comment"
                 multiline
                 rows={4}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 required
                 sx={{ mt: 2 }}
+                // disabled={alreadyReviewed}
                 disabled={!canReview}
             />
             {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
@@ -105,7 +113,7 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
                 sx={{ mt: 2 }}
                 disabled={!canReview}
             >
-                {t('reviews.submitReview')}
+                Submit Review
             </Button>
             <Snackbar open={Boolean(error)} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity="error">
@@ -123,4 +131,5 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
 };
 
 export default ReviewDataForm;
+
 

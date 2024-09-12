@@ -11,13 +11,11 @@ import {
     TextField,
 } from '@mui/material';
 import { Rating } from '@mui/material';
-import { Edit as EditIcon, Save as SaveIcon } from '@mui/icons-material'; // Importiamo le icone
+import { Edit as EditIcon, Save as SaveIcon } from '@mui/icons-material';  // Importiamo le icone
 import { AuthContext } from '../../contexts/AuthContext';
-import { useTranslation } from 'react-i18next'; // Importiamo useTranslation
 
 const ReviewList = ({ reviews, onEditReview }) => {
     const { user } = useContext(AuthContext);
-    const { t } = useTranslation(); // Hook per la traduzione
     const [editingReviewId, setEditingReviewId] = useState(null); // Keep track of the review being edited 
     const [editedRating, setEditedRating] = useState(0);
     const [editedComment, setEditedComment] = useState('');
@@ -38,13 +36,13 @@ const ReviewList = ({ reviews, onEditReview }) => {
     };
 
     if (reviews.length === 0) {
-        return <Typography>{t('reviews.noReviews')}</Typography>;
+        return <Typography>No reviews yet</Typography>;
     }
 
     return (
         <Box sx={{ mt: 3 }}>
             <Typography variant="h6" gutterBottom>
-                {t('reviews.customerReviews')}
+                Customer Reviews
             </Typography>
             <List>
                 {reviews.map((review) => (
@@ -55,7 +53,7 @@ const ReviewList = ({ reviews, onEditReview }) => {
                             ) : (
                                 <Avatar>{review.userId.name ? review.userId.name.charAt(0) : review.userId.email.charAt(0)}</Avatar>
                             )}
-
+                            
                             <ListItemText
                                 primary={
                                     <>
@@ -70,7 +68,7 @@ const ReviewList = ({ reviews, onEditReview }) => {
                                                 precision={0.5}
                                             />
                                         ) : (
-                                            <Rating value={review.rating} readOnly precision={0.5} sx={{ ml: 1 }} />
+                                            <Rating value={review.rating} readOnly precision={0.5} sx={{ ml: 1}} />
                                         )}
                                     </>
                                 }
@@ -119,4 +117,3 @@ const ReviewList = ({ reviews, onEditReview }) => {
 };
 
 export default ReviewList;
-

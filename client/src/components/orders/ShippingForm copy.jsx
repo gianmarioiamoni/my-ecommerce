@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
 import { getAddresses } from '../../services/usersServices';
-import { useTranslation } from 'react-i18next';
 
 const ShippingForm = ({ userId, nextStep }) => {
     const [shippingData, setShippingData] = useState({
@@ -14,7 +13,6 @@ const ShippingForm = ({ userId, nextStep }) => {
 
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState('');
-    const { t } = useTranslation();
 
     useEffect(() => {
         const fetchAddresses = async () => {
@@ -34,7 +32,7 @@ const ShippingForm = ({ userId, nextStep }) => {
                         });
                         setSelectedAddress(defaultAddress._id);
                     }
-                }
+                }  
             } catch (error) {
                 console.error(error);
             }
@@ -72,15 +70,15 @@ const ShippingForm = ({ userId, nextStep }) => {
     };
 
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="sm"> {/* Limita la larghezza del container */}
             <Box display="flex" flexDirection="column" alignItems="center" mt={4} mb={4}>
                 <Typography variant="h4" component="h1" gutterBottom align="center">
-                    {t('shippingForm.title')}
+                    Shipping Details
                 </Typography>
 
                 {addresses.length > 0 && (
                     <FormControl fullWidth margin="normal">
-                        <InputLabel id="address-select-label">{t('shippingForm.selectSavedAddress')}</InputLabel>
+                        <InputLabel id="address-select-label">Select a Saved Address</InputLabel>
                         <Select
                             labelId="address-select-label"
                             value={selectedAddress}
@@ -98,7 +96,7 @@ const ShippingForm = ({ userId, nextStep }) => {
                 <form onSubmit={handleSubmit} style={{ width: '100%', marginTop: '16px' }}>
                     <TextField
                         name="fullName"
-                        label={t('shippingForm.fullName')}
+                        label="Full Name"
                         fullWidth
                         margin="normal"
                         value={shippingData.fullName}
@@ -107,7 +105,7 @@ const ShippingForm = ({ userId, nextStep }) => {
                     />
                     <TextField
                         name="address"
-                        label={t('shippingForm.address')}
+                        label="Address"
                         fullWidth
                         margin="normal"
                         value={shippingData.address}
@@ -116,7 +114,7 @@ const ShippingForm = ({ userId, nextStep }) => {
                     />
                     <TextField
                         name="city"
-                        label={t('shippingForm.city')}
+                        label="City"
                         fullWidth
                         margin="normal"
                         value={shippingData.city}
@@ -125,7 +123,7 @@ const ShippingForm = ({ userId, nextStep }) => {
                     />
                     <TextField
                         name="postalCode"
-                        label={t('shippingForm.postalCode')}
+                        label="Postal Code"
                         fullWidth
                         margin="normal"
                         value={shippingData.postalCode}
@@ -134,7 +132,7 @@ const ShippingForm = ({ userId, nextStep }) => {
                     />
                     <TextField
                         name="country"
-                        label={t('shippingForm.country')}
+                        label="Country"
                         fullWidth
                         margin="normal"
                         value={shippingData.country}
@@ -143,7 +141,7 @@ const ShippingForm = ({ userId, nextStep }) => {
                     />
                     <Box mt={3} display="flex" justifyContent="center">
                         <Button type="submit" variant="contained" color="primary">
-                            {t('shippingForm.next')}
+                            Next
                         </Button>
                     </Box>
                 </form>
@@ -153,4 +151,3 @@ const ShippingForm = ({ userId, nextStep }) => {
 };
 
 export default ShippingForm;
-

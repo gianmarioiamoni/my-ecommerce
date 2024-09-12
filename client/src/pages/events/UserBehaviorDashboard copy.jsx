@@ -1,6 +1,6 @@
 // src/pages/UserBehaviorDashboard.js
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next'; // Importa useTranslation
+
 import {
     Container,
     Grid,
@@ -16,6 +16,8 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
+
 import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -26,6 +28,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
+
 import { getEvents } from '../../services/eventsServices';
 
 // Register the needed components 
@@ -39,7 +42,6 @@ ChartJS.register(
 );
 
 const UserBehaviorDashboard = () => {
-    const { t } = useTranslation('userBehaviorDashboard'); // Usa il namespace specificato
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [startDate, setStartDate] = useState(() => {
@@ -96,13 +98,13 @@ const UserBehaviorDashboard = () => {
     const chartDataClicks = () => {
         if (data.length === 0) return { labels: [], datasets: [] };
 
-        const aggregatedData = aggregateData(data, ['view']);
+        const aggregatedData = aggregateData(data, ['view']); 
 
         return {
             labels: aggregatedData.labels,
             datasets: [
                 {
-                    label: t('productClicksLabel'), 
+                    label: 'Product Clicks',
                     data: aggregatedData.data,
                     borderColor: theme.palette.primary.main,
                     backgroundColor: theme.palette.primary.light,
@@ -137,7 +139,7 @@ const UserBehaviorDashboard = () => {
             labels: allLabels,
             datasets: [
                 {
-                    label: t('addToCartLabel'), 
+                    label: 'Add to Cart',
                     data: dataNew,
                     borderColor: theme.palette.success.main,
                     backgroundColor: theme.palette.success.light,
@@ -145,7 +147,7 @@ const UserBehaviorDashboard = () => {
                     tension: 0.1,
                 },
                 {
-                    label: t('removeFromCartLabel'), 
+                    label: 'Remove from Cart',
                     data: dataRemoving,
                     borderColor: theme.palette.warning.main,
                     backgroundColor: theme.palette.warning.light,
@@ -163,13 +165,13 @@ const UserBehaviorDashboard = () => {
                 type: 'category',
                 title: {
                     display: true,
-                    text: t('dateLabel'), 
+                    text: 'Date',
                 },
             },
             y: {
                 title: {
                     display: true,
-                    text: t('countLabel'), 
+                    text: 'Count',
                 },
             },
         },
@@ -188,7 +190,7 @@ const UserBehaviorDashboard = () => {
     return (
         <Container maxWidth="lg" style={{ marginTop: '2rem' }}>
             <Typography variant="h4" align="center" gutterBottom>
-                {t('dashboardTitle')} 
+                User Behavior Dashboard
             </Typography>
 
             {/* Dates selection section */}
@@ -196,7 +198,7 @@ const UserBehaviorDashboard = () => {
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
-                        label={t('startDateLabel')} 
+                        label="Start Date"
                         type="date"
                         InputLabelProps={{ shrink: true }}
                         value={startDate}
@@ -206,7 +208,7 @@ const UserBehaviorDashboard = () => {
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
-                        label={t('endDateLabel')} 
+                        label="End Date"
                         type="date"
                         InputLabelProps={{ shrink: true }}
                         value={endDate}
@@ -221,7 +223,7 @@ const UserBehaviorDashboard = () => {
                         onClick={fetchData}
                         disabled={loading}
                     >
-                        {loading ? t('loadingLabel') : t('filterLabel')} 
+                        {loading ? 'Loading...' : 'Filter'}
                     </Button>
                 </Grid>
             </Grid>
@@ -237,8 +239,8 @@ const UserBehaviorDashboard = () => {
                     textColor="primary"
                     indicatorColor="primary"
                 >
-                    <Tab label={t('productClicksTabLabel')} /> 
-                    <Tab label={t('addToCartEventsTabLabel')} /> 
+                    <Tab label="Product Clicks" />
+                    <Tab label="Add to Cart Events" />
                 </Tabs>
 
                 {/* Tab content */}
@@ -274,5 +276,4 @@ const UserBehaviorDashboard = () => {
 };
 
 export default UserBehaviorDashboard;
-
 

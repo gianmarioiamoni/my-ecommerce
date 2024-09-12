@@ -2,13 +2,11 @@ import React, { useContext, useState } from 'react';
 import { Button, Card, CardContent, Typography, TextField, Box } from '@mui/material';
 import { CartContext } from '../../contexts/CartContext';
 import { AuthContext } from '../../contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
 
 const CartItem = ({ product }) => {
     const { updateQuantity, removeFromCart } = useContext(CartContext);
     const [error, setError] = useState(false);
     const { user } = useContext(AuthContext);
-    const { t } = useTranslation();
 
     const handleQuantityChange = (event) => {
         const quantity = parseInt(event.target.value, 10);
@@ -36,13 +34,13 @@ const CartItem = ({ product }) => {
                 </Typography>
                 <Box display="flex" alignItems="center" mt={2}>
                     <TextField
-                        label={t('cart.quantity')}
+                        label="Quantity"
                         type="number"
                         value={product.quantity}
                         onChange={handleQuantityChange}
                         inputProps={{ min: 1 }}
                         error={error}
-                        helperText={error ? t('cart.maxQuantityError', { max: product.availableQuantity }) : ''}
+                        helperText={error ? `Maximum available quantity is ${product.availableQuantity}` : ''}
                         sx={{ width: '100px', marginRight: 2 }}
                     />
                     <Button
@@ -50,7 +48,7 @@ const CartItem = ({ product }) => {
                         variant="contained"
                         color="secondary"
                     >
-                        {t('cart.remove')}
+                        Remove from Cart
                     </Button>
                 </Box>
             </CardContent>
@@ -59,7 +57,6 @@ const CartItem = ({ product }) => {
 };
 
 export default CartItem;
-
 
 
 

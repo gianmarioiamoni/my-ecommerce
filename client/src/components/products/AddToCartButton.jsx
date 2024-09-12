@@ -10,7 +10,7 @@ const AddToCartButton = ({ isInCart, addToCart, removeFromCart, isDisabled }) =>
     return isInCart ? (
         <Button size="small" color="secondary" onClick={removeFromCart}>
             {/* Remove from Cart */}
-            {t('removeFromCart')}
+            {t('cart.removeFromCart')}
         </Button>
     ) : (
         <Button
@@ -19,7 +19,7 @@ const AddToCartButton = ({ isInCart, addToCart, removeFromCart, isDisabled }) =>
             onClick={addToCart}
             disabled={isDisabled}
         >
-            {t('addToCart')}
+            {t('cart.addToCart')}
         </Button>
     );
 };

@@ -5,18 +5,19 @@ import {
     Grid, Card, CardContent, CardMedia, Typography, Button, Container, Box,
     TextField, Select, MenuItem, FormControl, InputLabel, useMediaQuery, useTheme
 } from '@mui/material';
+
 import { useTranslation } from 'react-i18next';
+
 import { CartContext } from '../../contexts/CartContext';
 import { useCategories } from '../../contexts/CategoriesContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useWishlist } from '../../contexts/WishListContext';
+
 import AddToCartButton from '../../components/products/AddToCartButton';
 import AddToWishlistButton from '../../components/products/AddToWishlistButton';
 import CreateNewWishlistDialog from '../../components/products/CreateNewWishlistDialog';
 
 const ProductList = () => {
-    const { t, i18n } = useTranslation(); // Specifica il namespace 'productList'
-
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -35,6 +36,10 @@ const ProductList = () => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+    // translation 
+    const { t, i18n } = useTranslation();
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -50,6 +55,7 @@ const ProductList = () => {
         };
         fetchData();
     }, []);
+
 
     const applyFiltersAndSorting = (criteria = sortCriteria) => {
         let filtered = products;
@@ -92,9 +98,10 @@ const ProductList = () => {
     useEffect(() => {
         applyFiltersAndSorting();
     }, [searchQuery, selectedCategory, products]);
+    
 
     const handleLanguageChange = (lang) => {
-        i18n.changeLanguage(lang);
+        i18n.changeLanguage(lang); 
     };
 
     const handleSearchChange = (e) => {
@@ -149,7 +156,7 @@ const ProductList = () => {
     return (
         <Container sx={{ minWidth: '320px' }}>
             <Typography variant="h4" marginTop={5} gutterBottom>
-                {t('productList.productCatalogTitle')}
+                Product Catalog
             </Typography>
 
             {/* Searching and filtering */}
@@ -160,21 +167,21 @@ const ProductList = () => {
                 mb: 2
             }}>
                 <TextField
-                    label={t('productList.searchLabel')}
+                    label="Search Products"
                     variant="outlined"
                     fullWidth
                     value={searchQuery}
                     onChange={handleSearchChange}
                 />
                 <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-                    <InputLabel>{t('productList.categoryLabel')}</InputLabel>
+                    <InputLabel>Category</InputLabel>
                     <Select
                         value={selectedCategory}
                         onChange={handleCategoryChange}
-                        label={t('productList.categoryLabel')}
+                        label="Category"
                     >
                         <MenuItem value="">
-                            <em>{t('productList.allCategories')}</em>
+                            <em>All</em>
                         </MenuItem>
                         {categories.map((category) => (
                             <MenuItem key={category} value={category}>
@@ -184,19 +191,19 @@ const ProductList = () => {
                     </Select>
                 </FormControl>
                 <FormControl variant="outlined" sx={{ minWidth: 160 }}>
-                    <InputLabel>{t('productList.sortByLabel')}</InputLabel>
+                    <InputLabel>Sort By</InputLabel>
                     <Select
                         value={sortCriteria}
                         onChange={handleSortChange}
-                        label={t('productList.sortByLabel')}
+                        label="Sort By"
                     >
                         <MenuItem value="">
-                            <em>{t('productList.none')}</em>
+                            <em>None</em>
                         </MenuItem>
-                        <MenuItem value="price-asc">{t('productList.priceAsc')}</MenuItem>
-                        <MenuItem value="price-desc">{t('productList.priceDesc')}</MenuItem>
-                        <MenuItem value="name">{t('productList.name')}</MenuItem>
-                        <MenuItem value="category">{t('productList.category')}</MenuItem>
+                        <MenuItem value="price-asc">Price: Low to High</MenuItem>
+                        <MenuItem value="price-desc">Price: High to Low</MenuItem>
+                        <MenuItem value="name">Name</MenuItem>
+                        <MenuItem value="category">Category</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
@@ -224,6 +231,7 @@ const ProductList = () => {
                             </Box>
 
                             <CardContent sx={{ flexGrow: 1 }}>
+                                {/* Product info */}
                                 <Typography gutterBottom variant="h5" component="div">
                                     {product.name}
                                 </Typography>
@@ -234,10 +242,10 @@ const ProductList = () => {
                                     ${product.price}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary">
-                                    {t('productList.availabilityLabel')}: {product.availability}
+                                    Availability: {product.availability}
                                 </Typography>
                                 <Button component={Link} to={`/products/${product._id}`} variant="contained" color="primary">
-                                    {t('productList.viewButtonLabel')}
+                                    View
                                 </Button>
 
                                 {/* Add to cart / remove from cart button */}
@@ -251,15 +259,15 @@ const ProductList = () => {
                                 }
 
                                 {/* Add to wishlist button */}
-                                {user && !user.isAdmin &&
+                                {user && !user.isAdmin && 
                                     <AddToWishlistButton
-                                        product={product}
-                                        isInWishlist={isProductInAnyWishlist(product._id)}
-                                        handleWishlistSelection={handleWishlistSelection}
-                                        handleWishlistMenuOpen={handleWishlistMenuOpen}
-                                        handleWishlistMenuClose={handleWishlistMenuClose}
-                                        anchorEl={anchorEl}
-                                        wishlists={wishlists}
+                                    product={product}
+                                    isInWishlist={isProductInAnyWishlist(product._id)}
+                                    handleWishlistSelection={handleWishlistSelection}
+                                    handleWishlistMenuOpen={handleWishlistMenuOpen}
+                                    handleWishlistMenuClose={handleWishlistMenuClose}
+                                    anchorEl={anchorEl}
+                                    wishlists={wishlists}
                                     />
                                 }
                             </CardContent>
@@ -267,7 +275,7 @@ const ProductList = () => {
                     </Grid>
                 ))}
             </Grid>
-
+            
             {/* Create New Wishlist Dialog */}
             <CreateNewWishlistDialog
                 openCreateDialog={openCreateDialog}
@@ -281,3 +289,11 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
+
+
+
+
+
+
+

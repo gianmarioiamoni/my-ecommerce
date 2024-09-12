@@ -10,8 +10,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { getAllProducts, deleteProduct } from '../../services/productsServices';
+import { useTranslation } from 'react-i18next';
 
 const ProductsEdit = () => {
+    const { t } = useTranslation();
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [open, setOpen] = useState(false);
@@ -87,14 +89,14 @@ const ProductsEdit = () => {
     return (
         <Container>
             <Typography variant="h4" marginTop={5} gutterBottom>
-                Edit Products
+                {t('productsEdit.title')}
             </Typography>
 
             {/* Search and Filter Section */}
             <Box mb={4} display="flex" flexDirection={{ xs: 'column', md: 'row' }} alignItems={{ xs: 'flex-start', md: 'center' }}>
                 <TextField
                     variant="outlined"
-                    placeholder="Search products..."
+                    placeholder={t('productsEdit.searchPlaceholder')}
                     value={searchQuery}
                     onChange={handleSearchChange}
                     fullWidth
@@ -104,16 +106,16 @@ const ProductsEdit = () => {
                     sx={{ mb: { xs: 2, md: 0 }, mr: { md: 2 }, width: { xs: '100%', md: '50%' } }}
                 />
                 <FormControl variant="outlined" fullWidth sx={{ width: { xs: '100%', md: '30%' } }}>
-                    <InputLabel>Filter by Availability</InputLabel>
+                    <InputLabel>{t('productsEdit.filterByAvailability')}</InputLabel>
                     <Select
                         value={availabilityFilter}
                         onChange={handleAvailabilityChange}
-                        label="Filter by Availability"
+                        label={t('productsEdit.filterByAvailability')}
                     >
-                        <MenuItem value=""><em>All</em></MenuItem>
-                        <MenuItem value="In Stock">In Stock</MenuItem>
-                        <MenuItem value="Out of Stock">Out of Stock</MenuItem>
-                        <MenuItem value="Pre-order">Pre-order</MenuItem>
+                        <MenuItem value=""><em>{t('productsEdit.availabilityOptions.all')}</em></MenuItem>
+                        <MenuItem value="In Stock">{t('productsEdit.availabilityOptions.inStock')}</MenuItem>
+                        <MenuItem value="Out of Stock">{t('productsEdit.availabilityOptions.outOfStock')}</MenuItem>
+                        <MenuItem value="Pre-order">{t('productsEdit.availabilityOptions.preOrder')}</MenuItem>
                     </Select>
                 </FormControl>
             </Box>
@@ -139,11 +141,11 @@ const ProductsEdit = () => {
                                         color={product.quantity === 0 ? 'error' : 'textPrimary'}
                                         gutterBottom
                                     >
-                                        {product.quantity === 0 ? 'Out of stock' : `Quantity: ${product.quantity}`}
+                                        {product.quantity === 0 ? t('productsEdit.outOfStock') : `Quantity: ${product.quantity}`}
                                     </Typography>
                                 )}
                                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                                    Availability: {product.availability}
+                                    {t('productsEdit.availability')}: {product.availability}
                                 </Typography>
                                 <Box display="flex" justifyContent="space-between">
                                     <IconButton component={Link} to={`/products/edit/${product._id}`} color="primary">
@@ -161,18 +163,18 @@ const ProductsEdit = () => {
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>{"Confirm Delete"}</DialogTitle>
+                <DialogTitle>{t('productsEdit.confirmDeleteTitle')}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete this product?
+                        {t('productsEdit.confirmDeleteMessage')}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
-                        Cancel
+                        {t('productsEdit.cancel')}
                     </Button>
                     <Button onClick={handleConfirmDelete} color="secondary">
-                        Delete
+                        {t('productsEdit.delete')}
                     </Button>
                 </DialogActions>
             </Dialog>

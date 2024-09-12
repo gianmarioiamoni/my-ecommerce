@@ -1,5 +1,290 @@
 {
+  "cart": {
+    "addToCart": "Add to Cart",
+    "removeFromCart": "Remove from Cart",
+    "quantity": "Quantity",
+    "remove": "Remove from Cart",
+    "maxQuantityError": "Maximum available quantity is {{max}}",
+    "cartTitle": "Your Cart",
+    "emptyCartMessage": "Your cart is empty",
+    "quantityErrorAlert": "Some items have exceeded their available quantities.",
+    "maxQuantityError2": "The maximum available quantity for {{name}} is {{quantity}}.",
+    "totalLabel": "Total: ${{total}}",
+    "clearCartButton": "Clear Cart",
+    "checkoutButton": "Proceed to Checkout"
+  },
   "welcome": "Welcome to our store",
-  "addToCart": "Add to Cart",
-  "removeFromCart": "Remove from Cart"
+  "categories": {
+    "manageCategories": "Manage Categories",
+    "addCategory": "Add Category",
+    "newCategory": "New Category"
+  },
+  "payment": {
+    "selectSavedPaymentMethod": "Select a Saved Payment Method",
+    "creditCardDetails": "Credit Card Details",
+    "endingIn": "ending in",
+    "selectedCard": "Selected Card",
+    "expiringDate": "Expiring Date",
+    "processing": "Payment Processing...",
+    "choosePaymentMethod": "Choose Payment Method",
+    "paymentMethod": "Payment Method",
+    "paypal": "PayPal",
+    "creditCard": "Credit Card",
+    "pay": "Pay"
+  },
+  "paypal": {
+    "error_during_payment": "Error during payment"
+  },
+  "navigation": {
+    "back": "Back",
+    "next": "Next"
+  },
+  "reviewOrder": {
+    "title": "Review and Payment",
+    "shippingDetails": "Shipping Details",
+    "paymentMethod": "Payment Method",
+    "paypal": "PayPal",
+    "creditCard": "Credit Card",
+    "orderItems": "Order Items",
+    "total": "Total",
+    "back": "Back",
+    "proceedToPayment": "Proceed to Payment"
+  },
+  "shippingForm": {
+    "title": "Shipping Details",
+    "selectSavedAddress": "Select a Saved Address",
+    "fullName": "Full Name",
+    "address": "Address",
+    "city": "City",
+    "postalCode": "Postal Code",
+    "country": "Country",
+    "next": "Next"
+  },
+  "wishlist": {
+    "createNew": "Create New Wishlist",
+    "createTitle": "Create New Wishlist",
+    "createDescription": "Please enter a name for your new wishlist.",
+    "nameLabel": "Wishlist Name",
+    "createButton": "Create"
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
+  "editProduct": {
+    "editProduct": "Edit Product",
+    "name": "Name",
+    "price": "Price",
+    "description": "Description",
+    "availability": "Availability",
+    "category": "Category",
+    "quantity": "Quantity",
+    "images": "Images",
+    "addImage": "Add Image",
+    "saveChanges": "Save Changes",
+    "loadingImage": "Loading Image...",
+    "successMessage": "Product updated successfully!",
+    "errorMessage": "Error uploading image. Please try again."
+  },
+  "reviews": {
+    "leaveReview": "Leave a Review",
+    "commentLabel": "Comment",
+    "submitReview": "Submit Review",
+    "purchaseError": "You can only review products you have purchased.",
+    "alreadyReviewedError": "You have already reviewed this product.",
+    "verificationError": "Error verifying purchase or review status.",
+    "cannotReviewError": "You cannot review this product because you have not purchased it or have already reviewed it.",
+    "reviewSuccess": "Review submitted successfully!",
+    "genericError": "An error occurred",
+    "loginWarning": "You must be logged in to leave a review",
+    "customerReviews": "Customer Reviews",
+    "noReviews": "No reviews yet"
+  },
+  "sales": {
+    "header": "Monthly Sales Report",
+    "csvHeader": {
+      "period": "Month",
+      "totalSales": "Total Sales (€)",
+      "totalOrders": "Total Orders"
+    },
+    "excelHeader": "Monthly Sales",
+    "period": "Month",
+    "filePrefix": "monthly",
+    "yAxisLabel": "Sales (€)",
+    "legend": {
+      "totalSales": "Total Sales"
+    },
+    "exportCSV": "Export CSV",
+    "exportExcel": "Export Excel",
+    "summary": "Sales Summary"
+  },
+  "login": {
+    "title": "Login",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "button": "Login",
+    "registerPrompt": "Don't have an account?",
+    "registerLink": "Register",
+    "forgotPasswordPrompt": "Forgot your password?",
+    "forgotPasswordLink": "Reset it here",
+    "successMessage": "User login successful!",
+    "errorMessage": "Login failed. Please check your credentials."
+  },
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "manageAddresses": "Manage Shipping Addresses and Payment Methods",
+    "updateProfile": "Update Profile",
+    "uploadPicture": "Upload Profile Picture",
+    "deleteAccount": "Delete Account",
+    "snackbarUpdateSuccess": "Profile updated successfully!",
+    "snackbarUpdateError": "Profile update failed. Please try again.",
+    "snackbarPictureUpdateSuccess": "Profile picture updated successfully!",
+    "snackbarPictureUpdateError": "Profile picture update failed. Please try again.",
+    "snackbarDeleteSuccess": "Account deleted successfully!",
+    "snackbarDeleteError": "Account deletion failed. Please try again."
+  },
+  "register": {
+    "title": "Register",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "register": "Register",
+    "alreadyHaveAccount": "Already have an account?",
+    "login": "Login",
+    "snackbarSuccess": "User registration successful!",
+    "snackbarError": "Registration failed. Please try again."
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "resetButton": "Reset Password",
+    "passwordMismatch": "Passwords do not match.",
+    "resetSuccess": "Password reset successful. You can now login with your new password.",
+    "resetFailed": "Failed to reset password. Please try again."
+  },
+  "navBar": {
+    "title": "E-Commerce",
+    "products": "Products",
+    "addProduct": "Add Product",
+    "editProducts": "Edit Products",
+    "salesReports": "Sales Reports",
+    "userBehaviorDashboard": "User Behavior Dashboard",
+    "config": "Config",
+    "cart": "Cart",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile",
+    "orderHistory": "Orders History",
+    "ordersConsole": "Orders Console",
+    "wishlists": "Wishlists",
+    "manageCategories": "Manage Categories"
+  },
+  "addProduct": {
+    "title": "Add a New Product",
+    "name": "Name",
+    "description": "Description",
+    "price": "Price",
+    "imageUrl": "Image URL",
+    "newImageUrl": "New Image URL",
+    "addImageUrl": "Add Image URL",
+    "loadingImage": "Loading Image...",
+    "uploadLocalImages": "Upload Local Images",
+    "availability": "Availability",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "preOrder": "Pre-order",
+    "quantity": "Quantity",
+    "category": "Category",
+    "addProduct": "Add Product",
+    "successMessage": "Product created successfully!",
+    "errorMessage": "Error uploading image. Please try again."
+  },
+  "adminOrderConsole": {
+    "title": "Admin Order Console",
+    "searchProducts": "Search Products",
+    "userFilter": "User Filter",
+    "allUsers": "All Users",
+    "statusFilter": "Status Filter",
+    "sortBy": "Sort by",
+    "sortOrder": "Sort Order",
+    "orderId": "Order ID",
+    "totalAmount": "Total Amount",
+    "orderDate": "Order Date",
+    "user": "User",
+    "products": "Products",
+    "status": "Status",
+    "inProgress": "In Progress",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "loadingError": "Error loading orders. Please try again later."
+  },
+  "productsEdit": {
+    "title": "Edit Products",
+    "searchPlaceholder": "Search products...",
+    "filterByAvailability": "Filter by Availability",
+    "availabilityOptions": {
+      "all": "All",
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock",
+      "preOrder": "Pre-order"
+    },
+    "confirmDeleteTitle": "Confirm Delete",
+    "confirmDeleteMessage": "Are you sure you want to delete this product?",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "userBehaviorDashboard": {
+    "dashboardTitle": "User Behavior Dashboard",
+    "startDateLabel": "Start Date",
+    "endDateLabel": "End Date",
+    "loadingLabel": "Loading...",
+    "filterLabel": "Filter",
+    "productClicksLabel": "Product Clicks",
+    "addToCartLabel": "Add to Cart",
+    "removeFromCartLabel": "Remove from Cart",
+    "dateLabel": "Date",
+    "countLabel": "Count",
+    "productClicksTabLabel": "Product Clicks",
+    "addToCartEventsTabLabel": "Add to Cart Events"
+  },
+  "checkout": {
+    "orderAlreadyCaptured": "This order has already been captured.",
+    "orderError": "An error occurred while placing the order. Please try again.",
+    "invalidPayPalDetails": "Invalid PayPal payment details",
+    "invalidStripeDetails": "Invalid Stripe payment details",
+    "paymentIntentUndefined": "Payment Intent is undefined"
+  },
+  "productDetails": {
+    "selectWishlist": "Select a wishlist:",
+    "createWishlist": "Create a new wishlist:",
+    "loading": "Loading...",
+    "availability": "Availability",
+    "rating": "Rating",
+    "on": "on",
+    "reviews": "reviews",
+    "removeFromCart": "Remove from Cart",
+    "addToCart": "Add to Cart",
+    "addToWishlist": "Add to Wishlist"
+  },
+  "productList": {
+    "productCatalogTitle": "Product Catalog",
+    "searchLabel": "Search Products",
+    "categoryLabel": "Category",
+    "allCategories": "All",
+    "sortByLabel": "Sort By",
+    "none": "None",
+    "priceAsc": "Price: Low to High",
+    "priceDesc": "Price: High to Low",
+    "name": "Name",
+    "category": "Category",
+    "availabilityLabel": "Availability",
+    "viewButtonLabel": "View"
+  }
 }

@@ -3,7 +3,7 @@ import { IconButton, Menu, MenuItem as DropdownItem, Divider } from '@mui/materi
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AddIcon from '@mui/icons-material/Add';
-import { useTranslation } from 'react-i18next';
+
 
 const AddToWishlistButton = ({
     product,
@@ -14,7 +14,6 @@ const AddToWishlistButton = ({
     handleWishlistSelection,
     wishlists,
 }) => {
-    const { t } = useTranslation(); 
 
     return (
         <>
@@ -32,7 +31,7 @@ const AddToWishlistButton = ({
             >
                 <DropdownItem onClick={() => handleWishlistSelection('create-new')}>
                     <AddIcon fontSize="small" sx={{ marginRight: 1 }} />
-                    {t('wishlist.createNew')} 
+                    Create New Wishlist
                 </DropdownItem>
                 <Divider />
                 {wishlists.map((wishlist) => (
@@ -46,4 +45,3 @@ const AddToWishlistButton = ({
 };
 
 export default AddToWishlistButton;
-

@@ -1,9 +1,8 @@
-// src/pages/Checkout.js
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { useTranslation } from 'react-i18next'; // Importa useTranslation
 
 import ShippingForm from '../../components/orders/ShippingForm';
 import PaymentMethod from '../../components/orders/PaymentMethod';
@@ -16,8 +15,8 @@ import { createPayPalOrder, createCreditCardOrder } from '../../services/ordersS
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
+
 const Checkout = () => {
-    const { t } = useTranslation(''); // Usa il namespace specificato
     const [step, setStep] = useState(1);
     const [shippingData, setShippingData] = useState({});
     const [paymentMethod, setPaymentMethod] = useState('');
@@ -62,29 +61,30 @@ const Checkout = () => {
             navigate('/success');
         } catch (error) {
             if (error.response && error.response.data.message === 'Order already captured') {
-                alert(t('checkout.orderAlreadyCaptured')); // Usa la funzione t per il messaggio di ordine già catturato
+                alert('This order has already been captured.');
             } else {
-                alert(t('checkout.orderError')); // Usa la funzione t per il messaggio di errore generico
+                alert('An error occurred while placing the order. Please try again.');
             }
         }
     };
 
+    // In the component
     const handlePayPalPaymentSuccess = (details) => {
         if (details.id && details.status === 'COMPLETED') {
             handlePaymentSuccess(details);
         } else {
-            alert(t('checkout.invalidPayPalDetails')); // Usa la funzione t per i dettagli di pagamento PayPal non validi
+            alert('Invalid PayPal payment details');
         }
     };
 
     const handleStripePaymentSuccess = (paymentIntent) => {
         if (!paymentIntent) {
-            throw new Error(t("checkout.paymentIntentUndefined")); // Usa la funzione t per il messaggio di intent undefined
+            throw new Error("Payment Intent is undefined");
         }
         if (paymentIntent.id && paymentIntent.status === 'succeeded') {
             handlePaymentSuccess(paymentIntent);
         } else {
-            alert(t('checkout.invalidStripeDetails')); // Usa la funzione t per i dettagli di pagamento Stripe non validi
+            alert('Invalid Stripe payment details');
         }
     };
 
@@ -112,6 +112,5 @@ const Checkout = () => {
 };
 
 export default Checkout;
-
 
 

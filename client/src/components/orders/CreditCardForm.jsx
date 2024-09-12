@@ -5,6 +5,8 @@ import { Button, Typography, Select, MenuItem, FormControl, InputLabel, Box, Con
 import { confirmPaymentIntent, createPaymentIntent } from '../../services/ordersServices';
 import { getPaymentMethods } from '../../services/usersServices';
 
+import { useTranslation } from 'react-i18next';
+
 const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
     const stripe = useStripe();
     const elements = useElements();
@@ -14,6 +16,8 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
     const [selectedMethodDetails, setSelectedMethodDetails] = useState(null);
     const [defaultMethodId, setDefaultMethodId] = useState('');
+
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const fetchPaymentMethods = async () => {
@@ -121,12 +125,13 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
                 }}
             >
                 <Typography variant="h6" gutterBottom>
-                    Credit Card Details
+                    {/* Credit Card Details */}
+                    {t('payment.creditCardDetails')}
                 </Typography>
 
                 {paymentMethods.length > 0 && (
                     <FormControl fullWidth margin="normal" style={{ marginTop: '20px', marginBottom: '20px' }}>
-                        <InputLabel id="payment-method-select-label">Select a Saved Payment Method</InputLabel>
+                        <InputLabel id="payment-method-select-label">{t('selectSavedPaymentMethod')}</InputLabel>
                         <Select
                             labelId="payment-method-select-label"
                             value={selectedPaymentMethod}
@@ -138,7 +143,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
                                     value={method._id}
                                     style={method._id === defaultMethodId ? { fontWeight: 'bold', backgroundColor: '#f0f0f0' } : {}}
                                 >
-                                    {method.cardType} ending in {method.last4Digits}
+                                    {method.cardType} {t('payment.endingIn')} {method.last4Digits}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -147,8 +152,8 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
 
                 {selectedMethodDetails && (
                     <Typography variant="body1" gutterBottom>
-                        Selected Card: {selectedMethodDetails.cardType} - {selectedMethodDetails.cardNumber} <br />
-                        Expiry Date: {selectedMethodDetails.expiryDate}
+                        {t('payment.selectedCard')}: {selectedMethodDetails.cardType} - {selectedMethodDetails.cardNumber} <br />
+                        {t('payment.expiringDate')}: {selectedMethodDetails.expiryDate}
                     </Typography>
                 )}
 
@@ -181,7 +186,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
                     style={{ marginTop: '20px', width: '100%' }}
                     onClick={handleSubmit}
                 >
-                    {loading ? 'Processing...' : 'Pay'}
+                    {loading ? t('payment.processing') : t('payment.pay')}
                 </Button>
                 {error && <Typography color="error" style={{ marginTop: '20px' }}>{error.message}</Typography>}
             </Box>

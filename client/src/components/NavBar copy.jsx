@@ -18,7 +18,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { CartContext } from '../contexts/CartContext';
 import { AuthContext } from '../contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
+
 
 const NavBar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -27,7 +27,6 @@ const NavBar = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { cart } = useContext(CartContext);
     const { user, logout } = useContext(AuthContext);
-    const { t } = useTranslation();
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -44,39 +43,41 @@ const NavBar = () => {
         setAnchorEl(null);
     };
 
+
     const renderMenuItems = () => {
         if (user) {
             return (
                 <>
                     <ListItem button component={Link} to="/products">
-                        <ListItemText primary={t('navBar.products')} />
+                        <ListItemText primary="Products" />
                     </ListItem>
                     {user.isAdmin && (
                         <>
                             <ListItem button component={Link} to="/products/new">
-                                <ListItemText primary={t('navBar.addProduct')} />
+                                <ListItemText primary="Add Product" />
                             </ListItem>
                             <ListItem button component={Link} to="/products/edit">
-                                <ListItemText primary={t('navBar.editProducts')} />
+                                <ListItemText primary="Edit Products" />
                             </ListItem>
                             <ListItem button component={Link} to="/sales-reports">
-                                <ListItemText primary={t('navBar.salesReports')} />
+                                <ListItemText primary="Sales Reports" />
                             </ListItem>
                             <ListItem button component={Link} to="/user-behavior-dashboard">
-                                <ListItemText primary={t('navBar.userBehaviorDashboard')} />
+                                <ListItemText primary="User Behavior Dashboard" />
                             </ListItem>
                             <ListItem button component={Link} to="/manage-categories">
-                                <ListItemText primary={t('navBar.config')} />
+                                <ListItemText primary="Config" />
                             </ListItem>
+
                         </>
                     )}
                     {!user.isAdmin && (
                         <ListItem button component={Link} to="/cart">
-                            <ListItemText primary={t('navBar.cart') + ` (${cart.length})`} />
+                            <ListItemText primary={`Cart (${cart.length})`} />
                         </ListItem>
                     )}
                     <ListItem button onClick={logout}>
-                        <ListItemText primary={t('navBar.logout')} />
+                        <ListItemText primary="Logout" />
                     </ListItem>
                 </>
             );
@@ -84,13 +85,13 @@ const NavBar = () => {
             return (
                 <>
                     <ListItem button component={Link} to="/products">
-                        <ListItemText primary={t('navBar.products')} />
+                        <ListItemText primary="Products" />
                     </ListItem>
                     <ListItem button component={Link} to="/login">
-                        <ListItemText primary={t('navBar.login')} />
+                        <ListItemText primary="Login" />
                     </ListItem>
                     <ListItem button component={Link} to="/register">
-                        <ListItemText primary={t('navBar.register')} />
+                        <ListItemText primary="Register" />
                     </ListItem>
                 </>
             );
@@ -113,7 +114,7 @@ const NavBar = () => {
         <AppBar position="static">
             <Toolbar>
                 <Typography variant="h6" style={{ flexGrow: 1 }}>
-                    {t('navBar.title')}
+                    E-Commerce
                 </Typography>
                 {!isMobile && (
                     <div className="nav-buttons">
@@ -157,24 +158,24 @@ const NavBar = () => {
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
                             PaperProps={{
-                                onClick: handleClose,
+                                onClick: handleClose, 
                             }}
                         >
-                            <MenuItem component={Link} to="/profile">{t('navBar.profile')}</MenuItem>
+                            <MenuItem component={Link} to="/profile">Profile</MenuItem>
 
                             {!user.isAdmin ? (
-                                <MenuItem component={Link} to="/order-history">{t('navBar.orderHistory')}</MenuItem>
+                                <MenuItem component={Link} to="/order-history">Orders History</MenuItem>
                             ) : (
-                                <MenuItem component={Link} to="/admin/orders">{t('navBar.ordersConsole')}</MenuItem>
+                                <MenuItem component={Link} to="/admin/orders">Orders Console</MenuItem>
                             )}
 
                             {!user.isAdmin ? (
-                                <MenuItem component={Link} to="/wishlists">{t('navBar.wishlists')}</MenuItem>
+                                <MenuItem component={Link} to="/wishlists">Wishlists</MenuItem>
                             ) : (
-                                <MenuItem component={Link} to="/manage-categories">{t('navBar.manageCategories')}</MenuItem>
+                                <MenuItem component={Link} to="/manage-categories">Manage Categories</MenuItem>
                             )}
 
-                            <MenuItem onClick={logout}>{t('navBar.logout')}</MenuItem>
+                            <MenuItem onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </div>
                 )}
@@ -184,5 +185,4 @@ const NavBar = () => {
 };
 
 export default NavBar;
-
 

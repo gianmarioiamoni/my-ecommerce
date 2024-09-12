@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, Typography, Grid, Card, CardContent, CircularProgress, MenuItem, Select, FormControl, TextField, Box, Pagination } from '@mui/material';
+
 import { getAllOrders, getAllUsersWithOrders, updateOrderStatus } from '../../services/ordersServices';
 
 const AdminOrderConsole = () => {
-    const { t } = useTranslation();
     const [orders, setOrders] = useState([]);
     const [displayedOrders, setDisplayedOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -121,20 +121,20 @@ const AdminOrderConsole = () => {
     }
 
     if (!Array.isArray(orders)) {
-        return <Typography variant="body1">{t('adminOrderConsole.loadingError')}</Typography>;
+        return <Typography variant="body1">Error loading orders. Please try again later.</Typography>;
     }
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
-                {t('adminOrderConsole.title')}
+                Admin Order Console
             </Typography>
             {/* Searching and filtering */}
             <Grid container spacing={2} sx={{ mb: 3 }}>
                 {/* Search */}
                 <Grid item xs={12} sm={6} md={3}>
                     <TextField
-                        label={t('adminOrderConsole.searchProducts')}
+                        label="Search Products"
                         variant="outlined"
                         fullWidth
                         value={search}
@@ -151,38 +151,32 @@ const AdminOrderConsole = () => {
                             inputProps={{ 'aria-label': 'Without label' }}
                             renderValue={(selected) => {
                                 const selectedUser = users.find(user => user._id === selected);
-                                return selectedUser ? selectedUser.name : t('adminOrderConsole.userFilter');
+                                return selectedUser ? `${selectedUser.name} (${selectedUser.email})` : <em>All Users</em>;
                             }}
                         >
                             <MenuItem value="">
-                                <em>{t('adminOrderConsole.allUsers')}</em>
+                                <em>All Users</em>
                             </MenuItem>
-                            {filteredUsers.map((user) => (
+                            {filteredUsers.map(user => (
                                 <MenuItem key={user._id} value={user._id}>
-                                    {user.name}
+                                    {user.name} ({user.email})
                                 </MenuItem>
                             ))}
                         </Select>
                     </FormControl>
                 </Grid>
-                {/* Status filter */}
+                {/* Status Filter */}
                 <Grid item xs={12} sm={6} md={3}>
                     <FormControl fullWidth>
                         <Select
-                            displayEmpty
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            inputProps={{ 'aria-label': 'Without label' }}
-                            renderValue={(selected) => {
-                                return selected ? t(`adminOrderConsole.${selected}`) : t('adminOrderConsole.statusFilter');
-                            }}
+                            displayEmpty
                         >
-                            <MenuItem value="">
-                                <em>{t('adminOrderConsole.allUsers')}</em>
-                            </MenuItem>
-                            <MenuItem value="inProgress">{t('adminOrderConsole.inProgress')}</MenuItem>
-                            <MenuItem value="shipped">{t('adminOrderConsole.shipped')}</MenuItem>
-                            <MenuItem value="delivered">{t('adminOrderConsole.delivered')}</MenuItem>
+                            <MenuItem value=""><em>All Statuses</em></MenuItem>
+                            <MenuItem value="In Progress">In Progress</MenuItem>
+                            <MenuItem value="Shipped">Shipped</MenuItem>
+                            <MenuItem value="Delivered">Delivered</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -190,64 +184,65 @@ const AdminOrderConsole = () => {
                 <Grid item xs={12} sm={6} md={3}>
                     <FormControl fullWidth>
                         <Select
-                            displayEmpty
                             value={sortField}
                             onChange={(e) => setSortField(e.target.value)}
-                            inputProps={{ 'aria-label': 'Without label' }}
+                            displayEmpty
                         >
-                            <MenuItem value="createdAt">{t('adminOrderConsole.orderDate')}</MenuItem>
-                            <MenuItem value="totalAmount">{t('adminOrderConsole.totalAmount')}</MenuItem>
-                            <MenuItem value="orderId">{t('adminOrderConsole.orderId')}</MenuItem>
+                            <MenuItem value="createdAt">Sort by Date</MenuItem>
+                            <MenuItem value="totalAmount">Sort by Amount</MenuItem>
                         </Select>
                     </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <FormControl fullWidth>
+                    <FormControl fullWidth sx={{ mt: 1 }}>
                         <Select
-                            displayEmpty
                             value={sortOrder}
                             onChange={(e) => setSortOrder(e.target.value)}
-                            inputProps={{ 'aria-label': 'Without label' }}
+                            displayEmpty
                         >
-                            <MenuItem value="asc">{t('adminOrderConsole.ascending')}</MenuItem>
-                            <MenuItem value="desc">{t('adminOrderConsole.descending')}</MenuItem>
+                            <MenuItem value="asc">Ascending</MenuItem>
+                            <MenuItem value="desc">Descending</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
             </Grid>
-            {/* Order List */}
-            {displayedOrders.map((order) => (
-                <Card key={order._id} sx={{ mb: 3 }}>
-                    <CardContent>
-                        <Typography variant="h6">{t('adminOrderConsole.orderId')}: {order._id}</Typography>
-                        <Typography variant="body2">{t('adminOrderConsole.totalAmount')}: ${order.totalAmount}</Typography>
-                        <Typography variant="body2">{t('adminOrderConsole.orderDate')}: {new Date(order.createdAt).toLocaleDateString()}</Typography>
-                        <Typography variant="body2">{t('adminOrderConsole.user')}: {order.userId.name}</Typography>
-                        <Typography variant="body2">{t('adminOrderConsole.products')}:</Typography>
-                        <ul>
-                            {order.products.map((item, index) => (
-                                <li key={index}>{item.product.name} - {item.quantity}</li>
-                            ))}
-                        </ul>
-                        <FormControl fullWidth>
-                            <Select
-                                value={order.status}
-                                onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                            >
-                                <MenuItem value="inProgress">{t('adminOrderConsole.inProgress')}</MenuItem>
-                                <MenuItem value="shipped">{t('adminOrderConsole.shipped')}</MenuItem>
-                                <MenuItem value="delivered">{t('adminOrderConsole.delivered')}</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </CardContent>
-                </Card>
-            ))}
-            {/* Pagination */}
-            <Box display="flex" justifyContent="center" mt={2}>
+
+            <Grid container spacing={4}>
+                {displayedOrders.map((order) => (
+                    <Grid item xs={12} sm={6} md={4} key={order._id}>
+                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <CardContent>
+                                {/* Order Details */}
+                                <Typography variant="h6" gutterBottom>Order ID: {order._id}</Typography>
+                                <Typography variant="body1"><strong>Total Amount:</strong> ${order.totalAmount}</Typography>
+                                <Typography variant="body2"><strong>Order Date:</strong> {new Date(order.createdAt).toLocaleDateString()}</Typography>
+                                <Typography variant="body2"><strong>User:</strong> {order.userId.name} ({order.userId.email})</Typography>
+                                {/* Product names list */}
+                                <Typography variant="body2"><strong>Products:</strong></Typography>
+                                {order.products.map((product) => (
+                                    <Typography key={product._id} variant="body2">{product.product.name}</Typography>
+                                ))}
+                                {/* Order status */}
+                                <FormControl fullWidth variant="outlined" sx={{ mt: 2 }}>
+                                    <Select
+                                        value={order.status}
+                                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                                    >
+                                        <MenuItem value="In Progress">In Progress</MenuItem>
+                                        <MenuItem value="Shipped">Shipped</MenuItem>
+                                        <MenuItem value="Delivered">Delivered</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
+
+            <Box mt={4} display="flex" justifyContent="center">
                 <Pagination
                     count={Math.ceil(orders.length / limit)}
                     page={page}
                     onChange={handlePageChange}
+                    color="primary"
                 />
             </Box>
         </Container>
@@ -255,5 +250,6 @@ const AdminOrderConsole = () => {
 };
 
 export default AdminOrderConsole;
+
 
 
