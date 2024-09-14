@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
-import { useTranslation } from 'react-i18next'; // Import for translations
 import { sendPasswordResetEmail } from '../../services/usersServices';
 
 const ForgotPassword = () => {
-    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -18,12 +16,12 @@ const ForgotPassword = () => {
         e.preventDefault();
         try {
             await sendPasswordResetEmail(email);
-            setSnackbarMessage(t('forgotPassword.successMessage'));
+            setSnackbarMessage("Password reset email sent. Please check your inbox.");
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
         } catch (error) {
-            console.error("forgotPassword: Error sending reset email:", error);
-            setSnackbarMessage(t('forgotPassword.errorMessage'));
+            console.error("Error sending reset email:", error);
+            setSnackbarMessage("Failed to send reset email. Please try again.");
             setSnackbarSeverity('error');
             setSnackbarOpen(true);
         }
@@ -43,19 +41,12 @@ const ForgotPassword = () => {
                 }}
             >
                 <Typography variant="h4" align="center" gutterBottom>
-                    {t('forgotPassword.title')}
+                    Forgot Password
                 </Typography>
                 <form onSubmit={handleSubmit}>
-                    <TextField
-                        name="email"
-                        label={t('forgotPassword.emailLabel')}
-                        type="email"
-                        onChange={handleChange}
-                        fullWidth
-                        margin="normal"
-                    />
+                    <TextField name="email" label="Email" type="email" onChange={handleChange} fullWidth margin="normal" />
                     <Button type="submit" variant="contained" color="primary" fullWidth>
-                        {t('forgotPassword.submitButton')}
+                        Send Reset Email
                     </Button>
                 </form>
             </Box>
@@ -73,4 +64,3 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
-

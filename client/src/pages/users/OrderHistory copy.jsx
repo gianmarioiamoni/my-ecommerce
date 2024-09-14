@@ -2,10 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Container, Typography, Grid, Card, CardContent, CircularProgress, TextField, MenuItem, Select, InputLabel, FormControl, Box, Pagination, Avatar } from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
 import { getOrderHistory } from '../../services/ordersServices';
-import { useTranslation } from 'react-i18next';
 
 const OrderHistory = () => {
-    const { t } = useTranslation(); 
     const { user } = useContext(AuthContext);
     const [allOrders, setAllOrders] = useState([]);
     const [displayedOrders, setDisplayedOrders] = useState([]);
@@ -17,7 +15,7 @@ const OrderHistory = () => {
     const [search, setSearch] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [statusFilter, setStatusFilter] = useState(''); 
+    const [statusFilter, setStatusFilter] = useState(''); // Nuovo stato del filtro
 
     useEffect(() => {
         const fetchOrderHistory = async () => {
@@ -99,13 +97,13 @@ const OrderHistory = () => {
     return (
         <Container maxWidth="lg" sx={{ mt: 4 }}>
             <Typography variant="h4" component="h1" gutterBottom align="center">
-                {t('orderHistory.title')}
+                Order History
             </Typography>
 
             <Grid container spacing={3} alignItems="center">
                 <Grid item xs={12} md={3}>
                     <TextField
-                        label={t('orderHistory.search')}
+                        label="Search Orders"
                         variant="outlined"
                         fullWidth
                         value={search}
@@ -114,33 +112,33 @@ const OrderHistory = () => {
                 </Grid>
                 <Grid item xs={6} md={2}>
                     <FormControl fullWidth>
-                        <InputLabel>{t('orderHistory.sortBy')}</InputLabel>
+                        <InputLabel>Sort By</InputLabel>
                         <Select
                             value={sort}
                             onChange={(e) => setSort(e.target.value)}
-                            label={t('orderHistory.sortBy')}
+                            label="Sort By"
                         >
-                            <MenuItem value="createdAt">{t('orderHistory.date')}</MenuItem>
-                            <MenuItem value="totalAmount">{t('orderHistory.amount')}</MenuItem>
+                            <MenuItem value="createdAt">Date</MenuItem>
+                            <MenuItem value="totalAmount">Amount</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
                 <Grid item xs={6} md={2}>
                     <FormControl fullWidth>
-                        <InputLabel>{t('orderHistory.order')}</InputLabel>
+                        <InputLabel>Order</InputLabel>
                         <Select
                             value={order}
                             onChange={(e) => setOrder(e.target.value)}
-                            label={t('orderHistory.order')}
+                            label="Order"
                         >
-                            <MenuItem value="asc">{t('orderHistory.ascending')}</MenuItem>
-                            <MenuItem value="desc">{t('orderHistory.descending')}</MenuItem>
+                            <MenuItem value="asc">Ascending</MenuItem>
+                            <MenuItem value="desc">Descending</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
                 <Grid item xs={6} md={2}>
                     <TextField
-                        label={t('orderHistory.startDate')}
+                        label="Start Date"
                         type="date"
                         fullWidth
                         InputLabelProps={{ shrink: true }}
@@ -150,7 +148,7 @@ const OrderHistory = () => {
                 </Grid>
                 <Grid item xs={6} md={2}>
                     <TextField
-                        label={t('orderHistory.endDate')}
+                        label="End Date"
                         type="date"
                         fullWidth
                         InputLabelProps={{ shrink: true }}
@@ -160,16 +158,16 @@ const OrderHistory = () => {
                 </Grid>
                 <Grid item xs={12} md={3}> {/* Nuovo filtro per stato */}
                     <FormControl fullWidth>
-                        <InputLabel>{t('orderHistory.status')}</InputLabel>
+                        <InputLabel>Status</InputLabel>
                         <Select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            label={t('orderHistory.status')}
+                            label="Status"
                         >
-                            <MenuItem value="">{t('orderHistory.all')}</MenuItem>
-                            <MenuItem value="In Progress">{t('orderHistory.inProgress')}</MenuItem>
-                            <MenuItem value="Shipped">{t('orderHistory.shipped')}</MenuItem>
-                            <MenuItem value="Delivered">{t('orderHistory.delivered')}</MenuItem>
+                            <MenuItem value="">All</MenuItem>
+                            <MenuItem value="In Progress">In Progress</MenuItem>
+                            <MenuItem value="Shipped">Shipped</MenuItem>
+                            <MenuItem value="Delivered">Delivered</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -181,11 +179,11 @@ const OrderHistory = () => {
                         <Grid item xs={12} sm={6} md={4} key={order._id}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                                 <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography variant="h6">{t('orderHistory.orderId')}: {order._id}</Typography>
-                                    <Typography variant="body1">{t('orderHistory.totalAmount')}: ${order.totalAmount}</Typography>
-                                    <Typography variant="body2">{t('orderHistory.orderDate')}: {new Date(order.createdAt).toLocaleDateString()}</Typography>
-                                    <Typography variant="body2">{t('orderHistory.status')}: {order.status}</Typography>
-                                    <Typography variant="body2" gutterBottom>{t('orderHistory.products')}:</Typography>
+                                    <Typography variant="h6">Order ID: {order._id}</Typography>
+                                    <Typography variant="body1">Total Amount: ${order.totalAmount}</Typography>
+                                    <Typography variant="body2">Order Date: {new Date(order.createdAt).toLocaleDateString()}</Typography>
+                                    <Typography variant="body2">Status: {order.status}</Typography> {/* Stato dell'ordine */}
+                                    <Typography variant="body2" gutterBottom>Products:</Typography>
                                     <Box component="ul" sx={{ pl: 2 }}>
                                         {order.products.map((item) => (
                                             <Box
@@ -201,7 +199,7 @@ const OrderHistory = () => {
                                                     variant="rounded"
                                                     sx={{ width: 56, height: 56, mr: 2 }}
                                                 />
-                                                {item.product.name} - {t('orderHistory.quantity')}: {item.quantity}
+                                                {item.product.name} - Quantity: {item.quantity}
                                             </Box>
                                         ))}
                                     </Box>
@@ -211,7 +209,7 @@ const OrderHistory = () => {
                     ))
                 ) : (
                     <Grid item xs={12}>
-                        <Typography variant="body1" align="center">{t('orderHistory.noOrders')}</Typography>
+                        <Typography variant="body1" align="center">No orders found.</Typography>
                     </Grid>
                 )}
             </Grid>

@@ -286,5 +286,143 @@
     "category": "Category",
     "availabilityLabel": "Availability",
     "viewButtonLabel": "View"
+  },
+  "salesReportsPage": {
+    "header": "Sales Reports",
+    "tabsAriaLabel": "Sales Report Tabs",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "csvHeaders": {
+      "week": "Week",
+      "month": "Month",
+      "year": "Year"
+    },
+    "excelHeaders": {
+      "weekly": "Weekly Sales",
+      "monthly": "Monthly Sales",
+      "yearly": "Yearly Sales"
+    },
+    "periodNames": {
+      "week": "Week",
+      "month": "Month",
+      "year": "Year"
+    },
+    "headers": {
+      "weekly": "Weekly Sales Report",
+      "monthly": "Monthly Sales Report",
+      "yearly": "Yearly Sales Report"
+    }
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "emailLabel": "Email",
+    "submitButton": "Send Reset Email",
+    "successMessage": "Password reset email sent. Please check your inbox.",
+    "errorMessage": "Failed to send reset email. Please try again."
+  },
+  "manageAddressesPayments": {
+    "manageAccount": "Manage Your Account",
+    "tabs": {
+      "shippingAddresses": "Shipping Addresses",
+      "paymentMethods": "Payment Methods"
+    },
+    "manageShippingAddresses": "Manage Shipping Addresses",
+    "managePaymentMethods": "Manage Payment Methods",
+    "fields": {
+      "name": "Name",
+      "addressLine1": "Address Line 1",
+      "addressLine2": "Address Line 2",
+      "city": "City",
+      "state": "State",
+      "zipCode": "ZIP Code",
+      "country": "Country",
+      "cardType": "Card Type",
+      "cardNumber": "Card Number",
+      "expiryDate": "Expiry Date"
+    },
+    "buttons": {
+      "addAddress": "Add Address",
+      "addPayment": "Add Payment Method",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "errors": {
+      "fetchingDataError": "Error fetching data",
+      "addAddressError": "Error adding address",
+      "deleteAddressError": "Error deleting address",
+      "addPaymentError": "Error adding payment method",
+      "deletePaymentError": "Error deleting payment method"
+    },
+    "tooltips": {
+      "deleteAddress": "Delete Address",
+      "setDefaultAddress": "Set Default Address",
+      "deletePayment": "Delete Payment Method",
+      "setDefaultPayment": "Set Default Payment Method"
+    },
+    "labels": {
+      "defaultAddress": "Default Address",
+      "defaultPayment": "Default Payment Method"
+    },
+    "dialogs": {
+      "confirmDeletion": "Confirm Deletion",
+      "confirmDeletionText": "Are you sure you want to delete this item?"
+    }
+  },
+  "orderHistory": {
+    "title": "Order History",
+    "search": "Search Orders",
+    "sortBy": "Sort By",
+    "order": "Order",
+    "date": "Date",
+    "amount": "Amount",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "status": "Status",
+    "all": "All",
+    "inProgress": "In Progress",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "orderId": "Order ID",
+    "totalAmount": "Total Amount",
+    "orderDate": "Order Date",
+    "products": "Products",
+    "quantity": "Quantity",
+    "noOrders": "No orders found."
+  },
+  "wishListPage":{
+    "title": "Your Wishlists",
+    "button": {
+      "create": "Create New Wishlist"
+    },
+    "tooltip": {
+      "edit": "Edit Wishlist Name",
+      "delete": "Delete Wishlist",
+      "addToCart": "Add to Cart",
+      "removeFromWishlist": "Remove from Wishlist"
+    },
+    "dialog": {
+      "deleteTitle": "Confirm Deletion",
+      "deleteText": "Are you sure you want to delete the wishlist \"{{name}}\"? This action cannot be undone.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "createTitle": "Create New Wishlist",
+      "createText": "Please enter the name of your new wishlist.",
+      "wishlistName": "Wishlist Name",
+      "create": "Create"
+    },
+    "prompt": {
+      "editName": "Enter the new name for your wishlist:"
+    }
+  },
+  "success": {
+    "title": "Payment Successful",
+    "message": "Thank you for your purchase! Your order has been placed successfully.",
+    "backHome": "Back to Home"
   }
+
+
 }
+

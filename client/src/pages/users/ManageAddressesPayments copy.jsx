@@ -25,10 +25,8 @@ import CheckIcon from '@mui/icons-material/Check';
 
 import { AuthContext } from '../../contexts/AuthContext';
 import { getAddresses, addAddress, deleteAddress, getPaymentMethods, addPaymentMethod, deletePaymentMethod } from '../../services/usersServices';
-import { useTranslation } from 'react-i18next';
 
 const ManageAddressesPayments = () => {
-    const { t } = useTranslation();  // Hook per la traduzione
     const [addresses, setAddresses] = useState([]);
     const [payments, setPayments] = useState([]);
 
@@ -65,12 +63,12 @@ const ManageAddressesPayments = () => {
                 setAddresses(fetchedAddresses);
                 setPayments(fetchedPayments);
             } catch (error) {
-                console.error(t('manageAddressesPayments.errors.fetchingDataError'), error);
+                console.error('Error during fetching data:', error);
             }
         };
 
         fetchData();
-    }, [user.id, t]);
+    }, [user.id]);
 
     // Address management functions
     const handleAddAddress = async (newAddress) => {
@@ -78,8 +76,9 @@ const ManageAddressesPayments = () => {
             const response = await addAddress(user.id, newAddress);
             setAddresses([...addresses, response]);
         } catch (error) {
-            console.error(t('manageAddressesPayments.errors.addAddressError'), error);
+            console.error('Error during address addition to database:', error);
         }
+
     };
 
     const handleRemoveAddress = async (index) => {
@@ -87,7 +86,7 @@ const ManageAddressesPayments = () => {
             await deleteAddress(user.id, addresses[index]._id);
             setAddresses(addresses.filter((_, i) => i !== index));
         } catch (error) {
-            console.error(t('manageAddressesPayments.errors.deleteAddressError'), error);
+            console.error('Error during address removal from database:', error);
         }
     };
 
@@ -102,13 +101,14 @@ const ManageAddressesPayments = () => {
     // Payment method management functions
     const handleAddPaymentMethod = async (newPayment) => {
         try {
+            // fill in last4Digits from cardNumber
             const cardNumber = newPayment.cardNumber;
             const last4Digits = cardNumber.slice(cardNumber.length - 4);
             newPayment.last4Digits = last4Digits;
             const response = await addPaymentMethod(user.id, newPayment);
             setPayments([...payments, response]);
         } catch (error) {
-            console.error(t('manageAddressesPayments.errors.addPaymentError'), error);
+            console.error('Error during payment method addition to database:', error);
         }
     };
 
@@ -117,7 +117,7 @@ const ManageAddressesPayments = () => {
             await deletePaymentMethod(user.id, payments[index]._id);
             setPayments(payments.filter((_, i) => i !== index));
         } catch (error) {
-            console.error(t('manageAddressesPayments.errors.deletePaymentError'), error);
+            console.error('Error during payment method removal from database:', error);
         }
     };
 
@@ -170,18 +170,18 @@ const ManageAddressesPayments = () => {
     return (
         <Container maxWidth="md">
             <Typography variant="h4" gutterBottom>
-                {t('manageAddressesPayments.manageAccount')}
+                Manage Your Account
             </Typography>
 
             <Tabs value={tabIndex} onChange={handleTabChange} aria-label="address-payment-tabs">
-                <Tab label={t('manageAddressesPayments.tabs.shippingAddresses')} />
-                <Tab label={t('manageAddressesPayments.tabs.paymentMethods')} />
+                <Tab label="Shipping Addresses" />
+                <Tab label="Payment Methods" />
             </Tabs>
 
             {tabIndex === 0 && (
                 <Box>
                     <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
-                        {t('manageAddressesPayments.manageShippingAddresses')}
+                        Manage Shipping Addresses
                     </Typography>
 
                     <Box component="form" onSubmit={(e) => {
@@ -200,7 +200,7 @@ const ManageAddressesPayments = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.name')}
+                                    label="Name"
                                     name="name"
                                     value={addressForm.name}
                                     onChange={handleAddressChange}
@@ -210,7 +210,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.addressLine1')}
+                                    label="Address Line 1"
                                     name="addressLine1"
                                     value={addressForm.addressLine1}
                                     onChange={handleAddressChange}
@@ -220,7 +220,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.addressLine2')}
+                                    label="Address Line 2"
                                     name="addressLine2"
                                     value={addressForm.addressLine2}
                                     onChange={handleAddressChange}
@@ -229,7 +229,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.city')}
+                                    label="City"
                                     name="city"
                                     value={addressForm.city}
                                     onChange={handleAddressChange}
@@ -239,7 +239,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.state')}
+                                    label="State/Province"
                                     name="state"
                                     value={addressForm.state}
                                     onChange={handleAddressChange}
@@ -249,7 +249,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.zipCode')}
+                                    label="Zip Code"
                                     name="zipCode"
                                     value={addressForm.zipCode}
                                     onChange={handleAddressChange}
@@ -259,7 +259,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.country')}
+                                    label="Country"
                                     name="country"
                                     value={addressForm.country}
                                     onChange={handleAddressChange}
@@ -269,7 +269,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
-                                    {t('manageAddressesPayments.buttons.addAddress')}
+                                    Add Address
                                 </Button>
                             </Grid>
                         </Grid>
@@ -281,22 +281,22 @@ const ManageAddressesPayments = () => {
                                 <ListItem
                                     secondaryAction={
                                         <>
-                                            <Tooltip title={t('manageAddressesPayments.tooltips.deleteAddress')}>
+                                            <Tooltip title="Delete Address">
                                                 <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteClick(index, 'address')}>
                                                     <DeleteIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title={t('manageAddressesPayments.tooltips.setDefaultAddress')}>
-                                                <IconButton edge="end" aria-label="set-default" onClick={() => setDefaultAddress(index)}>
-                                                    <CheckIcon color={address.isDefault ? 'success' : 'disabled'} />
+                                            <Tooltip title="Set as Default Address">
+                                                <IconButton edge="end" aria-label="set default" onClick={() => setDefaultAddress(index)}>
+                                                    <CheckIcon color={address.isDefault ? "primary" : "inherit"} />
                                                 </IconButton>
                                             </Tooltip>
                                         </>
                                     }
                                 >
                                     <ListItemText
-                                        primary={`${address.name}, ${address.addressLine1}, ${address.city}`}
-                                        secondary={address.isDefault ? t('manageAddressesPayments.labels.defaultAddress') : ''}
+                                        primary={`${address.name}, ${address.addressLine1}`}
+                                        secondary={`${address.city}, ${address.state}, ${address.zipCode}, ${address.country}`}
                                     />
                                 </ListItem>
                                 <Divider />
@@ -305,27 +305,25 @@ const ManageAddressesPayments = () => {
                     </List>
                 </Box>
             )}
-
             {tabIndex === 1 && (
                 <Box>
                     <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
-                        {t('manageAddressesPayments.managePaymentMethods')}
+                        Manage Payment Methods
                     </Typography>
-
                     <Box component="form" onSubmit={(e) => {
                         e.preventDefault();
-                        handleAddPaymentMethod(paymentForm);
+                        handleAddPaymentMethod({ ...paymentForm, isDefault: payments.length === 0 });
                         setPaymentForm({
                             cardType: '',
-                            last4Digits: '',
+                            // last4Digits: '',
                             cardNumber: '',
                             expiryDate: '',
                         });
                     }} sx={{ mb: 4 }}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.cardType')}
+                                    label="Card Type"
                                     name="cardType"
                                     value={paymentForm.cardType}
                                     onChange={handlePaymentChange}
@@ -333,19 +331,19 @@ const ManageAddressesPayments = () => {
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.cardNumber')}
+                                    label="Card Number"
                                     name="cardNumber"
-                                    value={paymentForm.cardNumber}
+                                    value={paymentForm.lastNumber}
                                     onChange={handlePaymentChange}
                                     fullWidth
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12}>
                                 <TextField
-                                    label={t('manageAddressesPayments.fields.expiryDate')}
+                                    label="Expiry Date (MM/YY)"
                                     name="expiryDate"
                                     value={paymentForm.expiryDate}
                                     onChange={handlePaymentChange}
@@ -355,7 +353,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
-                                    {t('manageAddressesPayments.buttons.addPayment')}
+                                    Add Payment Method
                                 </Button>
                             </Grid>
                         </Grid>
@@ -367,59 +365,61 @@ const ManageAddressesPayments = () => {
                                 <ListItem
                                     secondaryAction={
                                         <>
-                                            <Tooltip title={t('manageAddressesPayments.tooltips.deletePayment')}>
+                                            <Tooltip title="Delete Payment Method">
                                                 <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteClick(index, 'payment')}>
                                                     <DeleteIcon />
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title={t('manageAddressesPayments.tooltips.setDefaultPayment')}>
-                                                <IconButton edge="end" aria-label="set-default" onClick={() => setDefaultPaymentMethod(index)}>
-                                                    <CheckIcon color={payment.isDefault ? 'success' : 'disabled'} />
+                                            <Tooltip title="Set as Default Payment Method">
+                                                <IconButton edge="end" aria-label="set default" onClick={() => setDefaultPaymentMethod(index)}>
+                                                    <CheckIcon color={payment.isDefault ? "primary" : "inherit"} />
                                                 </IconButton>
                                             </Tooltip>
                                         </>
                                     }
                                 >
                                     <ListItemText
-                                        primary={`${payment.cardType} ****${payment.last4Digits}`}
-                                        secondary={payment.isDefault ? t('manageAddressesPayments.labels.defaultPayment') : ''}
+                                        primary={`${payment.cardType} **** ${payment.last4Digits}`}
+                                        secondary={`Expiry: ${payment.expiryDate}`}
                                     />
                                 </ListItem>
                                 <Divider />
                             </Box>
                         ))}
                     </List>
+
                 </Box>
-            )}
+            )
+            }
 
             <Dialog
                 open={deleteConfirmationOpen}
                 onClose={handleDeleteCancel}
-                aria-labelledby="delete-confirmation-dialog-title"
-                aria-describedby="delete-confirmation-dialog-description"
+                aria-labelledby="delete-confirmation-dialog"
             >
-                <DialogTitle id="delete-confirmation-dialog-title">
-                    {t('manageAddressesPayments.dialogs.confirmDeletion')}
+                <DialogTitle id="delete-confirmation-dialog">
+                    Confirm Deletion
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="delete-confirmation-dialog-description">
-                        {t('manageAddressesPayments.dialogs.confirmDeletionText')}
+                    <DialogContentText>
+                        Are you sure you want to delete this {deleteType === 'address' ? 'address' : 'payment method'}?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleDeleteCancel} color="primary">
-                        {t('manageAddressesPayments.buttons.cancel')}
+                        Cancel
                     </Button>
-                    <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
-                        {t('manageAddressesPayments.buttons.confirm')}
+                    <Button onClick={handleDeleteConfirm} color="secondary">
+                        Delete
                     </Button>
                 </DialogActions>
             </Dialog>
         </Container>
-    );
-};
+    )
+}
+
+
 
 export default ManageAddressesPayments;
-
 
 

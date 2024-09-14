@@ -11,7 +11,8 @@ import {
     ListItemText,
     Avatar,
     Menu,
-    MenuItem
+    MenuItem,
+    Tooltip
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
@@ -19,15 +20,17 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { CartContext } from '../contexts/CartContext';
 import { AuthContext } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { FlagIcon } from 'react-flag-kit';
 
 const NavBar = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [languageMenuOpen, setLanguageMenuOpen] = useState(null);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { cart } = useContext(CartContext);
     const { user, logout } = useContext(AuthContext);
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -42,6 +45,15 @@ const NavBar = () => {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleLanguageMenuOpen = (event) => {
+        setLanguageMenuOpen(event.currentTarget);
+    };
+
+    const handleLanguageChange = (lang) => {
+        i18n.changeLanguage(lang);
+        setLanguageMenuOpen(null);
     };
 
     const renderMenuItems = () => {
@@ -128,6 +140,30 @@ const NavBar = () => {
                 <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
                     {list()}
                 </Drawer>
+                <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+                    <Tooltip title="Change Language">
+                        <IconButton onClick={handleLanguageMenuOpen} color="inherit">
+                            <FlagIcon code="US" size={24} />
+                        </IconButton>
+                    </Tooltip>
+                    <Menu
+                        anchorEl={languageMenuOpen}
+                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        keepMounted
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        open={Boolean(languageMenuOpen)}
+                        onClose={() => setLanguageMenuOpen(null)}
+                    >
+                        <MenuItem onClick={() => handleLanguageChange('en')}>
+                            <FlagIcon code="US" size={24} style={{ marginRight: 8 }} />
+                            English
+                        </MenuItem>
+                        <MenuItem onClick={() => handleLanguageChange('it')}>
+                            <FlagIcon code="IT" size={24} style={{ marginRight: 8 }} />
+                            Italiano
+                        </MenuItem>
+                    </Menu>
+                </div>
                 {user && (
                     <div>
                         <IconButton
@@ -145,35 +181,24 @@ const NavBar = () => {
                         </IconButton>
                         <Menu
                             anchorEl={anchorEl}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
+                            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
                             keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
+                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
-                            PaperProps={{
-                                onClick: handleClose,
-                            }}
+                            PaperProps={{ onClick: handleClose }}
                         >
                             <MenuItem component={Link} to="/profile">{t('navBar.profile')}</MenuItem>
-
                             {!user.isAdmin ? (
                                 <MenuItem component={Link} to="/order-history">{t('navBar.orderHistory')}</MenuItem>
                             ) : (
                                 <MenuItem component={Link} to="/admin/orders">{t('navBar.ordersConsole')}</MenuItem>
                             )}
-
                             {!user.isAdmin ? (
                                 <MenuItem component={Link} to="/wishlists">{t('navBar.wishlists')}</MenuItem>
                             ) : (
                                 <MenuItem component={Link} to="/manage-categories">{t('navBar.manageCategories')}</MenuItem>
                             )}
-
                             <MenuItem onClick={logout}>{t('navBar.logout')}</MenuItem>
                         </Menu>
                     </div>
@@ -184,5 +209,6 @@ const NavBar = () => {
 };
 
 export default NavBar;
+
 
 

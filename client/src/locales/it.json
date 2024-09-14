@@ -286,5 +286,142 @@
     "category": "Categoria",
     "availabilityLabel": "Disponibilità",
     "viewButtonLabel": "Visualizza"
+  },
+  "salesReportsPage": {
+    "header": "Report Vendite",
+    "tabsAriaLabel": "Schede Report Vendite",
+    "weekly": "Settimanale",
+    "monthly": "Mensile",
+    "yearly": "Annuale",
+    "csvHeaders": {
+      "week": "Settimana",
+      "month": "Mese",
+      "year": "Anno"
+    },
+    "excelHeaders": {
+      "weekly": "Vendite Settimanali",
+      "monthly": "Vendite Mensili",
+      "yearly": "Vendite Annuali"
+    },
+    "periodNames": {
+      "week": "Settimana",
+      "month": "Mese",
+      "year": "Anno"
+    },
+    "headers": {
+      "weekly": "Report Vendite Settimanali",
+      "monthly": "Report Vendite Mensili",
+      "yearly": "Report Vendite Annuali"
+    }
+  },
+  "forgotPassword": {
+    "title": "Password Dimenticata",
+    "emailLabel": "Email",
+    "submitButton": "Invia Email di Ripristino",
+    "successMessage": "Email per il ripristino della password inviata. Controlla la tua casella di posta.",
+    "errorMessage": "Invio dell'email di ripristino password fallito. Riprova."
+  },
+  "manageAddressesPayments": { 
+    "manageAccount": "Gestisci il tuo account",
+    "tabs": {
+      "shippingAddresses": "Indirizzi di spedizione",
+      "paymentMethods": "Metodi di pagamento"
+    },
+    "manageShippingAddresses": "Gestisci gli indirizzi di spedizione",
+    "managePaymentMethods": "Gestisci i metodi di pagamento",
+    "fields": {
+      "name": "Nome",
+      "addressLine1": "Indirizzo linea 1",
+      "addressLine2": "Indirizzo linea 2",
+      "city": "Città",
+      "state": "Stato",
+      "zipCode": "Codice postale",
+      "country": "Paese",
+      "cardType": "Tipo di carta",
+      "cardNumber": "Numero di carta",
+      "expiryDate": "Data di scadenza"
+    },
+    "buttons": {
+      "addAddress": "Aggiungi indirizzo",
+      "addPayment": "Aggiungi metodo di pagamento",
+      "cancel": "Annulla",
+      "confirm": "Conferma"
+    },
+    "errors": {
+      "fetchingDataError": "Errore durante il recupero dei dati",
+      "addAddressError": "Errore durante l'aggiunta dell'indirizzo",
+      "deleteAddressError": "Errore durante l'eliminazione dell'indirizzo",
+      "addPaymentError": "Errore durante l'aggiunta del metodo di pagamento",
+      "deletePaymentError": "Errore durante l'eliminazione del metodo di pagamento"
+    },
+    "tooltips": {
+      "deleteAddress": "Elimina indirizzo",
+      "setDefaultAddress": "Imposta come indirizzo predefinito",
+      "deletePayment": "Elimina metodo di pagamento",
+      "setDefaultPayment": "Imposta come metodo predefinito"
+    },
+    "labels": {
+      "defaultAddress": "Indirizzo predefinito",
+      "defaultPayment": "Metodo di pagamento predefinito"
+    },
+    "dialogs": {
+      "confirmDeletion": "Conferma eliminazione",
+      "confirmDeletionText": "Sei sicuro di voler eliminare questo elemento?"
+    }
+  },
+  "orderHistory": {
+    "title": "Storico Ordini",
+    "search": "Cerca Ordini",
+    "sortBy": "Ordina Per",
+    "order": "Ordine",
+    "date": "Data",
+    "amount": "Importo",
+    "ascending": "Crescente",
+    "descending": "Decrescente",
+    "startDate": "Data Inizio",
+    "endDate": "Data Fine",
+    "status": "Stato",
+    "all": "Tutti",
+    "inProgress": "In Corso",
+    "shipped": "Spedito",
+    "delivered": "Consegnato",
+    "orderId": "ID Ordine",
+    "totalAmount": "Importo Totale",
+    "orderDate": "Data Ordine",
+    "products": "Prodotti",
+    "quantity": "Quantità",
+    "noOrders": "Nessun ordine trovato."
+  },
+  "wishListPage": {
+    "title": "Le tue Liste dei Desideri",
+    "button": {
+      "create": "Crea Nuova Lista dei Desideri"
+    },
+    "tooltip": {
+      "edit": "Modifica Nome Lista dei Desideri",
+      "delete": "Elimina Lista dei Desideri",
+      "addToCart": "Aggiungi al Carrello",
+      "removeFromWishlist": "Rimuovi dalla Lista dei Desideri"
+    },
+    "dialog": {
+      "deleteTitle": "Conferma Eliminazione",
+      "deleteText": "Sei sicuro di voler eliminare la lista dei desideri \"{{name}}\"? Questa azione non può essere annullata.",
+      "cancel": "Annulla",
+      "delete": "Elimina",
+      "createTitle": "Crea Nuova Lista dei Desideri",
+      "createText": "Inserisci il nome della tua nuova lista dei desideri.",
+      "wishlistName": "Nome della Lista",
+      "create": "Crea"
+    },
+    "prompt": {
+      "editName": "Inserisci il nuovo nome per la tua lista dei desideri:"
+    }
+  },
+  "success": {
+    "title": "Pagamento riuscito",
+    "message": "Grazie per il tuo acquisto! Il tuo ordine è stato effettuato con successo.",
+    "backHome": "Torna alla home page"
   }
+
+
 }

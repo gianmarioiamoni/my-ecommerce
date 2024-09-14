@@ -1,25 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+
 import { Container, Typography, Button } from '@mui/material';
 
 const Success = () => {
-    const { t } = useTranslation();
-
     return (
         <Container>
             <Typography variant="h4" component="h1" gutterBottom>
-                {t('success.title')}
+                Payment Successful
             </Typography>
             <Typography variant="body1" gutterBottom>
-                {t('success.message')}
+                Thank you for your purchase! Your order has been placed successfully.
             </Typography>
             <Button variant="contained" color="primary" component={Link} to="/">
-                {t('success.backHome')}
+                Back to Home
             </Button>
         </Container>
     );
 };
 
 export default Success;
-
