@@ -16,7 +16,8 @@ function generateToken(user) {
             isAdmin: user.isAdmin,
             photoUrl: user.photoUrl,
             addresses: user.addresses,
-            paymentMethods: user.paymentMethods
+            paymentMethods: user.paymentMethods,
+            language: user.language
         },
         process.env.JWT_SECRET,
         // { expiresIn: '1h' }

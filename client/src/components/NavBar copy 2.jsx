@@ -12,11 +12,9 @@ import {
     Avatar,
     Menu,
     MenuItem,
-    Tooltip,
-    Badge
+    Tooltip
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { CartContext } from '../contexts/CartContext';
@@ -126,11 +124,7 @@ const NavBar = () => {
                     )}
                     {!user.isAdmin && (
                         <ListItem button component={Link} to="/cart">
-                            <IconButton color="inherit" component={Link} to="/cart">
-                                <Badge badgeContent={cart.length} color="secondary">
-                                    <ShoppingCartIcon /> 
-                                </Badge>
-                            </IconButton>
+                            <ListItemText primary={t('navBar.cart') + ` (${cart.length})`} />
                         </ListItem>
                     )}
                     <ListItem button onClick={logout}>

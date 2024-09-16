@@ -1,0 +1,35 @@
+/* Navbar styles */
+.nav-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.nav-buttons .MuiListItem-root {
+    margin-left: 16px;
+}
+
+.MuiAppBar-root {
+    /* background-color: #ffffff; */
+    background-color: primary; 
+    color: white;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.MuiIconButton-root {
+    margin-left: 16px;
+}
+
+/* Language selector styles */
+.MuiTooltip-tooltip {
+    font-size: 14px;
+}
+
+.MuiMenuItem-root img {
+    width: 24px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.MuiMenu-root {
+    min-width: 200px;
+}

@@ -1,9 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';  
 import { loginUser, registerUser, updateUser, removeUser } from '../services/usersServices';
-
-import i18n from 'i18next';
-
 
 const AuthContext = createContext();
 
@@ -11,78 +8,28 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem('token');
-    //     if (token) {
-    //         try {
-    //             const decoded = jwtDecode(token);
-    //             setUser({
-    //                 email: decoded.email,
-    //                 id: decoded.id,
-    //                 isAdmin: decoded.isAdmin,
-    //                 name: decoded.name,
-    //                 photoUrl: decoded.photoUrl,
-    //                 addresses: decoded.addresses || [],
-    //                 paymentMethods: decoded.paymentMethods || [],
-    //                 language: decoded.language || 'en'  // Assicura il default
-    //             });
-    //         } catch (error) {
-    //             console.error("Error decoding token:", error);
-    //             localStorage.removeItem('token');
-    //         }
-    //     }
-    //     setLoading(false);
-    // }, []);
-
-    // useEffect(() => {
-    //     if (user) {
-    //         // Set the user language in the i18n instance
-    //         i18n.changeLanguage(user.language);
-    //     }
-    // }, [user, i18n]);
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             try {
                 const decoded = jwtDecode(token);
-                console.log("Decoded token:", decoded);
-                const userLanguage = decoded.language || 'en'; // recupera la lingua dal token o imposta di default 'en'
-
-                // Imposta la lingua nel contesto AuthContext
                 setUser({
                     email: decoded.email,
                     id: decoded.id,
                     isAdmin: decoded.isAdmin,
                     name: decoded.name,
                     photoUrl: decoded.photoUrl,
-                    addresses: decoded.addresses || [],
+                    addresses: decoded.addresses || [],  // assure that the default value is an empty array
                     paymentMethods: decoded.paymentMethods || [],
-                    language: userLanguage
+                    language: decoded.language || 'en'
                 });
-
-                // Cambia la lingua in i18n
-                i18n.changeLanguage(userLanguage);
             } catch (error) {
                 console.error("Error decoding token:", error);
-                localStorage.removeItem('token');
+                localStorage.removeItem('token'); // remove the invalid token
             }
         }
-        setLoading(false);
+        setLoading(false);  // the component is ready
     }, []);
-
-
-    const updateUserLanguage = async (newLanguage) => {
-        if (user) {
-            const updatedUser = { ...user, language: newLanguage };
-            const response = await updateUser(user.id, { language: newLanguage });
-
-            if (!response.error) {
-                setUser(updatedUser);
-            } else {
-                console.error(response.error);
-            }
-        }
-    };
 
 
     const login = async (formData) => {
@@ -140,9 +87,8 @@ const AuthProvider = ({ children }) => {
         return <div>Loading...</div>;  // Show a loading indicator while the data is being fetched 
     }
 
-
     return (
-        <AuthContext.Provider value={{ user, login, logout, update, remove, loading, updateUserLanguage }}>
+        <AuthContext.Provider value={{ user, login, logout, update, remove, loading }}>
             {children}
         </AuthContext.Provider>
     );
