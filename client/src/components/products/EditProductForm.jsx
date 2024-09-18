@@ -76,7 +76,7 @@ const EditProductForm = () => {
             const formData = new FormData();
             formData.append('file', file);
 
-            setIsUploading(true); // Inizia il caricamento
+            setIsUploading(true); // start uploading
             try {
                 const data = await uploadImage(formData);
                 const newImageUrls = [...product.imageUrls];
@@ -92,7 +92,7 @@ const EditProductForm = () => {
                     setErrorMessage(false);
                 }, 3000);
             }
-            setIsUploading(false); // Termina il caricamento
+            setIsUploading(false); // end uploading
         }
     };
 
@@ -196,13 +196,13 @@ const EditProductForm = () => {
                             <Select
                                 labelId="category-label"
                                 name="category"
-                                value={product.category}
+                                value={product.category || ''}
                                 onChange={handleChange}
                                 required
                                 sx={{ bgcolor: '#f9f9f9' }}
                             >
-                                {categories.map(cat => (
-                                    <MenuItem key={cat._id} value={cat._id}>{cat.name}</MenuItem>
+                                {categories.map((category, index) => (
+                                    <MenuItem key={index} value={category}>{category}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -240,7 +240,7 @@ const EditProductForm = () => {
                                         color="primary"
                                         sx={{ ml: 2 }}
                                     >
-                                        {t('editProduct.addImage')}
+                                        {t('editProduct.loadImage')}
                                         <input
                                             type="file"
                                             accept="image/*"

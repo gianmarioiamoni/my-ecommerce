@@ -181,7 +181,7 @@ const AddNewProduct = () => {
                             <MenuItem value="Pre-order">{t('addProduct.preOrder')}</MenuItem>
                         </Select>
                     </FormControl>
-                    {/* Campo per la quantità */}
+                    {/* Quantity. Disabled if availability is not "In Stock" */}
                     <TextField
                         name="quantity"
                         label={t('addProduct.quantity')}

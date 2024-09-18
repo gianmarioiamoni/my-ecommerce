@@ -113,15 +113,12 @@ const NavBar = () => {
                             <ListItem button component={Link} to="/products/edit">
                                 <ListItemText primary={t('navBar.editProducts')} />
                             </ListItem>
-                            <ListItem button component={Link} to="/sales-reports">
+                            {/* <ListItem button component={Link} to="/sales-reports">
                                 <ListItemText primary={t('navBar.salesReports')} />
                             </ListItem>
                             <ListItem button component={Link} to="/user-behavior-dashboard">
                                 <ListItemText primary={t('navBar.userBehaviorDashboard')} />
-                            </ListItem>
-                            <ListItem button component={Link} to="/manage-categories">
-                                <ListItemText primary={t('navBar.config')} />
-                            </ListItem>
+                            </ListItem> */}
                         </>
                     )}
                     {!user.isAdmin && (
@@ -244,6 +241,16 @@ const NavBar = () => {
                                 <MenuItem component={Link} to="/wishlists">{t('navBar.wishlists')}</MenuItem>
                             ) : (
                                 <MenuItem component={Link} to="/manage-categories">{t('navBar.manageCategories')}</MenuItem>
+                            )}
+                            {user.isAdmin && (
+                                <MenuItem component={Link} to="/sales-report">{t('navBar.salesReports')}</MenuItem>
+                            )}
+                            {user.isAdmin && (
+                                <MenuItem component={Link} to="/user-behavior-dashboard">{t('navBar.userBehaviorDashboard')}</MenuItem>
+                            )}
+                            {user.isAdmin && (
+                                <MenuItem component={Link} to="/config">{t('navBar.config')}</MenuItem>
+                                
                             )}
                             <MenuItem onClick={logout}>{t('navBar.logout')}</MenuItem>
                         </Menu>

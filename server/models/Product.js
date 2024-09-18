@@ -7,6 +7,8 @@ const productSchema = mongoose.Schema({
     imageUrls: [{ type: String, required: true }],
     availability: { type: String, required: true, default: 'In Stock' },
     category: { type: String, required: false },
+    // category as link to category model name
+    // category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: false },
     quantity: { type: Number, required: true, default: 0 },
     averageRating: { type: Number, default: 0 }, 
     reviewCount: { type: Number, default: 0 }, 
