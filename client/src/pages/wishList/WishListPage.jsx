@@ -13,6 +13,13 @@ import { useWishlist } from '../../contexts/WishListContext';
 import { CartContext } from '../../contexts/CartContext';
 import { AuthContext } from '../../contexts/AuthContext';
 
+/**
+ * A component that renders a list of the user's wishlists.
+ * The component allows the user to create a new wishlist, edit the name of an existing wishlist,
+ * remove a product from a wishlist, and delete a wishlist.
+ * @function WishlistPage
+ * @returns {JSX.Element} The rendered component.
+ */
 const WishlistPage = () => {
     const { t } = useTranslation();
     const {
@@ -31,6 +38,10 @@ const WishlistPage = () => {
     const [wishlistToDelete, setWishlistToDelete] = useState(null);
     const [newWishlistName, setNewWishlistName] = useState('');
 
+    /**
+     * Handles the change of the wishlist name.
+     * @param {Object} wishlist - The wishlist object.
+     */
     const handleEditName = (wishlist) => {
         const newName = prompt(t('wishListPage.prompt.editName'), wishlist.name);
         if (newName && newName !== wishlist.name) {
@@ -38,16 +49,26 @@ const WishlistPage = () => {
         }
     };
 
+    /**
+     * Handles the open event of the delete dialog.
+     * @param {Object} wishlist - The wishlist object.
+     */
     const handleOpenDeleteDialog = (wishlist) => {
         setWishlistToDelete(wishlist);
         setOpenDeleteDialog(true);
     };
 
+    /**
+     * Handles the close event of the delete dialog.
+     */
     const handleCloseDeleteDialog = () => {
         setOpenDeleteDialog(false);
         setWishlistToDelete(null);
     };
 
+    /**
+     * Handles the confirm event of the delete dialog.
+     */
     const handleConfirmDelete = () => {
         if (wishlistToDelete) {
             handleDeleteWishlist(wishlistToDelete._id);
@@ -55,15 +76,24 @@ const WishlistPage = () => {
         handleCloseDeleteDialog();
     };
 
+    /**
+     * Handles the open event of the create dialog.
+     */
     const handleOpenCreateDialog = () => {
         setOpenCreateDialog(true);
     };
 
+    /**
+     * Handles the close event of the create dialog.
+     */
     const handleCloseCreateDialog = () => {
         setOpenCreateDialog(false);
         setNewWishlistName('');
     };
 
+    /**
+     * Handles the confirm event of the create dialog.
+     */
     const handleConfirmCreate = () => {
         if (newWishlistName.trim()) {
             handleCreateWishlist(newWishlistName);
@@ -74,12 +104,12 @@ const WishlistPage = () => {
     return (
         <Container sx={{ marginTop: 4, maxWidth: 'md' }}>
             <Typography variant="h4" gutterBottom align="center">
-                {t('title')}
+                {t('wishListPage.title')}
             </Typography>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 3 }}>
                 <Button variant="contained" onClick={handleOpenCreateDialog}>
-                    {t('button.create')}
+                    {t('wishListPage.button.create')}
                 </Button>
             </Box>
 

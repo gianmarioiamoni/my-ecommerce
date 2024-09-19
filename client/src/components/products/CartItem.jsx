@@ -4,12 +4,25 @@ import { CartContext } from '../../contexts/CartContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * The CartItem component renders a single item in the cart, including its quantity,
+ * price and a button to remove it.
+ *
+ * @param {Object} product - The product object, including its id, name, description,
+ * price, availableQuantity and quantity in the cart.
+ * @returns {JSX.Element} The CartItem component
+ */
 const CartItem = ({ product }) => {
     const { updateQuantity, removeFromCart } = useContext(CartContext);
     const [error, setError] = useState(false);
     const { user } = useContext(AuthContext);
     const { t } = useTranslation();
 
+    /**
+     * Handles the quantity change event, updating the quantity of the product in the cart
+     * and setting an error if the quantity is higher than the available quantity.
+     * @param {Object} event - The event object
+     */
     const handleQuantityChange = (event) => {
         const quantity = parseInt(event.target.value, 10);
         if (quantity > 0) {

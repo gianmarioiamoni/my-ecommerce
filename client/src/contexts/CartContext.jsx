@@ -5,12 +5,26 @@ import { trackEvent } from '../services/eventsServices';
 
 const CartContext = createContext();
 
+/**
+ * The reducer for the cart state. Handles the following actions:
+ * - ADD_TO_CART
+ * - REMOVE_FROM_CART
+ * - UPDATE_QUANTITY
+ * - CLEAR_CART
+ *
+ * @param {Object} state - The current state of the cart
+ * @param {Object} action - The action to be handled
+ * @returns {Object} - The new state of the cart
+ */
 const cartReducer = (state, action) => {
     switch (action.type) {
         case 'ADD_TO_CART':
+            // If the product is already in the cart, increase its quantity
+            // Otherwise add it to the cart with a quantity of 1
             const existingProduct = state.cart.find(item => item._id === action.product._id);
             if (existingProduct) {
                 // track event
+                trackEvent('add_to_cart_existing', action.product._id, action.user.id);
                 return {
                     ...state,
                     cart: state.cart.map(item =>
@@ -35,6 +49,8 @@ const cartReducer = (state, action) => {
                 cart: state.cart.filter(product => product._id !== action.productId)
             };
         case 'UPDATE_QUANTITY':
+            // track event
+            trackEvent('update_quantity', action.id, action.quantity, action.user.id);
             return {
                 ...state,
                 cart: state.cart.map(item =>
@@ -93,15 +109,13 @@ const CartProvider = ({ children }) => {
                 maxQuantityError: isExceeding,
             };
         });
-
         const hasErrors = updatedCart.some(item => item.maxQuantityError);
     
         return new Promise((resolve) => {
             resolve(hasErrors);
         });
     
-        // Call the callback function after the state has been updated
-        callback(hasErrors);
+
     };
 
     const clearCart = () => {
@@ -111,6 +125,8 @@ const CartProvider = ({ children }) => {
     const getTotal = () => {
         return state.cart.reduce((total, item) => total + item.price * item.quantity, 0);
     };
+
+
 
     return (
         <CartContext.Provider value={{

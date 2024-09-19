@@ -1,4 +1,13 @@
 {
+  "homepage": {
+    "welcome": "Benvenuto",
+    "welcomeGuest": "Benvenuto nel nostro negozio!",
+    "slogan": "Scopri i migliori prodotti per la cura della pelle e la bellezza.",
+    "viewProducts": "Vedi Prodotti",
+    "login": "Accedi",
+    "noAccount": "Non hai un account?",
+    "register": "Registrati"
+  },
   "welcome": "Benvenuto nel nostro negozio",
   "cart": {
     "addToCart": "Aggiungi al Carrello",

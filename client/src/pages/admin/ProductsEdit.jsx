@@ -12,16 +12,24 @@ import SearchIcon from '@mui/icons-material/Search';
 import { getAllProducts, deleteProduct } from '../../services/productsServices';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * The ProductsEdit component is used to display a list of products that can be edited and deleted.
+ *
+ * @returns {ReactElement} The JSX element for the ProductsEdit component.
+ */
 const ProductsEdit = () => {
     const { t } = useTranslation();
-    const [products, setProducts] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
-    const [open, setOpen] = useState(false);
-    const [productToDelete, setProductToDelete] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [availabilityFilter, setAvailabilityFilter] = useState('');
+    const [products, setProducts] = useState([]); // Stores the list of products
+    const [filteredProducts, setFilteredProducts] = useState([]); // Stores the filtered list of products
+    const [open, setOpen] = useState(false); // Indicates whether the delete confirmation dialog is open
+    const [productToDelete, setProductToDelete] = useState(null); // Stores the ID of the product to delete
+    const [searchQuery, setSearchQuery] = useState(''); // Stores the search query
+    const [availabilityFilter, setAvailabilityFilter] = useState(''); // Stores the availability filter
 
     useEffect(() => {
+        /**
+         * Fetches the list of products from the server and sets the state.
+         */
         const fetchData = async () => {
             try {
                 const products = await getAllProducts();
@@ -35,6 +43,10 @@ const ProductsEdit = () => {
         fetchData();
     }, []);
 
+    /**
+     * Handles deleting a product.
+     * @param {string} productId The ID of the product to delete.
+     */
     const handleDelete = async (productId) => {
         try {
             await deleteProduct(productId);
@@ -46,31 +58,54 @@ const ProductsEdit = () => {
         }
     };
 
+    /**
+     * Opens the delete confirmation dialog.
+     * @param {string} productId The ID of the product to delete.
+     */
     const handleClickOpen = (productId) => {
         setProductToDelete(productId);
         setOpen(true);
     };
 
+    /**
+     * Closes the delete confirmation dialog.
+     */
     const handleClose = () => {
         setOpen(false);
         setProductToDelete(null);
     };
 
+    /**
+     * Confirms the deletion of a product.
+     */
     const handleConfirmDelete = () => {
         handleDelete(productToDelete);
         handleClose();
     };
 
+    /**
+     * Handles changes to the search query.
+     * @param {React.ChangeEvent<HTMLInputElement>} event The change event.
+     */
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
         filterProducts(event.target.value, availabilityFilter);
     };
 
+    /**
+     * Handles changes to the availability filter.
+     * @param {React.ChangeEvent<HTMLSelectElement>} event The change event.
+     */
     const handleAvailabilityChange = (event) => {
         setAvailabilityFilter(event.target.value);
         filterProducts(searchQuery, event.target.value);
     };
 
+    /**
+     * Filters the products based on the search query and availability filter.
+     * @param {string} search The search query.
+     * @param {string} availability The availability filter.
+     */
     const filterProducts = (search, availability) => {
         const lowercasedSearch = search.toLowerCase();
 

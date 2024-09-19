@@ -4,22 +4,31 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { getOrderHistory } from '../../services/ordersServices';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Component to display the order history of a user.
+ * 
+ * @returns {React.ReactElement} - The rendered component
+ */
 const OrderHistory = () => {
-    const { t } = useTranslation(); 
-    const { user } = useContext(AuthContext);
-    const [allOrders, setAllOrders] = useState([]);
-    const [displayedOrders, setDisplayedOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(10);
-    const [sort, setSort] = useState('createdAt');
-    const [order, setOrder] = useState('desc');
-    const [search, setSearch] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [statusFilter, setStatusFilter] = useState(''); 
+    const { t } = useTranslation(); // Get the translation function
+    const { user } = useContext(AuthContext); // Get the user from the auth context
+    const [allOrders, setAllOrders] = useState([]); // The list of all orders
+    const [displayedOrders, setDisplayedOrders] = useState([]); // The list of orders to display
+    const [loading, setLoading] = useState(true); // Whether the component is loading
+    const [page, setPage] = useState(1); // The current page
+    const [limit, setLimit] = useState(10); // The number of orders per page
+    const [sort, setSort] = useState('createdAt'); // The sort field
+    const [order, setOrder] = useState('desc'); // The sort order
+    const [search, setSearch] = useState(''); // The search string
+    const [startDate, setStartDate] = useState(''); // The start date of the date range
+    const [endDate, setEndDate] = useState(''); // The end date of the date range
+    const [statusFilter, setStatusFilter] = useState(''); // The status filter
 
     useEffect(() => {
+        /**
+         * Fetches the order history of the user from the server.
+         * Sets the component to loading and the list of orders to the response.
+         */
         const fetchOrderHistory = async () => {
             try {
                 setLoading(true);
@@ -41,9 +50,15 @@ const OrderHistory = () => {
         };
 
         fetchOrderHistory();
-    }, [user.id]);
+    // }, [user.id]);
+    }, [user.id, page, limit, sort, order, search, startDate, endDate]);
 
     useEffect(() => {
+        /**
+         * Filters the orders based on the search string, date range and status filter.
+         * Sorts the orders based on the sort field and order.
+         * Sets the displayed orders to the filtered and sorted orders.
+         */
         let filteredOrders = allOrders;
 
         if (search) {
@@ -64,7 +79,7 @@ const OrderHistory = () => {
             );
         }
 
-        if (statusFilter) { // Filtraggio per stato
+        if (statusFilter) {
             filteredOrders = filteredOrders.filter(order => order.status === statusFilter);
         }
 
@@ -80,10 +95,18 @@ const OrderHistory = () => {
     }, [allOrders, search, startDate, endDate, sort, order, statusFilter, page, limit]);
 
     const handlePageChange = (event, value) => {
+        /**
+         * Handles the page change event.
+         * Sets the page to the new value.
+         */
         setPage(value);
     };
 
     const handleSearch = (e) => {
+        /**
+         * Handles the search event.
+         * Sets the search string to the new value and resets the page to 1.
+         */
         setSearch(e.target.value);
         setPage(1);
     };

@@ -5,9 +5,23 @@ import { createProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * The AddNewProduct component is a form to add a new product to the store.
+ * The form includes fields for the product name, description, price, image URLs,
+ * availability, quantity and category.
+ * The component also includes a button to add local images and a button to submit the form.
+ * The component uses the createProduct service to create a new product.
+ * The component also uses the uploadImage service to upload images.
+ * The component also uses the useCategories hook to get the categories.
+ * The component also uses the useTranslation hook to get the translations.
+ * @returns {JSX.Element} The AddNewProduct component
+ */
 const AddNewProduct = () => {
     const { t } = useTranslation();
 
+    /**
+     * The state of the form
+     */
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -15,18 +29,52 @@ const AddNewProduct = () => {
         imageUrls: [],
         availability: '',
         category: '',
-        quantity: ''  // Aggiunto il campo quantity
+        quantity: '',
     });
-    const [localImages] = useState([]);
+
+    /**
+     * The state of the local images
+     */
+    const [localImages, setLocalImages] = useState([]);
+
+    /**
+     * The state of the URL
+     */
     const [url, setUrl] = useState('');
+
+    /**
+     * The state of the form validation
+     */
     const [isFormValid, setIsFormValid] = useState(false);
+
+    /**
+     * The state of the success message
+     */
     const [successMessage, setSuccessMessage] = useState(false);
+
+    /**
+     * The state of the error message
+     */
     const [errorMessage, setErrorMessage] = useState(false);
+
+    /**
+     * The state of the uploading
+     */
     const [isUploading, setIsUploading] = useState(false);
 
+    /**
+     * The categories
+     */
     const { categories } = useCategories();
+
+    /**
+     * The navigate function
+     */
     const navigate = useNavigate();
 
+    /**
+     * The effect to validate the form
+     */
     useEffect(() => {
         const isNameValid = formData.name.trim() !== '';
         const isDescriptionValid = formData.description.trim() !== '';
@@ -37,20 +85,36 @@ const AddNewProduct = () => {
         setIsFormValid(isNameValid && isDescriptionValid && isPriceValid && isImageUrlsValid && isAvailabilityValid);
     }, [formData, localImages]);
 
+    /**
+     * The function to handle the change of the form
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+     */
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    /**
+     * The function to handle the change of the image URLs
+     * @param {number} index - The index of the image URL
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+     */
     const handleImageUrlChange = (index, e) => {
         const newImageUrls = [...formData.imageUrls];
         newImageUrls[index] = e.target.value;
         setFormData({ ...formData, imageUrls: newImageUrls });
     };
 
+    /**
+     * The function to handle the change of the URL
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+     */
     const handleUrlChange = (e) => {
         setUrl(e.target.value);
     };
 
+    /**
+     * The function to handle the add URL button
+     */
     const handleAddUrl = () => {
         if (url.trim() !== '') {
             setFormData({ ...formData, imageUrls: [...formData.imageUrls, url] });
@@ -58,6 +122,10 @@ const AddNewProduct = () => {
         }
     };
 
+    /**
+     * The function to handle the file change
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+     */
     const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
         setIsUploading(true);
@@ -82,6 +150,10 @@ const AddNewProduct = () => {
         setIsUploading(false);
     };
 
+    /**
+     * The function to handle the submit of the form
+     * @param {React.FormEvent<HTMLFormElement>} e - The form event
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {

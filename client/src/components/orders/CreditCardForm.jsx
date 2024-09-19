@@ -7,6 +7,14 @@ import { getPaymentMethods } from '../../services/usersServices';
 
 import { useTranslation } from 'react-i18next';
 
+/**
+ * The CreditCardForm component renders a form to enter credit card details
+ * and pays for the order using Stripe.
+ *
+ * @param {Object} handlePaymentSuccess - the function to call when the payment is successful
+ * @param {Object} total - the total amount of the order
+ * @param {String} userId - the id of the user making the order
+ */
 const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
     const stripe = useStripe();
     const elements = useElements();
@@ -20,6 +28,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
     const { t, i18n } = useTranslation();
 
     useEffect(() => {
+        // Fetch the user's payment methods from the server
         const fetchPaymentMethods = async () => {
             const result = await getPaymentMethods(userId);
             if (!result.error) {
@@ -36,35 +45,51 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
         fetchPaymentMethods();
     }, [userId]);
 
+    /**
+     * Handles the change of the selected payment method
+     * and updates the selected method details accordingly.
+     *
+     * @param {Object} e - the event object
+     */
     const handlePaymentMethodChange = (e) => {
         const paymentMethodId = e.target.value;
         setSelectedPaymentMethod(paymentMethodId);
 
+        // Find the selected method and set the details
         const selectedMethod = paymentMethods.find(method => method._id === paymentMethodId);
         if (selectedMethod) {
             setSelectedMethodDetails(selectedMethod);
         } else {
+            // Reset the selected method details if the user selects an invalid option
             setSelectedMethodDetails(null);
         }
     };
 
+    /**
+     * Handles the submission of the credit card form.
+     *
+     * @param {Object} event - the event object
+     */
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
 
         if (!stripe || !elements) {
+            // If the Stripe library is not loaded, stop the submission
             setLoading(false);
             return;
         }
 
         const cardElement = elements.getElement(CardElement);
 
+        // Create a new Payment Method
         const { error, paymentMethod } = await stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
         });
 
         if (error) {
+            // Handle errors creating the payment method
             console.error("Error creating Payment Method: ", error);
             setLoading(false);
             setError(error);
@@ -72,9 +97,11 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
         }
 
         try {
+            // Create a new Payment Intent
             const paymentIntentRes = await createPaymentIntent(paymentMethod.id, total);
 
             if (paymentIntentRes.error) {
+                // Handle errors in the payment intent response
                 console.error("Error in Payment Intent Response: ", paymentIntentRes.error);
                 setLoading(false);
                 setError(paymentIntentRes.error);
@@ -84,6 +111,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
             const { paymentIntent } = paymentIntentRes;
 
             if (!paymentIntent || !paymentIntent.status) {
+                // Handle unexpected payment intent status
                 console.error("Unexpected Payment Intent status: ", paymentIntent ? paymentIntent.status : 'undefined');
                 setError({ message: "Unexpected Payment Intent status" });
                 setLoading(false);
@@ -91,22 +119,27 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
             }
 
             if (paymentIntent.status !== 'requires_confirmation') {
+                // Handle payment intent status that is not 'requires_confirmation'
                 setError({ message: "Unexpected Payment Intent status" });
                 setLoading(false);
                 return;
             }
 
+            // Confirm the Payment Intent
             const confirmResponse = await confirmPaymentIntent(paymentIntent.id);
 
             const confirmedPaymentIntent = confirmResponse.paymentIntent;
 
             if (confirmedPaymentIntent.status === 'succeeded') {
+                // Handle successful payment
                 handlePaymentSuccess(confirmedPaymentIntent);
             } else {
+                // Handle failed payment
                 console.error('Payment failed');
                 setError({ message: 'Payment failed' });
             }
         } catch (error) {
+            // Handle any other errors
             console.error('Error creating payment intent:', error.response ? error.response.data : error.message);
             setError(error);
         }

@@ -19,8 +19,15 @@ import './ProductDetails.css';
 import ReviewDataForm from '../../components/reviews/ReviewDataForm';
 import ReviewList from '../../components/reviews/ReviewList';
 
+/**
+ * The ProductDetails component renders a product details page.
+ * It fetches the product and its reviews from the server.
+ * It displays the product details and allows the user to add the product to the cart, wishlist or edit a review.
+ * It also displays a list of reviews for the product.
+ * @returns {JSX.Element} The JSX element for the ProductDetails component
+ */
 const ProductDetails = () => {
-    const { t } = useTranslation('productDetails'); // Usa il namespace specificato
+    const { t } = useTranslation('productDetails'); 
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [reviews, setReviews] = useState([]);
@@ -70,6 +77,10 @@ const ProductDetails = () => {
 
     }, [user, product]);
 
+    /**
+     * Updates a review in the list of reviews.
+     * @param {Object} updatedReview - The updated review
+     */
     const onEditReview = async (updatedReview) => {
         try {
             const updated = await updateReview(updatedReview._id, updatedReview);
@@ -83,14 +94,21 @@ const ProductDetails = () => {
         }
     };
 
+    /**
+     * Handles the click on the wishlist button.
+     * If the user has wishlists, it prompts the user to select one.
+     * If the user doesn't have wishlists, it prompts the user to create one.
+     * Then it adds the product to the selected/created wishlist.
+     * @param {string} productId - The id of the product to add to the wishlist
+     */
     const handleWishlistClick = (productId) => {
         if (wishlists.length > 0) {
-            const wishlistId = prompt(t('selectWishlist'), wishlists[0]._id); // Usa la funzione t per il prompt
+            const wishlistId = prompt(t('selectWishlist'), wishlists[0]._id); 
             if (wishlistId) {
                 handleAddToWishlist(wishlistId, productId);
             }
         } else {
-            const wishlistName = prompt(t('createWishlist')); // Usa la funzione t per il prompt
+            const wishlistName = prompt(t('createWishlist')); 
             if (wishlistName) {
                 handleCreateWishlist(wishlistName).then(newWishlist => {
                     handleAddToWishlist(newWishlist._id, productId);
@@ -102,7 +120,7 @@ const ProductDetails = () => {
     const isInCart = cart.some(item => item._id === product?._id);
 
     if (!product) {
-        return <div>{t('loading')}</div>; // Usa la funzione t per il messaggio di caricamento
+        return <div>{t('loading')}</div>; 
     }
 
     return (

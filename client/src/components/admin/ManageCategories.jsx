@@ -5,12 +5,22 @@ import { useCategories } from '../../contexts/CategoriesContext';
 
 import { useTranslation } from 'react-i18next';
 
+/**
+ * The ManageCategories component is used to manage the categories of the products.
+ * It has a text field for adding new categories and a list of the existing categories.
+ * Each item in the list is a text field for editing the category name and a delete button.
+ * The component uses the useCategories hook to manage the categories.
+ * The component also uses the useTranslation hook to translate the text.
+ */
 const ManageCategories = () => {
     const { categories, addCategory, deleteCategory, updateCategory } = useCategories();
     const [newCategory, setNewCategory] = useState('');
 
     const { t, i18n } = useTranslation();
 
+    /**
+     * Handles adding a new category.
+     */
     const handleAddCategory = () => {
         if (newCategory.trim() && !categories.includes(newCategory.trim())) {
             addCategory(newCategory.trim());
@@ -18,10 +28,19 @@ const ManageCategories = () => {
         }
     };
 
+    /**
+     * Handles removing a category.
+     * @param {string} categoryToRemove The category to remove.
+     */
     const handleRemoveCategory = (categoryToRemove) => {
         deleteCategory(categoryToRemove);
     };
 
+    /**
+     * Handles changing a category name.
+     * @param {number} index The index of the category in the categories array.
+     * @param {string} newCategoryName The new category name.
+     */
     const handleCategoryChange = (index, newCategoryName) => {
         const oldCategory = categories[index];
         updateCategory(oldCategory, newCategoryName);

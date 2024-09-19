@@ -27,14 +27,19 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { getAddresses, addAddress, deleteAddress, getPaymentMethods, addPaymentMethod, deletePaymentMethod } from '../../services/usersServices';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Component to manage user's addresses and payment methods.
+ *
+ * @returns {JSX.Element}
+ */
 const ManageAddressesPayments = () => {
     const { t } = useTranslation();  // Hook per la traduzione
-    const [addresses, setAddresses] = useState([]);
-    const [payments, setPayments] = useState([]);
+    const [addresses, setAddresses] = useState([]); // List of user's addresses
+    const [payments, setPayments] = useState([]); // List of user's payment methods
 
-    const { user } = useContext(AuthContext);
+    const { user } = useContext(AuthContext); // User object
 
-    const [addressForm, setAddressForm] = useState({
+    const [addressForm, setAddressForm] = useState({ // Form data for new address
         name: '',
         addressLine1: '',
         addressLine2: '',
@@ -44,18 +49,18 @@ const ManageAddressesPayments = () => {
         country: '',
     });
 
-    const [paymentForm, setPaymentForm] = useState({
+    const [paymentForm, setPaymentForm] = useState({ // Form data for new payment method
         cardType: '',
         last4Digits: '',
         cardNumber: '',
         expiryDate: '',
     });
 
-    const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
-    const [deleteIndex, setDeleteIndex] = useState(null);
-    const [deleteType, setDeleteType] = useState(null);
+    const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false); // Whether the delete confirmation dialog is open
+    const [deleteIndex, setDeleteIndex] = useState(null); // Index of the address or payment method to be deleted
+    const [deleteType, setDeleteType] = useState(null); // Type of the item to be deleted (address or payment)
 
-    const [tabIndex, setTabIndex] = useState(0);
+    const [tabIndex, setTabIndex] = useState(0); // Current tab index
 
     useEffect(() => {
         const fetchData = async () => {
@@ -72,7 +77,10 @@ const ManageAddressesPayments = () => {
         fetchData();
     }, [user.id, t]);
 
-    // Address management functions
+    /**
+     * Handles addition of new address
+     * @param {Object} newAddress - New address data
+     */
     const handleAddAddress = async (newAddress) => {
         try {
             const response = await addAddress(user.id, newAddress);
@@ -82,6 +90,10 @@ const ManageAddressesPayments = () => {
         }
     };
 
+    /**
+     * Handles removal of existing address
+     * @param {Number} index - Index of the address to be removed
+     */
     const handleRemoveAddress = async (index) => {
         try {
             await deleteAddress(user.id, addresses[index]._id);
@@ -91,6 +103,10 @@ const ManageAddressesPayments = () => {
         }
     };
 
+    /**
+     * Handles setting of default address
+     * @param {Number} index - Index of the address to be set as default
+     */
     const setDefaultAddress = (index) => {
         const updatedAddresses = addresses.map((address, i) => ({
             ...address,
@@ -99,7 +115,10 @@ const ManageAddressesPayments = () => {
         setAddresses(updatedAddresses);
     };
 
-    // Payment method management functions
+    /**
+     * Handles addition of new payment method
+     * @param {Object} newPayment - New payment method data
+     */
     const handleAddPaymentMethod = async (newPayment) => {
         try {
             const cardNumber = newPayment.cardNumber;
@@ -112,6 +131,10 @@ const ManageAddressesPayments = () => {
         }
     };
 
+    /**
+     * Handles removal of existing payment method
+     * @param {Number} index - Index of the payment method to be removed
+     */
     const handleRemovePaymentMethod = async (index) => {
         try {
             await deletePaymentMethod(user.id, payments[index]._id);
@@ -121,6 +144,10 @@ const ManageAddressesPayments = () => {
         }
     };
 
+    /**
+     * Handles setting of default payment method
+     * @param {Number} index - Index of the payment method to be set as default
+     */
     const setDefaultPaymentMethod = (index) => {
         const updatedPayments = payments.map((payment, i) => ({
             ...payment,
@@ -129,6 +156,10 @@ const ManageAddressesPayments = () => {
         setPayments(updatedPayments);
     };
 
+    /**
+     * Handles change of address form data
+     * @param {React.ChangeEvent<HTMLInputElement>} e - Change event
+     */
     const handleAddressChange = (e) => {
         setAddressForm({
             ...addressForm,
@@ -136,6 +167,10 @@ const ManageAddressesPayments = () => {
         });
     };
 
+    /**
+     * Handles change of payment form data
+     * @param {React.ChangeEvent<HTMLInputElement>} e - Change event
+     */
     const handlePaymentChange = (e) => {
         setPaymentForm({
             ...paymentForm,

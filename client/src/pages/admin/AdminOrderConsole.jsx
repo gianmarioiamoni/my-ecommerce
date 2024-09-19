@@ -3,6 +3,16 @@ import { useTranslation } from 'react-i18next';
 import { Container, Typography, Grid, Card, CardContent, CircularProgress, MenuItem, Select, FormControl, TextField, Box, Pagination } from '@mui/material';
 import { getAllOrders, getAllUsersWithOrders, updateOrderStatus } from '../../services/ordersServices';
 
+/**
+ * The AdminOrderConsole component is a page to manage orders.
+ * It fetches all orders and users with orders from the server.
+ * It displays a list of orders with their details.
+ * It allows the user to filter orders by search, user and status.
+ * It allows the user to sort orders by order date, total amount and order id.
+ * It allows the user to update the status of an order.
+ * It displays a pagination to navigate through the list of orders.
+ * @returns {JSX.Element} The JSX element for the AdminOrderConsole component
+ */
 const AdminOrderConsole = () => {
     const { t } = useTranslation();
     const [orders, setOrders] = useState([]);
@@ -18,6 +28,9 @@ const AdminOrderConsole = () => {
     const [users, setUsers] = useState([]);
     const [userSearch, setUserSearch] = useState('');
 
+    /**
+     * Fetches all orders and users with orders from the server.
+     */
     useEffect(() => {
         const fetchOrdersAndUsers = async () => {
             try {
@@ -48,6 +61,10 @@ const AdminOrderConsole = () => {
         fetchOrdersAndUsers();
     }, []);
 
+    /**
+     * Filters the orders based on the search, user filter and status filter.
+     * It also sorts the orders by the selected field and order.
+     */
     useEffect(() => {
         let filteredOrders = orders;
 
@@ -81,6 +98,11 @@ const AdminOrderConsole = () => {
 
     }, [orders, search, statusFilter, userFilter, sortField, sortOrder, page, limit]);
 
+    /**
+     * Handles the status change of an order.
+     * @param {string} orderId - The id of the order
+     * @param {string} status - The new status of the order
+     */
     const handleStatusChange = async (orderId, status) => {
         try {
             const updatedOrder = await updateOrderStatus(orderId, status);
@@ -94,19 +116,35 @@ const AdminOrderConsole = () => {
         }
     };
 
+    /**
+     * Handles the page change.
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The event
+     * @param {number} value - The new page number
+     */
     const handlePageChange = (event, value) => {
         setPage(value);
     };
 
+    /**
+     * Handles the user filter change.
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The event
+     */
     const handleUserFilterChange = (event) => {
         setUserFilter(event.target.value);
         setPage(1); // Reset page to 1 on user filter change
     };
 
+    /**
+     * Handles the user search.
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The event
+     */
     const handleUserSearch = (event) => {
         setUserSearch(event.target.value.toLowerCase());
     };
 
+    /**
+     * Filters the users based on the user search.
+     */
     const filteredUsers = users.filter(user =>
         user.name.toLowerCase().includes(userSearch) ||
         user.email.toLowerCase().includes(userSearch)

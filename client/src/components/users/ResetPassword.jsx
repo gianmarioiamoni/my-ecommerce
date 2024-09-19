@@ -4,16 +4,25 @@ import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '
 import { resetPassword } from '../../services/usersServices';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * A component that renders a form to reset the user's password.
+ * This component is used by the forgot password feature.
+ * @returns {JSX.Element} The component element.
+ */
 const ResetPassword = () => {
-    const { token } = useParams(); // Ottieni il token dalla URL
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
-    const navigate = useNavigate();
-    const { t } = useTranslation();
+    const { token } = useParams(); // Get the token from the URL parameters
+    const [password, setPassword] = useState(''); // State to store the new password
+    const [confirmPassword, setConfirmPassword] = useState(''); // State to store the confirm password
+    const [snackbarOpen, setSnackbarOpen] = useState(false); // State to store whether the snackbar is open or not
+    const [snackbarMessage, setSnackbarMessage] = useState(''); // State to store the message to display in the snackbar
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // State to store the severity of the snackbar
+    const navigate = useNavigate(); // Hook to navigate to another page
+    const { t } = useTranslation(); // Hook to translate the strings
 
+    /**
+     * Handles the change of the password fields.
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event.
+     */
     const handleChange = (e) => {
         if (e.target.name === 'password') {
             setPassword(e.target.value);
@@ -22,6 +31,10 @@ const ResetPassword = () => {
         }
     };
 
+    /**
+     * Handles the form submission.
+     * @param {React.FormEvent<HTMLFormElement>} e - The form event.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
@@ -45,6 +58,9 @@ const ResetPassword = () => {
         }
     };
 
+    /**
+     * Handles the snackbar close event.
+     */
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };

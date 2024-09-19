@@ -58,7 +58,7 @@ const seedDB = async () => {
                     'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.amazon.in%2FCeramides-Moisturizer-Hyaluronic-Moisturizing-Strengthening%2Fdp%2FB0D4YSFKLC&psig=AOvVaw0uJGTZNMCHImzvFtbJp-9Y&ust=1726695952163000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCMio1oH6yogDFQAAAAAdAAAAABAT'
                 ],
                 availability: 'In Stock',
-                category: categories[0]._id, // Skincare
+                category: categories[0].name, // Skincare
                 quantity: 100,
                 averageRating: 4.5,
                 reviewCount: 2,
@@ -69,7 +69,7 @@ const seedDB = async () => {
                 price: 19.99,
                 imageUrls: ['https://example.com/nourishing-hair-oil.jpg'],
                 availability: 'In Stock',
-                category: categories[1]._id, // Haircare
+                category: categories[1].name, // Haircare
                 quantity: 150,
                 averageRating: 4.2,
                 reviewCount: 1,
@@ -80,7 +80,7 @@ const seedDB = async () => {
                 price: 14.99,
                 imageUrls: ['https://example.com/matte-lipstick.jpg'],
                 availability: 'In Stock',
-                category: categories[2]._id, // Makeup
+                category: categories[2].name, // Makeup
                 quantity: 200,
                 averageRating: 4.7,
                 reviewCount: 3,
@@ -91,7 +91,7 @@ const seedDB = async () => {
                 price: 49.99,
                 imageUrls: ['https://example.com/anti-aging-serum.jpg'],
                 availability: 'In Stock',
-                category: categories[0]._id, // Skincare
+                category: categories[0].name, // Skincare
                 quantity: 80,
                 averageRating: 4.8,
                 reviewCount: 5,
@@ -102,7 +102,7 @@ const seedDB = async () => {
                 price: 24.99,
                 imageUrls: ['https://example.com/soothing-body-lotion.jpg'],
                 availability: 'In Stock',
-                category: categories[4]._id, // Body Care
+                category: categories[4].name, // Body Care
                 quantity: 120,
                 averageRating: 4.4,
                 reviewCount: 2,
@@ -113,7 +113,7 @@ const seedDB = async () => {
                 price: 12.99,
                 imageUrls: ['https://example.com/refreshing-body-wash.jpg'],
                 availability: 'In Stock',
-                category: categories[4]._id, // Body Care
+                category: categories[4].name, // Body Care
                 quantity: 100,
                 averageRating: 4.3,
                 reviewCount: 3,
@@ -124,7 +124,7 @@ const seedDB = async () => {
                 price: 59.99,
                 imageUrls: ['https://example.com/rose-perfume.jpg'],
                 availability: 'In Stock',
-                category: categories[3]._id, // Fragrance
+                category: categories[3].name, // Fragrance
                 quantity: 50,
                 averageRating: 4.9,
                 reviewCount: 4,
@@ -135,7 +135,7 @@ const seedDB = async () => {
                 price: 16.99,
                 imageUrls: ['https://example.com/volumizing-hair-mousse.jpg'],
                 availability: 'In Stock',
-                category: categories[1]._id, // Haircare
+                category: categories[1].name, // Haircare
                 quantity: 180,
                 averageRating: 4.6,
                 reviewCount: 2,

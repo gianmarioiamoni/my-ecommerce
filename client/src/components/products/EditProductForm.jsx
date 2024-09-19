@@ -4,13 +4,18 @@ import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert, 
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getProductById, updateProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
-import { useTranslation } from 'react-i18next'; // Importa useTranslation
+import { useTranslation } from 'react-i18next'; 
 
+/**
+ * EditProductForm component
+ * 
+ * @returns {ReactElement} The form to edit a product
+ */
 const EditProductForm = () => {
-    const { t } = useTranslation(); // Usa useTranslation
-    const { id } = useParams();
-    const { categories } = useCategories();
-    const [product, setProduct] = useState({
+    const { t } = useTranslation(); // i18next hook
+    const { id } = useParams(); // useParams hook
+    const { categories } = useCategories(); // Categories context
+    const [product, setProduct] = useState({ // product state
         name: '',
         description: '',
         price: '',
@@ -19,15 +24,15 @@ const EditProductForm = () => {
         category: '',
         quantity: 0
     });
-    const [successMessage, setSuccessMessage] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
-    const [isFormValid, setIsFormValid] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(false); // success message state
+    const [errorMessage, setErrorMessage] = useState(false); // error message state
+    const [isUploading, setIsUploading] = useState(false); // is uploading state
+    const [isFormValid, setIsFormValid] = useState(false); // is form valid state
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const product = await getProductById(id);
+                const product = await getProductById(id); // get product by id
                 setProduct(prevProduct => ({
                     ...prevProduct,
                     ...product,
@@ -40,7 +45,7 @@ const EditProductForm = () => {
             }
         };
 
-        fetchData();
+        fetchData(); // fetch data on mount
     }, [id]);
 
     useEffect(() => {
@@ -53,6 +58,10 @@ const EditProductForm = () => {
         setIsFormValid(isNameValid && isDescriptionValid && isPriceValid && isImageUrlsValid && isAvailabilityValid);
     }, [product]);
 
+    /**
+     * Handle change event in the form
+     * @param {Event} e - The event
+     */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProduct((prevProduct) => ({
@@ -61,6 +70,11 @@ const EditProductForm = () => {
         }));
     };
 
+    /**
+     * Handle change event in the images field
+     * @param {Event} e - The event
+     * @param {number} index - The index of the image
+     */
     const handleImageChange = (e, index) => {
         const newImageUrls = [...product.imageUrls];
         newImageUrls[index] = e.target.value;
@@ -70,6 +84,11 @@ const EditProductForm = () => {
         }));
     };
 
+    /**
+     * Handle change event in the file field
+     * @param {Event} e - The event
+     * @param {number} index - The index of the image
+     */
     const handleFileChange = async (e, index) => {
         const file = e.target.files[0];
         if (file) {
@@ -78,7 +97,7 @@ const EditProductForm = () => {
 
             setIsUploading(true); // start uploading
             try {
-                const data = await uploadImage(formData);
+                const data = await uploadImage(formData); // upload image
                 const newImageUrls = [...product.imageUrls];
                 newImageUrls[index] = data.url;
                 setProduct((prevProduct) => ({
@@ -96,6 +115,9 @@ const EditProductForm = () => {
         }
     };
 
+    /**
+     * Handle add image button click
+     */
     const handleAddImage = () => {
         setProduct((prevProduct) => ({
             ...prevProduct,
@@ -103,6 +125,10 @@ const EditProductForm = () => {
         }));
     };
 
+    /**
+     * Handle remove image button click
+     * @param {number} index - The index of the image
+     */
     const handleRemoveImage = (index) => {
         const newImageUrls = product.imageUrls.filter((_, i) => i !== index);
         setProduct((prevProduct) => ({
@@ -111,10 +137,14 @@ const EditProductForm = () => {
         }));
     };
 
+    /**
+     * Handle submit event
+     * @param {Event} e - The event
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await updateProduct(id, product);
+            await updateProduct(id, product); // update product
             setSuccessMessage(true);
             setTimeout(() => {
                 setSuccessMessage(false);

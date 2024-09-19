@@ -38,26 +38,39 @@ ChartJS.register(
     Legend
 );
 
+/**
+ * Component to display the user behavior dashboard.
+ *
+ * @returns {ReactElement} The dashboard component
+ */
 const UserBehaviorDashboard = () => {
-    const { t } = useTranslation('userBehaviorDashboard'); // Usa il namespace specificato
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { t } = useTranslation('userBehaviorDashboard'); // Use the translation hook with the namespace
+    const [data, setData] = useState([]); // The data to display
+    const [loading, setLoading] = useState(true); // The loading state
     const [startDate, setStartDate] = useState(() => {
         const today = new Date();
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(today.getDate() - 7);
         return sevenDaysAgo.toISOString().split('T')[0];
-    });
-    const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    }); // The start date
+    const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]); // The end date
+    const theme = useTheme(); // The theme
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Whether the screen is mobile or not
 
-    const [tabValue, setTabValue] = useState(0);
+    const [tabValue, setTabValue] = useState(0); // The selected tab
 
+    /**
+     * Handles the tab change event
+     * @param {React.ChangeEvent<HTMLDivElement>} event - The event
+     * @param {number} newValue - The new value
+     */
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
     };
 
+    /**
+     * Fetches the data from the server
+     */
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -74,6 +87,12 @@ const UserBehaviorDashboard = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startDate, endDate]);
 
+    /**
+     * Aggregates the data by date
+     * @param {Array} events - The events to aggregate
+     * @param {Array<string>} eventTypes - The event types to filter by
+     * @returns {Object} The aggregated data
+     */
     const aggregateData = (events, eventTypes) => {
         const aggregation = {};
 
@@ -93,6 +112,10 @@ const UserBehaviorDashboard = () => {
         };
     };
 
+    /**
+     * Creates the chart data for the product clicks chart
+     * @returns {Object} The chart data
+     */
     const chartDataClicks = () => {
         if (data.length === 0) return { labels: [], datasets: [] };
 
@@ -137,7 +160,7 @@ const UserBehaviorDashboard = () => {
             labels: allLabels,
             datasets: [
                 {
-                    label: t('addToCartLabel'), 
+                    label: t('addToCartLabel'),
                     data: dataNew,
                     borderColor: theme.palette.success.main,
                     backgroundColor: theme.palette.success.light,
@@ -145,7 +168,7 @@ const UserBehaviorDashboard = () => {
                     tension: 0.1,
                 },
                 {
-                    label: t('removeFromCartLabel'), 
+                    label: t('removeFromCartLabel'),
                     data: dataRemoving,
                     borderColor: theme.palette.warning.main,
                     backgroundColor: theme.palette.warning.light,
@@ -163,13 +186,13 @@ const UserBehaviorDashboard = () => {
                 type: 'category',
                 title: {
                     display: true,
-                    text: t('dateLabel'), 
+                    text: t('dateLabel'),
                 },
             },
             y: {
                 title: {
                     display: true,
-                    text: t('countLabel'), 
+                    text: t('countLabel'),
                 },
             },
         },
@@ -188,7 +211,7 @@ const UserBehaviorDashboard = () => {
     return (
         <Container maxWidth="lg" style={{ marginTop: '2rem' }}>
             <Typography variant="h4" align="center" gutterBottom>
-                {t('dashboardTitle')} 
+                {t('dashboardTitle')}
             </Typography>
 
             {/* Dates selection section */}
@@ -196,7 +219,7 @@ const UserBehaviorDashboard = () => {
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
-                        label={t('startDateLabel')} 
+                        label={t('startDateLabel')}
                         type="date"
                         InputLabelProps={{ shrink: true }}
                         value={startDate}
@@ -206,7 +229,7 @@ const UserBehaviorDashboard = () => {
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
-                        label={t('endDateLabel')} 
+                        label={t('endDateLabel')}
                         type="date"
                         InputLabelProps={{ shrink: true }}
                         value={endDate}
@@ -221,7 +244,7 @@ const UserBehaviorDashboard = () => {
                         onClick={fetchData}
                         disabled={loading}
                     >
-                        {loading ? t('loadingLabel') : t('filterLabel')} 
+                        {loading ? t('loadingLabel') : t('filterLabel')}
                     </Button>
                 </Grid>
             </Grid>
@@ -237,8 +260,8 @@ const UserBehaviorDashboard = () => {
                     textColor="primary"
                     indicatorColor="primary"
                 >
-                    <Tab label={t('productClicksTabLabel')} /> 
-                    <Tab label={t('addToCartEventsTabLabel')} /> 
+                    <Tab label={t('productClicksTabLabel')} />
+                    <Tab label={t('addToCartEventsTabLabel')} />
                 </Tabs>
 
                 {/* Tab content */}

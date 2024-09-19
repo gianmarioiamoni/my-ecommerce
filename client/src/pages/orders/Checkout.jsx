@@ -16,15 +16,36 @@ import { createPayPalOrder, createCreditCardOrder } from '../../services/ordersS
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
+/**
+ * The Checkout component is the main component for the checkout process.
+ * It handles the checkout flow by rendering the correct component based on the current step.
+ * The component also handles the payment success callback and the navigation to the success page.
+ * 
+ * @returns {ReactElement} The rendered component
+ */
 const Checkout = () => {
-    const { t } = useTranslation(''); // Usa il namespace specificato
+    //Gets the translated strings
+    const { t } = useTranslation(''); 
+
+    // State to store the current step
     const [step, setStep] = useState(1);
+    // State to store the shipping data
     const [shippingData, setShippingData] = useState({});
+    // State to store the payment method
     const [paymentMethod, setPaymentMethod] = useState('');
+
+    // Navigates to the success page
     const navigate = useNavigate();
+
+    // Gets the cart context
     const { cart, clearCart } = useContext(CartContext);
+    // Gets the auth context
     const { user } = useContext(AuthContext);
 
+    /**
+     * Handles the next step in the checkout flow
+     * @param {Object} data - The data to be passed to the next step
+     */
     const nextStep = (data) => {
         if (step === 1) {
             setShippingData(data);
@@ -34,10 +55,17 @@ const Checkout = () => {
         setStep(step + 1);
     };
 
+    /**
+     * Handles the previous step in the checkout flow
+     */
     const prevStep = () => {
         setStep(step - 1);
     };
 
+    /**
+     * Handles the payment success callback
+     * @param {Object} details - The payment details
+     */
     const handlePaymentSuccess = async (details) => {
         try {
             const orderData = {
@@ -62,32 +90,44 @@ const Checkout = () => {
             navigate('/success');
         } catch (error) {
             if (error.response && error.response.data.message === 'Order already captured') {
-                alert(t('checkout.orderAlreadyCaptured')); // Usa la funzione t per il messaggio di ordine già catturato
+                alert(t('checkout.orderAlreadyCaptured')); 
             } else {
-                alert(t('checkout.orderError')); // Usa la funzione t per il messaggio di errore generico
+                alert(t('checkout.orderError')); 
             }
         }
     };
 
+    /**
+     * Handles the payment success callback for PayPal
+     * @param {Object} details - The payment details
+     */
     const handlePayPalPaymentSuccess = (details) => {
         if (details.id && details.status === 'COMPLETED') {
             handlePaymentSuccess(details);
         } else {
-            alert(t('checkout.invalidPayPalDetails')); // Usa la funzione t per i dettagli di pagamento PayPal non validi
+            alert(t('checkout.invalidPayPalDetails')); 
         }
     };
 
+    /**
+     * Handles the payment success callback for Stripe
+     * @param {Object} paymentIntent - The payment intent
+     */
     const handleStripePaymentSuccess = (paymentIntent) => {
         if (!paymentIntent) {
-            throw new Error(t("checkout.paymentIntentUndefined")); // Usa la funzione t per il messaggio di intent undefined
+            throw new Error(t("checkout.paymentIntentUndefined")); 
         }
         if (paymentIntent.id && paymentIntent.status === 'succeeded') {
             handlePaymentSuccess(paymentIntent);
         } else {
-            alert(t('checkout.invalidStripeDetails')); // Usa la funzione t per i dettagli di pagamento Stripe non validi
+            alert(t('checkout.invalidStripeDetails')); 
         }
     };
 
+    /**
+     * Calculates the total amount
+     * @returns {number} The total amount
+     */
     const getTotal = () => {
         return cart.reduce((total, product) => total + product.price, 0).toFixed(2);
     };

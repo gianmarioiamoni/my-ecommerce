@@ -14,9 +14,19 @@ import AddToCartButton from '../../components/products/AddToCartButton';
 import AddToWishlistButton from '../../components/products/AddToWishlistButton';
 import CreateNewWishlistDialog from '../../components/products/CreateNewWishlistDialog';
 
+/**
+ * The ProductList component displays a list of products.
+ * It allows the user to search and filter the products by category and price.
+ * It also allows the user to add products to the cart and to their wishlist.
+ *
+ * @returns {JSX.Element} The rendered component.
+ */
 const ProductList = () => {
-    const { t, i18n } = useTranslation(); // Specifica il namespace 'productList'
+    const { t, i18n } = useTranslation(); 
 
+    /**
+     * The state of the component.
+     */
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -27,15 +37,25 @@ const ProductList = () => {
     const [openCreateDialog, setOpenCreateDialog] = useState(false);
     const [newWishlistName, setNewWishlistName] = useState('');
 
+    /**
+     * The context variables.
+     */
     const { cart, addToCart, removeFromCart } = useContext(CartContext);
     const { categories } = useCategories();
     const { user } = useContext(AuthContext);
     const { wishlists, handleCreateWishlist, handleAddToWishlist, isProductInAnyWishlist } = useWishlist();
 
+    /**
+     * The theme variables.
+     */
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
+        /**
+         * Fetches the products from the server on mount.
+         * Maps the products to their names and sets them as the state.
+         */
         const fetchData = async () => {
             try {
                 const products = await getAllProducts();
@@ -51,9 +71,16 @@ const ProductList = () => {
         fetchData();
     }, []);
 
+    /**
+     * Applies the filters and sorting to the products.
+     * @param {string} criteria - The criteria to sort by.
+     */
     const applyFiltersAndSorting = (criteria = sortCriteria) => {
         let filtered = products;
 
+        /**
+         * Applies the search filter.
+         */
         if (searchQuery) {
             filtered = filtered.filter(product =>
                 product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -61,10 +88,16 @@ const ProductList = () => {
             );
         }
 
+        /**
+         * Applies the category filter.
+         */
         if (selectedCategory) {
             filtered = filtered.filter(product => product.category === selectedCategory);
         }
 
+        /**
+         * Applies the sorting.
+         */
         switch (criteria) {
             case 'price-asc':
                 filtered.sort((a, b) => a.price - b.price);
@@ -90,37 +123,68 @@ const ProductList = () => {
     };
 
     useEffect(() => {
+        /**
+         * Applies the filters and sorting on mount and on searchQuery, selectedCategory and products changes.
+         */
         applyFiltersAndSorting();
     }, [searchQuery, selectedCategory, products]);
 
+    /**
+     * Handles the language change.
+     * @param {string} lang - The language to change to.
+     */
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
     };
 
+    /**
+     * Handles the search input change.
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The event.
+     */
     const handleSearchChange = (e) => {
         setSearchQuery(e.target.value);
     };
 
+    /**
+     * Handles the category selection change.
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The event.
+     */
     const handleCategoryChange = (e) => {
         setSelectedCategory(e.target.value);
     };
 
+    /**
+     * Handles the sort selection change.
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The event.
+     */
     const handleSortChange = (e) => {
         const value = e.target.value;
         setSortCriteria(value);
         applyFiltersAndSorting(value);
     };
 
+    /**
+     * Handles the wishlist menu open.
+     * @param {React.MouseEvent<HTMLButtonElement>} event - The event.
+     * @param {Product} product - The product.
+     */
     const handleWishlistMenuOpen = (event, product) => {
         setAnchorEl(event.currentTarget);
         setSelectedProduct(product);
     };
 
+    /**
+     * Handles the wishlist menu close.
+     */
     const handleWishlistMenuClose = () => {
         setAnchorEl(null);
         setSelectedProduct(null);
     };
 
+    /**
+     * Handles the wishlist selection.
+     * @param {string} wishlistId - The ID of the wishlist.
+     */
     const handleWishlistSelection = async (wishlistId) => {
         if (wishlistId === 'create-new') {
             setOpenCreateDialog(true);
@@ -130,6 +194,9 @@ const ProductList = () => {
         }
     };
 
+    /**
+     * Handles the create new wishlist.
+     */
     const handleCreateNewWishlist = async () => {
         if (newWishlistName.trim()) {
             const newWishlist = await handleCreateWishlist(newWishlistName);
@@ -138,12 +205,20 @@ const ProductList = () => {
         }
     };
 
+    /**
+     * Handles the create new wishlist dialog close.
+     */
     const handleCloseCreateDialog = () => {
         setOpenCreateDialog(false);
         setNewWishlistName('');
         handleWishlistMenuClose();
     };
 
+    /**
+     * Checks if a product is in the cart.
+     * @param {string} productId - The ID of the product.
+     * @returns {boolean} True if the product is in the cart, false otherwise.
+     */
     const isInCart = (productId) => cart.some(item => item._id === productId);
 
     return (

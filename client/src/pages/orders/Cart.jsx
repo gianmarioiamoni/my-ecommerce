@@ -6,24 +6,40 @@ import { useTranslation } from 'react-i18next'; // Importa useTranslation
 import { CartContext } from '../../contexts/CartContext';
 import CartItem from '../../components/products/CartItem';
 
+/**
+ * The Cart component renders the cart with all its items.
+ * The component takes care of checking if the quantities of the items in the cart are valid.
+ * If the quantities are valid, the component renders a checkout button. If not, it renders an error message.
+ * The component also renders a "Clear cart" button.
+ */
 const Cart = () => {
-    const { t } = useTranslation(''); // Usa il namespace specificato
+    const { t } = useTranslation(''); 
     const { cart, clearCart, getTotal, checkQuantities } = useContext(CartContext);
     const [hasErrors, setHasErrors] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
+        /**
+         * Check the quantities of all items in the cart.
+         * If the quantities are valid, set the state of the component to false.
+         * If not, set the state of the component to true.
+         */
         checkQuantities().then((errors) => {
             setHasErrors(errors);
         });
     }, [cart, checkQuantities]);
 
+    /**
+     * Handle the checkout process.
+     * If there are no errors, navigate to the checkout page.
+     * If there are errors, show an error message.
+     */
     const handleCheckout = () => {
         checkQuantities().then((errors) => {
             if (!errors) {
                 navigate('/checkout');
             } else {
-                alert(t('cart.quantityErrorAlert')); // Usa la funzione t per le etichette
+                alert(t('cart.quantityErrorAlert')); // Translate the error message
             }
         });
     };
@@ -32,12 +48,12 @@ const Cart = () => {
         <Container maxWidth="md">
             <Box mt={4} mb={4}>
                 <Typography variant="h4" component="h1" align="center" gutterBottom>
-                    {t('cart.cartTitle')} {/* Usa la funzione t per il titolo */}
+                    {t('cart.cartTitle')} {/* Translate the title */}
                 </Typography>
                 <Grid container spacing={3} justifyContent="center">
                     {cart.length === 0 ? (
                         <Typography variant="h6" align="center" gutterBottom>
-                            {t('cart.emptyCartMessage')} {/* Usa la funzione t per il messaggio vuoto */}
+                            {t('cart.emptyCartMessage')} {/* Translate the empty cart message */}
                         </Typography>
                     ) : (
                         cart.map(product => (
@@ -45,7 +61,10 @@ const Cart = () => {
                                 <CartItem product={product} />
                                 {product.maxQuantityError && (
                                     <Typography color="error" variant="body2">
-                                        {t('cart.maxQuantityError2', { name: product.name, quantity: product.availableQuantity })} {/* Usa la funzione t per l'errore di quantità */}
+                                        {t('cart.maxQuantityError2', {
+                                            name: product.name,
+                                            quantity: product.availableQuantity,
+                                        })} {/* Translate the quantity error message */}
                                     </Typography>
                                 )}
                             </Grid>
@@ -55,7 +74,7 @@ const Cart = () => {
                 {cart.length > 0 && (
                     <>
                         <Typography variant="h5" align="center" sx={{ marginTop: 3 }}>
-                            {t('cart.totalLabel', { total: getTotal() })} {/* Usa la funzione t per l'etichetta totale */}
+                            {t('cart.totalLabel', { total: getTotal() })} {/* Translate the total label */}
                         </Typography>
                         <Box mt={3} display="flex" justifyContent="center">
                             <Button
@@ -64,7 +83,7 @@ const Cart = () => {
                                 color="primary"
                                 sx={{ marginRight: 2 }}
                             >
-                                {t('cart.clearCartButton')} {/* Usa la funzione t per il pulsante di svuotamento carrello */}
+                                {t('cart.clearCartButton')} {/* Translate the clear cart button */}
                             </Button>
                             <Button
                                 variant="contained"
@@ -72,7 +91,7 @@ const Cart = () => {
                                 onClick={handleCheckout}
                                 disabled={hasErrors}
                             >
-                                {t('cart.checkoutButton')} {/* Usa la funzione t per il pulsante di checkout */}
+                                {t('cart.checkoutButton')} {/* Translate the checkout button */}
                             </Button>
                         </Box>
                     </>

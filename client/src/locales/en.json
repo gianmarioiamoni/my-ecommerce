@@ -1,4 +1,13 @@
 {
+  "homepage": {
+    "welcome": "Welcome",
+    "welcomeGuest": "Welcome to Our Store!",
+    "slogan": "Discover the best skincare and beauty products.",
+    "viewProducts": "View Products",
+    "login": "Login",
+    "noAccount": "Don't have an account?",
+    "register": "Register"
+  },
   "cart": {
     "addToCart": "Add to Cart",
     "removeFromCart": "Remove from Cart",

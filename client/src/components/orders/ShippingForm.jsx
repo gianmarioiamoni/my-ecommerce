@@ -3,12 +3,40 @@ import { Container, TextField, Button, Typography, Select, MenuItem, FormControl
 import { getAddresses } from '../../services/usersServices';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * ShippingForm component
+ * 
+ * This component is used to collect shipping information from the user.
+ * It allows the user to select a saved address from the list of addresses
+ * associated with the user's account, or to enter a new address.
+ * 
+ * @param {Object} props - Component props
+ * @param {number} props.userId - The ID of the user
+ * @param {function} props.nextStep - The function to call when the user clicks the "Next" button
+ * 
+ * @returns {React.ReactElement} - The rendered component
+ */
 const ShippingForm = ({ userId, nextStep }) => {
     const [shippingData, setShippingData] = useState({
+        /**
+         * The full name to use for shipping
+         */
         fullName: '',
+        /**
+         * The address to use for shipping
+         */
         address: '',
+        /**
+         * The city to use for shipping
+         */
         city: '',
+        /**
+         * The postal code to use for shipping
+         */
         postalCode: '',
+        /**
+         * The country to use for shipping
+         */
         country: '',
     });
 
@@ -17,6 +45,10 @@ const ShippingForm = ({ userId, nextStep }) => {
     const { t } = useTranslation();
 
     useEffect(() => {
+        /**
+         * Fetches the list of addresses associated with the user's account
+         * and sets the default address to the first address in the list
+         */
         const fetchAddresses = async () => {
             try {
                 const result = await getAddresses(userId);
@@ -42,6 +74,11 @@ const ShippingForm = ({ userId, nextStep }) => {
         fetchAddresses();
     }, [userId]);
 
+    /**
+     * Handles changes to the shipping data form fields
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The event object
+     */
     const handleChange = (e) => {
         const { name, value } = e.target;
         setShippingData({
@@ -50,6 +87,11 @@ const ShippingForm = ({ userId, nextStep }) => {
         });
     };
 
+    /**
+     * Handles changes to the selected address
+     * 
+     * @param {React.ChangeEvent<HTMLSelectElement>} e - The event object
+     */
     const handleAddressChange = (e) => {
         const addressId = e.target.value;
         setSelectedAddress(addressId);
@@ -66,6 +108,11 @@ const ShippingForm = ({ userId, nextStep }) => {
         }
     };
 
+    /**
+     * Handles the "Next" button click
+     * 
+     * @param {React.FormEvent<HTMLFormElement>} e - The event object
+     */
     const handleSubmit = (e) => {
         e.preventDefault();
         nextStep(shippingData);

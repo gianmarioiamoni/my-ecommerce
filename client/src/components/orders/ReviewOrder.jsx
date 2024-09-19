@@ -5,6 +5,19 @@ import { useTranslation } from 'react-i18next';
 import PayPalButton from './PayPalButton';
 import CreditCardForm from './CreditCardForm';
 
+/**
+ * Renders the review order page.
+ * 
+ * This page allows the user to review the order before submitting it.
+ * The user can go back to the previous page or proceed to payment.
+ * 
+ * @param {Object} shippingData
+ * @param {String} paymentMethod
+ * @param {Function} prevStep
+ * @param {Function} placeOrder
+ * @param {String} userId
+ * @returns {ReactElement}
+ */
 const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId }) => {
     const { cart } = useContext(CartContext);
     const { t } = useTranslation();
@@ -24,6 +37,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                 {/* Column 1 - Order Review */}
                 <Grid item xs={12} md={6}>
                     <Box style={{ padding: '20px', minHeight: '300px' }}>
+                        {/* Shipping Details */}
                         <Typography variant="h6" gutterBottom fontWeight={'bold'}>
                             {t('reviewOrder.shippingDetails')}
                         </Typography>
@@ -32,12 +46,16 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                         <Typography variant="body1">
                             {shippingData.city}, {shippingData.postalCode}, {shippingData.country}
                         </Typography>
+
+                        {/* Payment Method */}
                         <Typography variant="h6" gutterBottom style={{ marginTop: '20px' }}>
                             {t('reviewOrder.paymentMethod')}
                         </Typography>
                         <Typography variant="body1">
                             {paymentMethod === 'paypal' ? t('reviewOrder.paypal') : t('reviewOrder.creditCard')}
                         </Typography>
+
+                        {/* Order Items */}
                         <Typography variant="h6" gutterBottom style={{ marginTop: '20px' }}>
                             {t('reviewOrder.orderItems')}
                         </Typography>
@@ -48,9 +66,13 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                                 </ListItem>
                             ))}
                         </List>
+
+                        {/* Total */}
                         <Typography variant="h6" gutterBottom>
                             {t('reviewOrder.total')}: ${total}
                         </Typography>
+
+                        {/* Back button */}
                         <Button variant="contained" color="secondary" onClick={prevStep} style={{ marginTop: '20px' }}>
                             {t('reviewOrder.back')}
                         </Button>
@@ -60,6 +82,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
                 {/* Column 2 - Payment */}
                 <Grid item xs={12} md={6}>
                     <Box style={{ padding: '20px', minHeight: '300px' }}>
+                        {/* Proceed to Payment */}
                         <Typography variant="h6" gutterBottom fontWeight={"bold"}>
                             {t('reviewOrder.proceedToPayment')}
                         </Typography>

@@ -7,20 +7,51 @@ import { useTranslation } from 'react-i18next';
 
 const serverURL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
 
+/**
+ * Component to handle user registration.
+ *
+ * @returns {ReactElement} The registration form
+ */
 const Register = () => {
+    /**
+     * State to store the form data
+     */
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+
+    /**
+     * State to store the snackbar data
+     */
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
+    /**
+     * Context to access the login function
+     */
     const { login } = useContext(AuthContext);
+
+    /**
+     * Hook to access the translated strings
+     */
     const { t } = useTranslation();
 
+    /**
+     * Hook to access the navigate function
+     */
     const navigate = useNavigate();
 
+    /**
+     * Handles changes in the form data
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+     */
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    /**
+     * Handles the form submission
+     * @param {React.FormEvent<HTMLFormElement>} e - The form event
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -39,6 +70,9 @@ const Register = () => {
         }
     };
 
+    /**
+     * Handles the snackbar close event
+     */
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };

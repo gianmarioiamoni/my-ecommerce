@@ -9,6 +9,17 @@ import { getMonthlySales } from '../../services/statisticsServices';
 import * as XLSX from 'xlsx';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * A component to display a sales report chart and table.
+ * 
+ * @param {Function} [getSalesFunction=getMonthlySales] - The function to fetch sales data. Defaults to `getMonthlySales`.
+ * @param {String} [CSVheader="sales.csvHeader.period"] - The translation key for the CSV header of the period column. Defaults to `'sales.csvHeader.period'`.
+ * @param {String} [excelHeader="sales.excelHeader"] - The translation key for the Excel header of the worksheet. Defaults to `'sales.excelHeader'`.
+ * @param {String} [periodName="sales.period"] - The translation key for the period name. Defaults to `'sales.period'`.
+ * @param {String} [filePrefix="sales.filePrefix"] - The translation key for the file name prefix. Defaults to `'sales.filePrefix'`.
+ * @param {String} [header="sales.header"] - The translation key for the header text. Defaults to `'sales.header'`.
+ * @returns {JSX.Element}
+ */
 const SalesReport = ({
     getSalesFunction = getMonthlySales,
     CSVheader = "sales.csvHeader.period",
@@ -21,6 +32,9 @@ const SalesReport = ({
     const [salesData, setSalesData] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    /**
+     * Fetches sales data and formats it for the chart and table.
+     */
     const fetchSalesData = async () => {
         try {
             const data = await getSalesFunction();
@@ -40,7 +54,9 @@ const SalesReport = ({
         fetchSalesData();
     }, []);
 
-    // Function to export data as CSV
+    /**
+     * Exports sales data as a CSV file.
+     */
     const exportCSV = () => {
         const csvRows = [];
         const headers = [t(CSVheader), t('sales.csvHeader.totalSales'), t('sales.csvHeader.totalOrders')];
@@ -60,7 +76,9 @@ const SalesReport = ({
         link.click();
     };
 
-    // Function to export data as Excel
+    /**
+     * Exports sales data as an Excel file.
+     */
     const exportExcel = () => {
         const worksheet = XLSX.utils.json_to_sheet(salesData);
         const workbook = XLSX.utils.book_new();

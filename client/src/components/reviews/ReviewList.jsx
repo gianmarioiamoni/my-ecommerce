@@ -15,19 +15,35 @@ import { Edit as EditIcon, Save as SaveIcon } from '@mui/icons-material'; // Imp
 import { AuthContext } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next'; // Importiamo useTranslation
 
+/**
+ * A component that renders a list of reviews.
+ * 
+ * @param {Object} props - The props passed to the component.
+ * @param {Array} props.reviews - The reviews to render.
+ * @param {function} props.onEditReview - The function that will be called when the user wants to edit a review.
+ * @returns {JSX.Element} The component element.
+ */
 const ReviewList = ({ reviews, onEditReview }) => {
     const { user } = useContext(AuthContext);
-    const { t } = useTranslation(); // Hook per la traduzione
+    const { t } = useTranslation(); 
     const [editingReviewId, setEditingReviewId] = useState(null); // Keep track of the review being edited 
     const [editedRating, setEditedRating] = useState(0);
     const [editedComment, setEditedComment] = useState('');
 
+    /**
+     * Handles the click of the edit button for a review.
+     * 
+     * @param {Object} review - The review being edited.
+     */
     const handleEditClick = (review) => {
         setEditingReviewId(review._id);
         setEditedRating(review.rating);
         setEditedComment(review.comment);
     };
 
+    /**
+     * Handles the click of the save button for a review.
+     */
     const handleSaveClick = () => {
         onEditReview({
             _id: editingReviewId,

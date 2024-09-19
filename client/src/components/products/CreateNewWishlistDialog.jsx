@@ -2,6 +2,18 @@ import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * This component is a Dialog that allows the user to input a new wishlist name
+ * and create a new wishlist.
+ *
+ * @param {boolean} openCreateDialog - Whether the dialog is open or not
+ * @param {function} handleCloseCreateDialog - Function that closes the dialog
+ * @param {string} newWishlistName - The current name of the new wishlist
+ * @param {function} setNewWishlistName - Function that updates the newWishlistName state
+ * @param {function} handleCreateNewWishlist - Function that creates the new wishlist
+ *
+ * @return {React.Component} The CreateNewWishlistDialog component
+ */
 const CreateNewWishlistDialog = ({
     openCreateDialog,
     handleCloseCreateDialog,

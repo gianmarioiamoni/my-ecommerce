@@ -42,31 +42,32 @@ console.log(serverURL);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Ottenere il percorso della directory corrente
+// Get the path to the dist folder for the client build 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configura il percorso corretto per la cartella dist
+// Configure the dist folder for the client build
 const clientBuildPath = path.join(__dirname, '../client/dist');
 
-
 const httpsOptions = {
-    key: fs.readFileSync('./localhost-key.pem'),
-    cert: fs.readFileSync('./localhost.pem')
+    key: fs.readFileSync('./localhost-key.pem'), // private key
+    cert: fs.readFileSync('./localhost.pem') // certificate
 };
 
 
 const upload = multer({ storage: multer.memoryStorage() });
 
+// Configure Cloudinary
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// Enable CORS
+app.use(cors()); 
 
-app.use(cors());
-
+// Configure body parser
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {

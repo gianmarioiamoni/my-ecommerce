@@ -5,10 +5,20 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { uploadProfilePicture } from '../../services/usersServices';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * Component to show and update user profile information.
+ *
+ * @returns {JSX.Element}
+ */
 const Profile = () => {
     const { user, update, remove } = useContext(AuthContext);
     const { t } = useTranslation();
-    const [formData, setFormData] = useState({ name: user.name, email: user.email, currentPassword: '', newPassword: '' });
+    const [formData, setFormData] = useState({
+        name: user.name,
+        email: user.email,
+        currentPassword: '',
+        newPassword: '',
+    });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
@@ -16,13 +26,27 @@ const Profile = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        setFormData({ name: user.name, email: user.email, currentPassword: '', newPassword: '' });
+        // Reset the form data when the user changes
+        setFormData({
+            name: user.name,
+            email: user.email,
+            currentPassword: '',
+            newPassword: '',
+        });
     }, [user]);
 
+    /**
+     * Handles changes to the form data
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+     */
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    /**
+     * Handles the form submission
+     * @param {React.FormEvent<HTMLFormElement>} e - The form event
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -44,6 +68,10 @@ const Profile = () => {
         }
     };
 
+    /**
+     * Handles changes to the user's profile picture
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+     */
     const handleProfilePictureChange = async (e) => {
         const file = e.target.files[0];
         const formData = new FormData();
@@ -63,6 +91,9 @@ const Profile = () => {
         }
     };
 
+    /**
+     * Handles the deletion of the user account
+     */
     const handleDeleteAccount = async () => {
         try {
             await remove();
@@ -77,10 +108,16 @@ const Profile = () => {
         }
     };
 
+    /**
+     * Handles the closure of the snackbar
+     */
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };
 
+    /**
+     * Checks if the form data is valid
+     */
     const isFormValid = formData.name && formData.email && formData.currentPassword;
 
     return (

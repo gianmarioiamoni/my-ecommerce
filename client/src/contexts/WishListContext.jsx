@@ -4,6 +4,15 @@ import { AuthContext } from './AuthContext';
 
 const WishlistContext = createContext();
 
+/**
+ * The WishlistProvider component provides the WishlistContext to its children.
+ * It fetches the wishlists associated with the user from the server on mount,
+ * and stores them in the state. It also provides functions to add, delete and
+ * update wishlists, as well as to check if a product is in any wishlist.
+ *
+ * @param {ReactNode} children - The children of the component.
+ * @returns {ReactElement} - The rendered component.
+ */
 export const WishlistProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
     const [wishlists, setWishlists] = useState([]);
@@ -14,6 +23,10 @@ export const WishlistProvider = ({ children }) => {
         }
     }, [user, wishlists.length]);
 
+    /**
+     * Fetches the wishlists associated with the user from the server.
+     * Maps the wishlists to their names and sets them as the state.
+     */
     const fetchWishlists = async () => {
         if (user) {
             const userWishlists = await getUserWishlists(user);
@@ -21,12 +34,23 @@ export const WishlistProvider = ({ children }) => {
         }
     };
 
+    /**
+     * Creates a new wishlist with the given name.
+     * Adds the new wishlist to the state.
+     * @param {string} name - The name of the new wishlist.
+     */
     const handleCreateWishlist = async (name) => {
         const newWishlist = await createWishlist(name);
         setWishlists([...wishlists, newWishlist]);
         return newWishlist;
     };
 
+    /**
+     * Adds a product to a wishlist.
+     * Updates the state with the new wishlist.
+     * @param {string} wishlistId - The ID of the wishlist to add the product to.
+     * @param {string} productId - The ID of the product to add.
+     */
     const handleAddToWishlist = async (wishlistId, productId) => {
         const updatedWishlist = await addToWishlist(wishlistId, productId);
         setWishlists((prevWishlists) =>
@@ -38,6 +62,12 @@ export const WishlistProvider = ({ children }) => {
         );
     };
 
+    /**
+     * Removes a product from a wishlist.
+     * Updates the state with the new wishlist.
+     * @param {string} wishlistId - The ID of the wishlist to remove the product from.
+     * @param {string} productId - The ID of the product to remove.
+     */
     const handleRemoveFromWishlist = async (wishlistId, productId) => {
         const updatedWishlist = await removeFromWishlist(wishlistId, productId);
         setWishlists((prevWishlists) =>
@@ -49,11 +79,22 @@ export const WishlistProvider = ({ children }) => {
         );
     };
 
+    /**
+     * Edits the name of a wishlist.
+     * Updates the state with the new wishlist.
+     * @param {string} wishlistId - The ID of the wishlist to edit.
+     * @param {string} name - The new name for the wishlist.
+     */
     const handleEditWishlistName = async (wishlistId, name) => {
         const updatedWishlist = await editWishlistName(wishlistId, name);
         setWishlists(wishlists.map(w => w._id === wishlistId ? updatedWishlist : w));
     };
 
+    /**
+     * Deletes a wishlist.
+     * Updates the state by removing the wishlist.
+     * @param {string} wishlistId - The ID of the wishlist to delete.
+     */
     const handleDeleteWishlist = async (wishlistId) => {
         try {
             await deleteWishlist(wishlistId);
@@ -63,6 +104,11 @@ export const WishlistProvider = ({ children }) => {
         }
     };
 
+    /**
+     * Checks if a product is in any wishlist.
+     * @param {string} productId - The ID of the product to check.
+     * @returns {boolean} - True if the product is in any wishlist, false otherwise.
+     */
     const isProductInAnyWishlist = (productId) => {
         // wishlist.products is an array of product objects, each with an _id property
         // check if the product is in any of the wishlist products

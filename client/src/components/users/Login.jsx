@@ -4,6 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
 
+/**
+ * Login component
+ * 
+ * @returns {ReactElement} The login form
+ */
 const Login = () => {
     const { t } = useTranslation();
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -14,10 +19,20 @@ const Login = () => {
 
     const navigate = useNavigate();
 
+    /**
+     * Handles changes in the form data
+     * 
+     * @param {React.ChangeEvent<HTMLInputElement>} e - The change event
+     */
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    /**
+     * Handles the form submission
+     * 
+     * @param {React.FormEvent<HTMLFormElement>} e - The form event
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -34,6 +49,9 @@ const Login = () => {
         }
     };
 
+    /**
+     * Handles the snackbar close event
+     */
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
     };

@@ -12,8 +12,7 @@ import {
     Menu,
     MenuItem,
     Tooltip,
-    Badge,
-    Box
+    Badge
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
@@ -108,21 +107,6 @@ const NavBar = () => {
         }
     };
 
-    /**
-     * Renders the menu items based on whether the user is logged in or not.
-     *
-     * If the user is logged in, the following items are rendered:
-     * - A link to the products page
-     * - If the user is an administrator, a link to the add product page and a link to the edit products page
-     * - A button to log out
-     *
-     * If the user is not logged in, the following items are rendered:
-     * - A link to the products page
-     * - A link to the login page
-     * - A link to the register page
-     *
-     * @returns {JSX.Element} The rendered menu items
-     */
     const renderMenuItems = () => {
         if (user) {
             return (
@@ -141,10 +125,10 @@ const NavBar = () => {
                         </>
                     )}
                     {!user.isAdmin && (
-                        <ListItem>
+                        <ListItem button component={Link} to="/cart">
                             <IconButton color="inherit" component={Link} to="/cart">
                                 <Badge badgeContent={cart.length} color="secondary">
-                                    <ShoppingCartIcon />
+                                    <ShoppingCartIcon /> 
                                 </Badge>
                             </IconButton>
                         </ListItem>
@@ -171,12 +155,6 @@ const NavBar = () => {
         }
     };
 
-
-    /**
-     * The list component that renders the menu items in the drawer.
-     * When the list is clicked or pressed, the drawer is closed.
-     * @returns {JSX.Element} The list component
-     */
     const list = () => (
         <div
             role="presentation"
@@ -184,7 +162,6 @@ const NavBar = () => {
             onKeyDown={toggleDrawer(false)}
         >
             <List>
-                {/* Render the menu items in the drawer */}
                 {renderMenuItems()}
             </List>
         </div>
@@ -197,9 +174,6 @@ const NavBar = () => {
                 <IconButton component={Link} to="/" color="inherit" edge="start">
                     <HomeIcon />
                 </IconButton>
-
-                {/* This spacer element will push the rest of the items to the right */}
-                <div style={{ flexGrow: 1 }} />
                 
                 {/* Menu Icon that opens the drawer when clicked */}
                 {!isMobile && (
