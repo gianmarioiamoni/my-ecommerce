@@ -18,31 +18,22 @@ import { useTranslation } from 'react-i18next';
  */
 const ShippingForm = ({ userId, nextStep }) => {
     const [shippingData, setShippingData] = useState({
-        /**
-         * The full name to use for shipping
-         */
         fullName: '',
-        /**
-         * The address to use for shipping
-         */
         address: '',
-        /**
-         * The city to use for shipping
-         */
         city: '',
-        /**
-         * The postal code to use for shipping
-         */
         postalCode: '',
-        /**
-         * The country to use for shipping
-         */
         country: '',
     });
 
     const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState('');
+    
     const { t } = useTranslation();
+
+    console.log(addresses);
+    console.log(selectedAddress);
+
+    
 
     useEffect(() => {
         /**
@@ -125,7 +116,7 @@ const ShippingForm = ({ userId, nextStep }) => {
                     {t('shippingForm.title')}
                 </Typography>
 
-                {addresses.length > 0 && (
+                {addresses && addresses.length > 0 && (
                     <FormControl fullWidth margin="normal">
                         <InputLabel id="address-select-label">{t('shippingForm.selectSavedAddress')}</InputLabel>
                         <Select

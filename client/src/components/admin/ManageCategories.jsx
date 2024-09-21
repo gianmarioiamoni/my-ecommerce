@@ -16,7 +16,7 @@ const ManageCategories = () => {
     const { categories, addCategory, deleteCategory, updateCategory } = useCategories();
     const [newCategory, setNewCategory] = useState('');
 
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     /**
      * Handles adding a new category.

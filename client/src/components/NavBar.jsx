@@ -46,30 +46,38 @@ const NavBar = () => {
     const { user, logout, updateUserLanguage } = useContext(AuthContext);
     const { t, i18n } = useTranslation();
 
-    // Effects
+
     useEffect(() => {
-        console.log("NavBar - user", user);
-        setCurrentLang(user?.language || 'en');
+        /**
+         * Updates the language in the context and in the local storage
+         * @returns {Promise<void>}
+         */
+        const updateLanguage = async () => {
+            // Retrieve the saved language from local storage if it exists or set it to 'en' by default
+            const savedLang = localStorage.getItem('language') || 'en';
+            console.log("NavBar - savedLang", savedLang);
+
+            // Update the language in the context
+            setCurrentLang(savedLang);
+            i18n.changeLanguage(savedLang);
+
+            // If the user is logged in, update their language in the backend
+            if (user) {
+                // Update the user's language in the context and in the local storage
+                await updateUserLanguage(savedLang);
+            }
+        };
+        updateLanguage(); 
     }, []);
 
     useEffect(() => {
-        if (user?.language) {
-            setCurrentLang(user.language);
-            console.log("NavBar - user.language", user.language);
-            i18n.changeLanguage(user.language);  // Change the current language if it is defined in the context
-        } else {
-            setCurrentLang('en');
-        }
-    }, [user]);  // Add user as a dependency, so it is triggered only when the user changes
+        // Retrieve the saved language from local storage if it exists or set it to 'en' by default 
+        const storedLang = localStorage.getItem('language') || 'en';  
+        i18n.changeLanguage(user?.language || storedLang);
+        setCurrentLang(user?.language || storedLang);
+    }, [user]);
 
-    useEffect(() => {
-        // Set the initial language based on the current language of i18n
-        i18n.changeLanguage(user?.language || 'en');
-        console.log("NavBar - i18n.language", i18n.language);
-        setCurrentLang(i18n.language);
-    }, [i18n.language]);
 
-    // Functions
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
@@ -90,11 +98,24 @@ const NavBar = () => {
     };
 
     const handleLanguageChange = async (lang) => {
+        console.log("NavBar - handleLanguageChange() - lang: ", lang);
+        // Change language in i18n
         i18n.changeLanguage(lang);
-        setCurrentLang(lang); // Update the current language state
+
+        // Update the current language state
+        setCurrentLang(lang);
+
+        // Store the selected language in local storage
+        localStorage.setItem('language', lang);
+
         setLanguageMenuOpen(null);
-        await updateUserLanguage(lang);
+
+        // If the user is logged in, update their language in the backend
+        if (user) {
+            await updateUserLanguage(lang);
+        }
     };
+
 
     // Utility functions
     const getFlagCode = (lang) => {
