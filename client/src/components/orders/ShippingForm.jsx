@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
 import { Container, TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
 import { getAddresses } from '../../services/usersServices';
 import { useTranslation } from 'react-i18next';
@@ -25,45 +26,42 @@ const ShippingForm = ({ userId, nextStep }) => {
         country: '',
     });
 
-    const [addresses, setAddresses] = useState([]);
     const [selectedAddress, setSelectedAddress] = useState('');
     
     const { t } = useTranslation();
 
-    console.log(addresses);
-    console.log(selectedAddress);
+    // Use useQuery to fetch the addresses for the user and set the default address
+    const { isLoading, error, data: addresses } = useQuery(
+        ['addresses', userId], // Chiave della query, dipende da userId
+        async () => {
+            const result = await getAddresses(userId);
 
-    
+            if (result.error || result.length === 0) return [];
 
-    useEffect(() => {
-        /**
-         * Fetches the list of addresses associated with the user's account
-         * and sets the default address to the first address in the list
-         */
-        const fetchAddresses = async () => {
-            try {
-                const result = await getAddresses(userId);
-                if (!result.error && result.length > 0) {
-                    setAddresses(result);
+            const defaultAddress = result.find(address => address.isDefault);
 
-                    const defaultAddress = result.find(address => address.isDefault);
-                    if (defaultAddress) {
-                        setShippingData({
-                            fullName: defaultAddress.name,
-                            address: defaultAddress.addressLine1 + ' ' + defaultAddress.addressLine2,
-                            city: defaultAddress.city,
-                            postalCode: defaultAddress.zipCode,
-                            country: defaultAddress.country,
-                        });
-                        setSelectedAddress(defaultAddress._id);
-                    }
-                }
-            } catch (error) {
-                console.error(error);
+            if (defaultAddress) {
+                setShippingData({
+                    fullName: defaultAddress.name,
+                    address: `${defaultAddress.addressLine1} ${defaultAddress.addressLine2}`,
+                    city: defaultAddress.city,
+                    postalCode: defaultAddress.zipCode,
+                    country: defaultAddress.country,
+                });
+                setSelectedAddress(defaultAddress._id);
             }
-        };
-        fetchAddresses();
-    }, [userId]);
+
+            return result;
+        },
+        {
+            enabled: !!userId, // Execute the query only when userId is available 
+            refetchOnWindowFocus: false, // Do not refetch the query when the window is focused
+        }
+    );
+
+    if (isLoading) return <p>{t('loading')}</p>;
+    if (error) return <p>{t('error_fetching_addresses')}</p>;
+
 
     /**
      * Handles changes to the shipping data form fields

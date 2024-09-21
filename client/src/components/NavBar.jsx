@@ -55,7 +55,6 @@ const NavBar = () => {
         const updateLanguage = async () => {
             // Retrieve the saved language from local storage if it exists or set it to 'en' by default
             const savedLang = localStorage.getItem('language') || 'en';
-            console.log("NavBar - savedLang", savedLang);
 
             // Update the language in the context
             setCurrentLang(savedLang);
@@ -98,7 +97,6 @@ const NavBar = () => {
     };
 
     const handleLanguageChange = async (lang) => {
-        console.log("NavBar - handleLanguageChange() - lang: ", lang);
         // Change language in i18n
         i18n.changeLanguage(lang);
 

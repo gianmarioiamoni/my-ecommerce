@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
+
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button, Typography, Select, MenuItem, FormControl, InputLabel, Box, Container } from '@mui/material';
 
@@ -19,7 +21,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
     const [selectedMethodDetails, setSelectedMethodDetails] = useState(null);
@@ -27,10 +29,27 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
 
     const { t, i18n } = useTranslation();
 
-    useEffect(() => {
-        // Fetch the user's payment methods from the server
-        const fetchPaymentMethods = async () => {
-            const result = await getPaymentMethods(userId);
+    // useEffect(() => {
+    //     // Fetch the user's payment methods from the server
+    //     const fetchPaymentMethods = async () => {
+    //         const result = await getPaymentMethods(userId);
+    //         if (!result.error) {
+    //             setPaymentMethods(result);
+
+    //             if (result.length > 0) {
+    //                 const defaultMethod = result[0];
+    //                 setSelectedPaymentMethod(defaultMethod._id);
+    //                 setSelectedMethodDetails(defaultMethod);
+    //                 setDefaultMethodId(defaultMethod._id);
+    //             }
+    //         }
+    //     };
+    //     fetchPaymentMethods();
+    // }, [userId]);
+
+    // useQuery to fetch the user's payment methods
+    const { data, isLoading, error } = useQuery(['paymentMethods', userId], () => getPaymentMethods(userId), {
+        onSuccess: (result) => {
             if (!result.error) {
                 setPaymentMethods(result);
 
@@ -41,9 +60,12 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
                     setDefaultMethodId(defaultMethod._id);
                 }
             }
-        };
-        fetchPaymentMethods();
-    }, [userId]);
+        }
+    });
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error fetching payment methods</p>;
+
 
     /**
      * Handles the change of the selected payment method
@@ -92,7 +114,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
             // Handle errors creating the payment method
             console.error("Error creating Payment Method: ", error);
             setLoading(false);
-            setError(error);
+            setErrorMsg(error);
             return;
         }
 
@@ -104,7 +126,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
                 // Handle errors in the payment intent response
                 console.error("Error in Payment Intent Response: ", paymentIntentRes.error);
                 setLoading(false);
-                setError(paymentIntentRes.error);
+                setErrorMsg(paymentIntentRes.error);
                 return;
             }
 
@@ -113,14 +135,14 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
             if (!paymentIntent || !paymentIntent.status) {
                 // Handle unexpected payment intent status
                 console.error("Unexpected Payment Intent status: ", paymentIntent ? paymentIntent.status : 'undefined');
-                setError({ message: "Unexpected Payment Intent status" });
+                setErrorMsg({ message: "Unexpected Payment Intent status" });
                 setLoading(false);
                 return;
             }
 
             if (paymentIntent.status !== 'requires_confirmation') {
                 // Handle payment intent status that is not 'requires_confirmation'
-                setError({ message: "Unexpected Payment Intent status" });
+                setErrorMsg({ message: "Unexpected Payment Intent status" });
                 setLoading(false);
                 return;
             }
@@ -136,12 +158,12 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
             } else {
                 // Handle failed payment
                 console.error('Payment failed');
-                setError({ message: 'Payment failed' });
+                setErrorMsg({ message: 'Payment failed' });
             }
         } catch (error) {
             // Handle any other errors
             console.error('Error creating payment intent:', error.response ? error.response.data : error.message);
-            setError(error);
+            setErrorMsg(error);
         }
         setLoading(false);
     };
@@ -221,7 +243,7 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
                 >
                     {loading ? t('payment.processing') : t('payment.pay')}
                 </Button>
-                {error && <Typography color="error" style={{ marginTop: '20px' }}>{error.message}</Typography>}
+                {errorMsg && <Typography color="error" style={{ marginTop: '20px' }}>{errorMsg.message}</Typography>}
             </Box>
         </Container>
     );

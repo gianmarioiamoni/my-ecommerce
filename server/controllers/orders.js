@@ -258,7 +258,7 @@ export const createStripePaymentIntent = async (req, res) => {
     try {
         // Create a new payment intent.
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount * 100, // Convert the amount to cents.
+            amount: Math.round(amount * 100), // The amount of the payment in cents and to integer
             currency: 'usd', 
             payment_method: paymentMethodId, // Set the payment method to the one provided in the request body.
             confirmation_method: 'manual' // Set the confirmation method to manual, so the user can confirm the payment.
@@ -272,7 +272,7 @@ export const createStripePaymentIntent = async (req, res) => {
 
     } catch (error) {
         console.error('Error creating payment intent:', error);
-        res.status(500).json({ error: { mesage: error.message } });
+        res.status(500).json({ error: { message: error.message } });
     }
 }
 
