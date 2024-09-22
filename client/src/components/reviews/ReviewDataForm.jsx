@@ -1,8 +1,13 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
+
 import { AuthContext } from '../../contexts/AuthContext';
-import { createReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
+
 import { Button, TextField, Typography, Box, Rating, Alert, Snackbar } from '@mui/material';
+
+import { createReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
+
 import { useTranslation } from 'react-i18next'; // Import useTranslation
+
 
 /**
  * The ReviewDataForm component renders a form to submit a review for a product.
@@ -17,9 +22,6 @@ import { useTranslation } from 'react-i18next'; // Import useTranslation
  * The component uses the `createReview` function from the `reviewServices` module to
  * create a new review in the database.
  * 
- * The component also uses the `useEffect` hook to check if the user has purchased
- * the product and if the user has already reviewed the product.
- * 
  * The component also uses the `useTranslation` hook to translate the text in the
  * component.
  * 
@@ -27,39 +29,13 @@ import { useTranslation } from 'react-i18next'; // Import useTranslation
  * to the component.
  * @returns {JSX.Element} The component element.
  */
-const ReviewDataForm = ({ productId, onReviewSubmit }) => {
+const ReviewDataForm = ({ productId, onReviewSubmit, setCanReview}) => {
     const { t } = useTranslation(); // No need to specify a namespace here
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const { user } = useContext(AuthContext);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
-    const [canReview, setCanReview] = useState(false);
-    const [alreadyReviewed, setAlreadyReviewed] = useState(false);
-
-    useEffect(() => {
-        const checkPermissions = async () => {
-            try {
-                const hasPurchased = await hasPurchasedProduct(user.id, productId);
-                const reviewed = await hasReviewedProduct(user.id, productId);
-
-                setCanReview(hasPurchased && !reviewed);
-                setAlreadyReviewed(reviewed);
-
-                if (!hasPurchased) {
-                    setError(t('reviews.purchaseError'));
-                } else if (reviewed) {
-                    setError(t('reviews.alreadyReviewedError'));
-                }
-            } catch (err) {
-                setError(t('reviews.verificationError'));
-            }
-        };
-
-        if (user) {
-            checkPermissions();
-        }
-    }, [user, productId, t]);
 
     /**
      * Handles the submission of the form.
@@ -69,12 +45,6 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
-
-        if (!canReview) {
-            // If the user cannot review, show an error message
-            setError(t('reviews.cannotReviewError'));
-            return;
-        }
 
         try {
             // Create a new review
@@ -86,6 +56,9 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
             // Reset the form
             setRating(0);
             setComment('');
+
+            setCanReview(false);
+
             // Call the callback function with the new review
             onReviewSubmit(newReview);
         } catch (error) {
@@ -123,7 +96,6 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
                 onChange={(e, newValue) => setRating(newValue)}
                 precision={1}
                 required
-                disabled={!canReview}
             />
             <TextField
                 fullWidth
@@ -135,7 +107,6 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
                 onChange={(e) => setComment(e.target.value)}
                 required
                 sx={{ mt: 2 }}
-                disabled={!canReview}
             />
             {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
             <Button
@@ -143,7 +114,6 @@ const ReviewDataForm = ({ productId, onReviewSubmit }) => {
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2 }}
-                disabled={!canReview}
             >
                 {t('reviews.submitReview')}
             </Button>

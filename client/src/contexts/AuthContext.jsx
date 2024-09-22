@@ -26,7 +26,6 @@ const AuthProvider = ({ children }) => {
                  * Decodes the token to get the user data
                  */
                 const decoded = jwtDecode(token);
-                console.log("Decoded token:", decoded);
                 const userLanguage = decoded.language || 'en'; // retrieve the user's language from the token 
 
                 // setup the language in the context

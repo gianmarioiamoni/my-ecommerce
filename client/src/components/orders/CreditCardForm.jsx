@@ -29,23 +29,6 @@ const CreditCardForm = ({ handlePaymentSuccess, total, userId }) => {
 
     const { t, i18n } = useTranslation();
 
-    // useEffect(() => {
-    //     // Fetch the user's payment methods from the server
-    //     const fetchPaymentMethods = async () => {
-    //         const result = await getPaymentMethods(userId);
-    //         if (!result.error) {
-    //             setPaymentMethods(result);
-
-    //             if (result.length > 0) {
-    //                 const defaultMethod = result[0];
-    //                 setSelectedPaymentMethod(defaultMethod._id);
-    //                 setSelectedMethodDetails(defaultMethod);
-    //                 setDefaultMethodId(defaultMethod._id);
-    //             }
-    //         }
-    //     };
-    //     fetchPaymentMethods();
-    // }, [userId]);
 
     // useQuery to fetch the user's payment methods
     const { data, isLoading, error } = useQuery(['paymentMethods', userId], () => getPaymentMethods(userId), {

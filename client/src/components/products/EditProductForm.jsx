@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
+
 import { Container, TextField, Button, Typography, IconButton, Snackbar, Alert, FormControl, InputLabel, Select, MenuItem, Grid, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+
 import { getProductById, updateProduct, uploadImage } from '../../services/productsServices';
 import { useCategories } from '../../contexts/CategoriesContext';
 import { useTranslation } from 'react-i18next'; 
@@ -29,34 +32,42 @@ const EditProductForm = () => {
     const [isUploading, setIsUploading] = useState(false); // is uploading state
     const [isFormValid, setIsFormValid] = useState(false); // is form valid state
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const product = await getProductById(id); // get product by id
+    // Function to get the product 
+    const fetchProductById = async (id) => {
+        const product = await getProductById(id); // Chiamata API per ottenere il prodotto
+        return product;
+    };
+
+    const { data: productData, isLoading, error } = useQuery(['product', id], () => getProductById(id), {
+        onSuccess: (fetchedProduct) => {
+            if (JSON.stringify(fetchedProduct) !== JSON.stringify(product)) {
                 setProduct(prevProduct => ({
                     ...prevProduct,
-                    ...product,
-                    availability: product.availability || 'In Stock',
-                    category: product.category || '',
-                    quantity: product.quantity || 0
+                    ...fetchedProduct,
+                    availability: fetchedProduct.availability || 'In Stock',
+                    category: fetchedProduct.category || '',
+                    quantity: fetchedProduct.quantity || 0
                 }));
-            } catch (error) {
-                console.error(error);
             }
-        };
-
-        fetchData(); // fetch data on mount
-    }, [id]);
+        },
+        onError: (error) => {
+            console.error(error);
+            setErrorMessage(true);
+        }
+    });
 
     useEffect(() => {
-        const isNameValid = product.name.trim() !== '';
-        const isDescriptionValid = product.description.trim() !== '';
-        const isPriceValid = product.price !== '' && !isNaN(product.price);
-        const isImageUrlsValid = product.imageUrls.some(url => url.trim() !== '');
-        const isAvailabilityValid = product.availability.trim() !== '';
+        if (product.name && product.description && product.price) {
+            const isNameValid = product.name.trim() !== '';
+            const isDescriptionValid = product.description.trim() !== '';
+            const isPriceValid = product.price !== '' && !isNaN(product.price);
+            const isImageUrlsValid = product.imageUrls.some(url => url.trim() !== '');
+            const isAvailabilityValid = product.availability.trim() !== '';
 
-        setIsFormValid(isNameValid && isDescriptionValid && isPriceValid && isImageUrlsValid && isAvailabilityValid);
+            setIsFormValid(isNameValid && isDescriptionValid && isPriceValid && isImageUrlsValid && isAvailabilityValid);
+        }
     }, [product]);
+    
 
     /**
      * Handle change event in the form

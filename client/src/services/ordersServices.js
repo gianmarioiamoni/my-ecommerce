@@ -187,14 +187,14 @@ export const getAllUsersWithOrders = async () => {
  * @return {boolean} True if the order is delivered, false otherwise
  * @throws {Error} If there is an error checking if the order is delivered
  */
-export const isOrderDelivered = async (productId, userId) => {
+export const isOrderDelivered = async (userId, productId) => {
+
     try {
         initAuthorizationHeader();
         const response = await axios.get(`${serverURL}/orders/delivered/${productId}/${userId}`);
-
         // If the response status is 200, the order is delivered
         // Otherwise, the order is not delivered
-        return response.data.status === 200;
+        return response.status === 200;
     } catch (error) {
         console.error('Error checking if order is delivered:', error);
         throw error;

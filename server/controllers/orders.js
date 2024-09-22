@@ -459,23 +459,28 @@ export const getAllUsersWithOrders = async (req, res) => {
  * @returns {Promise<void>}
  */
 export const isOrderDelivered = async (req, res) => {
-    const { productId, userId } = req.params;
+    const { userId, productId } = req.params;
 
     try {
         // Find the order in the database
-        const order = await Order.findOne({
-            'products.product': productId, // Find the order with the product ID
-            userId // Find the order with the user ID
-        });
+        // Find in the database if there is an Order with the userId and in which
+        // the products array contains a product with the productId
+        // products.product is an array of objects { productId, quantity }
+
+        // step 1.: find all orders of the user in the delivered status
+        const orders = await Order.find({ userId: userId, status: 'Delivered' });
+
+        if (!orders || orders.length === 0) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // in the orders array, find if there is an order with the productId in the products array
+        const order = orders.find(order => order.products.some(p => p.product._id.toString() === productId));
 
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
         }
 
-        // Check if the order has been delivered
-        if (order.status !== 'Delivered') {
-            return res.status(400).json({ message: 'Order not delivered' });
-        }
         res.status(200).json({ message: 'Order delivered' });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });

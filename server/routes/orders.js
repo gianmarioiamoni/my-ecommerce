@@ -28,7 +28,7 @@ router.post('/confirm-payment-intent', isAuthenticated, confirmStripePaymentInte
 router.get('/history/:userId', isAuthenticated, getOrderHistory);
 
 // Orders management
-router.get('/delivered/:productId,:userId', isAuthenticated, isOrderDelivered);
+router.get('/delivered/:productId/:userId', isAuthenticated, isOrderDelivered);
 
 // Admin routes
 router.patch('/update-order-status/:orderId', isAuthenticated, isAdmin, updateOrderStatus); 

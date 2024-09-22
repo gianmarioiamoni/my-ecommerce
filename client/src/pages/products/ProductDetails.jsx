@@ -1,21 +1,27 @@
 // src/pages/ProductDetails.js
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { Container, Typography, Card, CardContent, Button, CardActions } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { Rating } from '@mui/material';
+
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
 import { getProductById } from '../../services/productsServices';
 import { getProductReviews, updateReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
 import { isOrderDelivered } from '../../services/ordersServices';
 import { trackEvent } from '../../services/eventsServices';
-import { Rating } from '@mui/material';
+
 import { AuthContext } from '../../contexts/AuthContext';
 import { CartContext } from '../../contexts/CartContext';
 import { useWishlist } from '../../contexts/WishListContext';
+
 import { useTranslation } from 'react-i18next'; // Importa useTranslation
 
 import './ProductDetails.css';
+
 import ReviewDataForm from '../../components/reviews/ReviewDataForm';
 import ReviewList from '../../components/reviews/ReviewList';
 
@@ -117,6 +123,11 @@ const ProductDetails = () => {
         }
     };
 
+    const onReviewSubmit = (review) => {
+        setReviews([...reviews, review]);
+    };
+
+    
     const isInCart = cart.some(item => item._id === product?._id);
 
     if (!product) {
@@ -188,8 +199,9 @@ const ProductDetails = () => {
                     )}
                 </CardActions>
             </Card>
+            {/* Reviews section */}
             {user && !user.isAdmin && canReview &&
-                <ReviewDataForm productId={id} onReviewSubmit={newReview => setReviews([newReview, ...reviews])} />
+                <ReviewDataForm productId={id} onReviewSubmit={onReviewSubmit} setCanReview={setCanReview}/>
             }
             <ReviewList reviews={reviews} onEditReview={onEditReview} />
         </Container>
