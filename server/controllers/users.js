@@ -72,6 +72,27 @@ export async function getAllUsers(req, res) {
     }
 }
 
+/**
+ * Retrieves a user by ID from the database.
+ * 
+ * @param {Object} req - the Express request object
+ * @param {Object} res - the Express response object
+ * 
+ * @return {Promise<void>}
+ */
+export async function getUserById(req, res) {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user' });
+    }
+}
+
 
 /**
  * Registers a new user in the database.

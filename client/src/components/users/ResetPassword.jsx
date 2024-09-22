@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
-import { resetPassword } from '../../services/usersServices';
 import { useTranslation } from 'react-i18next';
+
+import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
+
+import { resetPassword } from '../../services/usersServices';
+
 
 /**
  * A component that renders a form to reset the user's password.

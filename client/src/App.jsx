@@ -64,19 +64,12 @@ const App = () => {
   return (
     <ThemeProvider theme={createTheme()}>
       <CategoriesProvider>
-        {/* The CategoriesProvider provides the categories to all its children */}
         <CartProvider>
-          {/* The CartProvider provides the cart to all its children */}
           <AuthProvider>
-            {/* The AuthProvider provides the authentication data to all its children */}
             <WishlistProvider>
-              {/* The WishlistProvider provides the wishlist to all its children */}
               <Router>
-                {/* The Router component renders the routes */}
                 <NavBar />
-                {/* The NavBar component renders the navigation bar */}
                 <Routes>
-                  {/* The Routes component renders the routes */}
                   <Route path="/register" element={<Register />} />
                   {/* The Register component renders the registration form */}
                   <Route path="/login" element={<Login />} />

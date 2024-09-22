@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { useQuery, useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
+
 import {
     AppBar,
     Toolbar,
@@ -20,10 +22,14 @@ import HomeIcon from '@mui/icons-material/Home';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+
 import { CartContext } from '../contexts/CartContext';
 import { AuthContext } from '../contexts/AuthContext';
+
 import { useTranslation } from 'react-i18next';
 import { FlagIcon } from 'react-flag-kit';
+
+import { fetchUserLanguage } from '../services/usersServices';
 
 import './NavBar.css';
 
@@ -66,16 +72,16 @@ const NavBar = () => {
                 await updateUserLanguage(savedLang);
             }
         };
-        updateLanguage(); 
+        updateLanguage();
     }, []);
 
     useEffect(() => {
-        // Retrieve the saved language from local storage if it exists or set it to 'en' by default 
-        const storedLang = localStorage.getItem('language') || 'en';  
+        // Retrieve the saved language from local storage if it exists or set it to 'en' by default
+        const storedLang = localStorage.getItem('language') || 'en';
         i18n.changeLanguage(user?.language || storedLang);
         setCurrentLang(user?.language || storedLang);
     }, [user]);
-
+    
 
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -296,7 +302,7 @@ const NavBar = () => {
                                 <MenuItem component={Link} to="/manage-categories">{t('navBar.manageCategories')}</MenuItem>
                             )}
                             {user.isAdmin && (
-                                <MenuItem component={Link} to="/sales-report">{t('navBar.salesReports')}</MenuItem>
+                                <MenuItem component={Link} to="/sales-reports">{t('navBar.salesReports')}</MenuItem>
                             )}
                             {user.isAdmin && (
                                 <MenuItem component={Link} to="/user-behavior-dashboard">{t('navBar.userBehaviorDashboard')}</MenuItem>

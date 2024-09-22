@@ -27,7 +27,6 @@ const AuthProvider = ({ children }) => {
                  */
                 const decoded = jwtDecode(token);
                 const userLanguage = decoded.language || 'en'; // retrieve the user's language from the token 
-
                 // setup the language in the context
                 setUser({
                     email: decoded.email,

@@ -62,7 +62,6 @@ export const updateUser = async (userId, userData) => {
 }
 
 
-
 /**
  * Removes a user
  * @param {string} userId The ID of the user to be removed
@@ -143,8 +142,21 @@ export const resetPassword = async (token, password) => {
     }
 };
 
-// ADDRESSES AND PAYMENT METHODS SERVICES
+// fetch the user language from the backend
+export const fetchUserLanguage = async (userId) => {
+    try {
+        initAuthorizationHeader();
+        const response = await axios.get(`${serverURL}/users/${userId}`);
+        return response.data.language;
+    } catch (error) {
+        console.error("Error fetching user language:", error);
+        throw error;
+    }
+}
 
+
+
+// ADDRESSES AND PAYMENT METHODS SERVICES
 
 /**
  * Fetches all addresses for the given user

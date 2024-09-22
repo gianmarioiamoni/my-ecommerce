@@ -1,12 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from 'react-query';
+
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer
 } from 'recharts';
+
 import {
-    CircularProgress, Typography, Container, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button
+    CircularProgress,
+    Typography,
+    Container,
+    Box,
+    Paper,
+    Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+    Button
 } from '@mui/material';
+
 import { getMonthlySales } from '../../services/statisticsServices';
+
 import * as XLSX from 'xlsx';
+
 import { useTranslation } from 'react-i18next';
 
 /**
@@ -29,30 +48,20 @@ const SalesReport = ({
     header = "sales.header"
 }) => {
     const { t } = useTranslation();
-    const [salesData, setSalesData] = useState([]);
-    const [loading, setLoading] = useState(true);
 
-    /**
-     * Fetches sales data and formats it for the chart and table.
-     */
-    const fetchSalesData = async () => {
-        try {
-            const data = await getSalesFunction();
-            const formattedData = data.map((item) => ({
+    const { data: salesData, error, isLoading } = useQuery(
+        'salesData',
+        getSalesFunction, // data fetching function 
+        {
+            // in the select option, data will be formatted 
+            // before being returned to the component
+            select: (data) => data.map((item) => ({
                 period: item._id,
                 totalSales: item.totalSales,
                 totalOrders: item.totalOrders,
-            }));
-            setSalesData(formattedData);
-            setLoading(false);
-        } catch (error) {
-            console.error('Error fetching sales data:', error);
+            }))
         }
-    };
-
-    useEffect(() => {
-        fetchSalesData();
-    }, []);
+    );
 
     /**
      * Exports sales data as a CSV file.
@@ -100,7 +109,7 @@ const SalesReport = ({
                     {t(header)}
                 </Typography>
 
-                {loading ? (
+                {isLoading ? (
                     <Box display="flex" justifyContent="center" alignItems="center" height="400px">
                         <CircularProgress />
                     </Box>
