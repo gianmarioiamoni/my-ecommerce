@@ -208,19 +208,23 @@ const AdminOrderConsole = () => {
                     <FormControl fullWidth>
                         <Select
                             displayEmpty
+                            variant="outlined"
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                             inputProps={{ 'aria-label': 'Without label' }}
                             renderValue={(selected) => {
-                                return selected ? t(`adminOrderConsole.${selected}`) : t('adminOrderConsole.statusFilter');
+                                if (!selected) {
+                                    return t('adminOrderConsole.statusFilter');
+                                }
+                                return t(`adminOrderConsole.${getOrderStatusValue(selected)}`);
                             }}
                         >
                             <MenuItem value="">
                                 <em>{t('adminOrderConsole.allUsers')}</em>
                             </MenuItem>
-                            <MenuItem value="inProgress">{t('adminOrderConsole.inProgress')}</MenuItem>
-                            <MenuItem value="shipped">{t('adminOrderConsole.shipped')}</MenuItem>
-                            <MenuItem value="delivered">{t('adminOrderConsole.delivered')}</MenuItem>
+                            <MenuItem value="In Progress">{t('adminOrderConsole.inProgress')}</MenuItem>
+                            <MenuItem value="Shipped">{t('adminOrderConsole.shipped')}</MenuItem>
+                            <MenuItem value="Delivered">{t('adminOrderConsole.delivered')}</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -272,9 +276,9 @@ const AdminOrderConsole = () => {
                                 value={order.status}
                                 onChange={(e) => handleStatusChange(order._id, e.target.value)}
                             >
-                                <MenuItem value="inProgress">{t('adminOrderConsole.inProgress')}</MenuItem>
-                                <MenuItem value="shipped">{t('adminOrderConsole.shipped')}</MenuItem>
-                                <MenuItem value="delivered">{t('adminOrderConsole.delivered')}</MenuItem>
+                                <MenuItem value="In Progress">{t('adminOrderConsole.inProgress')}</MenuItem>
+                                <MenuItem value="Shipped">{t('adminOrderConsole.shipped')}</MenuItem>
+                                <MenuItem value="Delivered">{t('adminOrderConsole.delivered')}</MenuItem>
                             </Select>
                         </FormControl>
                     </CardContent>
@@ -291,6 +295,22 @@ const AdminOrderConsole = () => {
         </Container>
     );
 };
+
+// utility function to convert orser status strings in order status values
+const getOrderStatusValue = (statusString) => {
+    switch (statusString) {
+        case 'In Progress':
+            return 'inProgress';
+        case 'Shipped':
+            return 'shipped';
+        case 'Delivered':
+            return 'delivered';
+        default:
+            return 'inProgress';
+    }
+    
+}
+
 
 export default AdminOrderConsole;
 
