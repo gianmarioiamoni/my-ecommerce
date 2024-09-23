@@ -242,6 +242,7 @@
     "title": "Modifica Prodotti",
     "searchPlaceholder": "Cerca prodotti...",
     "filterByAvailability": "Filtra per disponibilità",
+    "availability": "disponibilità",
     "availabilityOptions": {
       "all": "Tutti",
       "inStock": "Disponibile",

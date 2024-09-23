@@ -242,6 +242,7 @@
     "title": "Edit Products",
     "searchPlaceholder": "Search products...",
     "filterByAvailability": "Filter by Availability",
+    "availability": "availability",
     "availabilityOptions": {
       "all": "All",
       "inStock": "In Stock",

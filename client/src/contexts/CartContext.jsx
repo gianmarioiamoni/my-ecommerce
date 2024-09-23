@@ -114,8 +114,6 @@ const CartProvider = ({ children }) => {
         return new Promise((resolve) => {
             resolve(hasErrors);
         });
-    
-
     };
 
     const clearCart = () => {
@@ -125,8 +123,6 @@ const CartProvider = ({ children }) => {
     const getTotal = () => {
         return state.cart.reduce((total, item) => total + item.price * item.quantity, 0);
     };
-
-
 
     return (
         <CartContext.Provider value={{
