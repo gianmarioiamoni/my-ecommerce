@@ -1,8 +1,19 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getUserWishlists, createWishlist, addToWishlist, removeFromWishlist, editWishlistName, deleteWishlist } from '../services/wishListsServices';
+import React, { createContext, useContext } from 'react';
+import { useQuery, useQueryClient } from 'react-query';
+
+import {
+    getUserWishlists,
+    createWishlist,
+    addToWishlist,
+    removeFromWishlist,
+    editWishlistName,
+    deleteWishlist
+} from '../services/wishListsServices';
+
 import { AuthContext } from './AuthContext';
 
 const WishlistContext = createContext();
+
 
 /**
  * The WishlistProvider component provides the WishlistContext to its children.
@@ -15,24 +26,36 @@ const WishlistContext = createContext();
  */
 export const WishlistProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
-    const [wishlists, setWishlists] = useState([]);
-
-    useEffect(() => {
-        if (user) {
-            fetchWishlists(user);
-        }
-    }, [user, wishlists.length]);
+    const queryClient = useQueryClient();
+    // const [wishlists, setWishlists] = useState([]);
 
     /**
-     * Fetches the wishlists associated with the user from the server.
-     * Maps the wishlists to their names and sets them as the state.
+     * Custom hook to fetch wishlists associated with the user.
+     * The query is enabled only if the user is logged in.
+     * The data is cached for 5 minutes.
+     * @param {Object} user - The user object.
+     * @returns {Object} - The result of the query.
      */
-    const fetchWishlists = async () => {
-        if (user) {
-            const userWishlists = await getUserWishlists(user);
-            setWishlists(userWishlists);
-        }
+    const useFetchWishlists = (user) => {
+        return useQuery(
+            ['wishlists', user?.id], // The query key depends on the user ID
+            async () => {
+                if (!user) return []; // If there is no user, return an empty array
+                // Fetch the wishlists associated with the user
+                const userWishlists = await getUserWishlists(user);
+                return userWishlists;
+            },
+            {
+                enabled: !!user, // Disable the query if there is no logged user
+                staleTime: 1000 * 60 * 5, // Data cache for 5 minutes
+                onError: (error) => {
+                    console.error("Error fetching wishlists:", error);
+                }
+            }
+        );
     };
+
+    const { data: wishlists, isLoading, error } = useFetchWishlists(user);
 
     /**
      * Creates a new wishlist with the given name.
@@ -41,9 +64,13 @@ export const WishlistProvider = ({ children }) => {
      */
     const handleCreateWishlist = async (name) => {
         const newWishlist = await createWishlist(name);
-        setWishlists([...wishlists, newWishlist]);
+
+        // Invalidate the query to fetch the updated wishlists
+        queryClient.invalidateQueries('wishlists');
+
         return newWishlist;
     };
+
 
     /**
      * Adds a product to a wishlist.
@@ -53,14 +80,11 @@ export const WishlistProvider = ({ children }) => {
      */
     const handleAddToWishlist = async (wishlistId, productId) => {
         const updatedWishlist = await addToWishlist(wishlistId, productId);
-        setWishlists((prevWishlists) =>
-            prevWishlists.map((wishlist) =>
-                wishlist._id === wishlistId
-                    ? { ...wishlist, products: [...wishlist.products, productId] }
-                    : wishlist
-            )
-        );
+
+        // Invalida e refetcha la query delle wishlist
+        queryClient.invalidateQueries('wishlists');
     };
+
 
     /**
      * Removes a product from a wishlist.
@@ -70,14 +94,10 @@ export const WishlistProvider = ({ children }) => {
      */
     const handleRemoveFromWishlist = async (wishlistId, productId) => {
         const updatedWishlist = await removeFromWishlist(wishlistId, productId);
-        setWishlists((prevWishlists) =>
-            prevWishlists.map((wishlist) =>
-                wishlist._id === wishlistId
-                    ? { ...wishlist, products: wishlist.products.filter((id) => id !== productId) }
-                    : wishlist
-            )
-        );
+
+        queryClient.invalidateQueries('wishlists');
     };
+
 
     /**
      * Edits the name of a wishlist.
@@ -87,8 +107,10 @@ export const WishlistProvider = ({ children }) => {
      */
     const handleEditWishlistName = async (wishlistId, name) => {
         const updatedWishlist = await editWishlistName(wishlistId, name);
-        setWishlists(wishlists.map(w => w._id === wishlistId ? updatedWishlist : w));
+
+        queryClient.invalidateQueries('wishlists');
     };
+
 
     /**
      * Deletes a wishlist.
@@ -98,11 +120,13 @@ export const WishlistProvider = ({ children }) => {
     const handleDeleteWishlist = async (wishlistId) => {
         try {
             await deleteWishlist(wishlistId);
-            setWishlists(wishlists.filter(w => w._id !== wishlistId));
+
+            queryClient.invalidateQueries('wishlists');
         } catch (error) {
             console.error('Error deleting wishlist:', error);
         }
     };
+
 
     /**
      * Checks if a product is in any wishlist.
@@ -112,6 +136,7 @@ export const WishlistProvider = ({ children }) => {
     const isProductInAnyWishlist = (productId) => {
         // wishlist.products is an array of product objects, each with an _id property
         // check if the product is in any of the wishlist products
+    
         return wishlists.some(wishlist => wishlist.products.some(p => p._id === productId));
     };
 

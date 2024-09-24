@@ -114,7 +114,7 @@ const WishlistPage = () => {
             </Box>
 
             <List sx={{ width: '100%', maxWidth: 600, margin: '0 auto' }}>
-                {wishlists.map(wishlist => (
+                {wishlists?.map(wishlist => (
                     <Paper key={wishlist._id} sx={{ marginBottom: 2, padding: 2 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Typography variant="h6">

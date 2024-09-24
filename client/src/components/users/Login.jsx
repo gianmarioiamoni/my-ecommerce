@@ -42,7 +42,7 @@ const Login = () => {
             setSnackbarMessage(t('login.successMessage'));
             setSnackbarSeverity('success');
             setSnackbarOpen(true);
-            navigate('/products');
+            navigate('/');
         } catch (error) {
             console.error("Login error:", error);
             setSnackbarMessage(t('login.errorMessage'));
