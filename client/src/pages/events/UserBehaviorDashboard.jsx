@@ -1,6 +1,8 @@
 // src/pages/UserBehaviorDashboard.js
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next'; // Importa useTranslation
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import { useTranslation } from 'react-i18next'; 
+
 import {
     Container,
     Grid,
@@ -16,6 +18,7 @@ import {
     useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+
 import { Line } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -26,6 +29,7 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
+
 import { getEvents } from '../../services/eventsServices';
 
 // Register the needed components 
@@ -44,17 +48,15 @@ ChartJS.register(
  * @returns {ReactElement} The dashboard component
  */
 const UserBehaviorDashboard = () => {
-    const { t } = useTranslation('userBehaviorDashboard'); // Use the translation hook with the namespace
-    const [data, setData] = useState([]); // The data to display
-    const [loading, setLoading] = useState(true); // The loading state
+    const { t } = useTranslation(); 
     const [startDate, setStartDate] = useState(() => {
         const today = new Date();
         const sevenDaysAgo = new Date();
         sevenDaysAgo.setDate(today.getDate() - 7);
         return sevenDaysAgo.toISOString().split('T')[0];
-    }); // The start date
-    const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]); // The end date
-    const theme = useTheme(); // The theme
+    }); 
+    const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]); 
+    const theme = useTheme(); 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Whether the screen is mobile or not
 
     const [tabValue, setTabValue] = useState(0); // The selected tab
@@ -68,24 +70,25 @@ const UserBehaviorDashboard = () => {
         setTabValue(newValue);
     };
 
+
     /**
      * Fetches the data from the server
      */
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const result = await getEvents(startDate, endDate);
-            setData(result);
-        } catch (error) {
-            console.error('Error fetching data:', error);
+    const { data, error, isLoading, refetch } = useQuery(
+        ['events', startDate, endDate], // Chiave univoca per memorizzare la query nel cache
+        () => getEvents(startDate, endDate), // Funzione che recupera i dati
+        {
+            enabled: !!startDate && !!endDate, // La query è eseguita solo se startDate ed endDate sono definiti
         }
-        setLoading(false);
-    };
+    );
 
-    useEffect(() => {
-        fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [startDate, endDate]);
+    const fetchData = async () => {
+        try {
+            await refetch(); // manual refetch
+        } catch (error) {
+            console.error('Error fetching data manually:', error);
+        }
+    };
 
     /**
      * Aggregates the data by date
@@ -125,7 +128,7 @@ const UserBehaviorDashboard = () => {
             labels: aggregatedData.labels,
             datasets: [
                 {
-                    label: t('productClicksLabel'), 
+                    label: t('userBehaviorDashboard.productClicksLabel'), 
                     data: aggregatedData.data,
                     borderColor: theme.palette.primary.main,
                     backgroundColor: theme.palette.primary.light,
@@ -160,7 +163,7 @@ const UserBehaviorDashboard = () => {
             labels: allLabels,
             datasets: [
                 {
-                    label: t('addToCartLabel'),
+                    label: t('userBehaviorDashboard.addToCartLabel'),
                     data: dataNew,
                     borderColor: theme.palette.success.main,
                     backgroundColor: theme.palette.success.light,
@@ -168,7 +171,7 @@ const UserBehaviorDashboard = () => {
                     tension: 0.1,
                 },
                 {
-                    label: t('removeFromCartLabel'),
+                    label: t('userBehaviorDashboard.removeFromCartLabel'),
                     data: dataRemoving,
                     borderColor: theme.palette.warning.main,
                     backgroundColor: theme.palette.warning.light,
@@ -186,13 +189,13 @@ const UserBehaviorDashboard = () => {
                 type: 'category',
                 title: {
                     display: true,
-                    text: t('dateLabel'),
+                    text: t('userBehaviorDashboard.dateLabel'),
                 },
             },
             y: {
                 title: {
                     display: true,
-                    text: t('countLabel'),
+                    text: t('userBehaviorDashboard.countLabel'),
                 },
             },
         },
@@ -211,7 +214,7 @@ const UserBehaviorDashboard = () => {
     return (
         <Container maxWidth="lg" style={{ marginTop: '2rem' }}>
             <Typography variant="h4" align="center" gutterBottom>
-                {t('dashboardTitle')}
+                {t('userBehaviorDashboard.dashboardTitle')}
             </Typography>
 
             {/* Dates selection section */}
@@ -219,7 +222,7 @@ const UserBehaviorDashboard = () => {
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
-                        label={t('startDateLabel')}
+                        label={t('userBehaviorDashboard.startDateLabel')}
                         type="date"
                         InputLabelProps={{ shrink: true }}
                         value={startDate}
@@ -229,7 +232,7 @@ const UserBehaviorDashboard = () => {
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
-                        label={t('endDateLabel')}
+                        label={t('userBehaviorDashboard.endDateLabel')}
                         type="date"
                         InputLabelProps={{ shrink: true }}
                         value={endDate}
@@ -242,9 +245,9 @@ const UserBehaviorDashboard = () => {
                         color="primary"
                         fullWidth
                         onClick={fetchData}
-                        disabled={loading}
+                        disabled={isLoading}
                     >
-                        {loading ? t('loadingLabel') : t('filterLabel')}
+                        {isLoading ? t('userBehaviorDashboard.loadingLabel') : t('userBehaviorDashboard.filterLabel')}
                     </Button>
                 </Grid>
             </Grid>
@@ -260,8 +263,8 @@ const UserBehaviorDashboard = () => {
                     textColor="primary"
                     indicatorColor="primary"
                 >
-                    <Tab label={t('productClicksTabLabel')} />
-                    <Tab label={t('addToCartEventsTabLabel')} />
+                    <Tab label={t('userBehaviorDashboard.productClicksTabLabel')} />
+                    <Tab label={t('userBehaviorDashboard.addToCartEventsTabLabel')} />
                 </Tabs>
 
                 {/* Tab content */}
@@ -269,7 +272,7 @@ const UserBehaviorDashboard = () => {
                     <Box p={3}>
                         <Card>
                             <CardContent>
-                                {loading ? (
+                                {isLoading ? (
                                     <CircularProgress />
                                 ) : (
                                     <Line data={chartDataClicks()} options={options} />
@@ -282,7 +285,7 @@ const UserBehaviorDashboard = () => {
                     <Box p={3}>
                         <Card>
                             <CardContent>
-                                {loading ? (
+                                {isLoading ? (
                                     <CircularProgress />
                                 ) : (
                                     <Line data={chartDataAddToCart()} options={options} />
