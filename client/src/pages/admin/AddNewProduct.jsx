@@ -32,49 +32,17 @@ const AddNewProduct = () => {
         quantity: '',
     });
 
-    /**
-     * The state of the local images
-     */
     const [localImages, setLocalImages] = useState([]);
-
-    /**
-     * The state of the URL
-     */
     const [url, setUrl] = useState('');
 
-    /**
-     * The state of the form validation
-     */
     const [isFormValid, setIsFormValid] = useState(false);
-
-    /**
-     * The state of the success message
-     */
     const [successMessage, setSuccessMessage] = useState(false);
-
-    /**
-     * The state of the error message
-     */
     const [errorMessage, setErrorMessage] = useState(false);
-
-    /**
-     * The state of the uploading
-     */
     const [isUploading, setIsUploading] = useState(false);
-
-    /**
-     * The categories
-     */
     const { categories } = useCategories();
 
-    /**
-     * The navigate function
-     */
     const navigate = useNavigate();
 
-    /**
-     * The effect to validate the form
-     */
     useEffect(() => {
         const isNameValid = formData.name.trim() !== '';
         const isDescriptionValid = formData.description.trim() !== '';

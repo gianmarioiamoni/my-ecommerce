@@ -1,6 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useTranslation } from 'react-i18next';
-import { Container, Typography, Grid, Card, CardContent, CircularProgress, MenuItem, Select, FormControl, TextField, Box, Pagination } from '@mui/material';
+
+import {
+    Container,
+    Typography,
+    Grid,
+    Card, CardContent,
+    CircularProgress,
+    MenuItem,
+    Select,
+    FormControl,
+    TextField,
+    Box,
+    Pagination
+} from '@mui/material';
+
 import { getAllOrders, getAllUsersWithOrders, updateOrderStatus } from '../../services/ordersServices';
 
 /**
@@ -15,9 +30,9 @@ import { getAllOrders, getAllUsersWithOrders, updateOrderStatus } from '../../se
  */
 const AdminOrderConsole = () => {
     const { t } = useTranslation();
-    const [orders, setOrders] = useState([]);
+    // const [orders, setOrders] = useState([]);
     const [displayedOrders, setDisplayedOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
+    // const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [sortField, setSortField] = useState('createdAt');
     const [sortOrder, setSortOrder] = useState('desc');
@@ -25,42 +40,30 @@ const AdminOrderConsole = () => {
     const [limit] = useState(10);
     const [statusFilter, setStatusFilter] = useState('');
     const [userFilter, setUserFilter] = useState('');
-    const [users, setUsers] = useState([]);
+    // const [users, setUsers] = useState([]);
     const [userSearch, setUserSearch] = useState('');
+
+    const queryClient = useQueryClient();
 
     /**
      * Fetches all orders and users with orders from the server.
      */
-    useEffect(() => {
-        const fetchOrdersAndUsers = async () => {
-            try {
-                setLoading(true);
-                const [ordersData, usersData] = await Promise.all([getAllOrders(), getAllUsersWithOrders()]);
+    // Query per ottenere gli ordini
+    const { data: orders = [], isLoading: isLoadingOrders, error: errorOrders } = useQuery(
+        'orders',
+        getAllOrders
+    );
 
-                if (Array.isArray(ordersData)) {
-                    setOrders(ordersData);
-                } else {
-                    console.error('Unexpected data format for orders:', ordersData);
-                    setOrders([]);
-                }
+    // Query per ottenere gli utenti con ordini
+    const { data: users = [], isLoading: isLoadingUsers, error: errorUsers } = useQuery(
+        'usersWithOrders',
+        getAllUsersWithOrders
+    );
 
-                if (Array.isArray(usersData)) {
-                    setUsers(usersData);
-                } else {
-                    console.error('Unexpected data format for users:', usersData);
-                    setUsers([]);
-                }
+    const isLoading = isLoadingOrders || isLoadingUsers;
+    const hasError = errorOrders || errorUsers;
 
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching orders and users:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchOrdersAndUsers();
-    }, []);
-
+    
     /**
      * Filters the orders based on the search, user filter and status filter.
      * It also sorts the orders by the selected field and order.
@@ -98,22 +101,30 @@ const AdminOrderConsole = () => {
 
     }, [orders, search, statusFilter, userFilter, sortField, sortOrder, page, limit]);
 
+    // Mutation to update the order status
+    const { mutate: mutateOrderStatus } = useMutation(
+        ({ orderId, status }) => updateOrderStatus(orderId, status),
+        {
+            // Invalidate the 'orders' query after successful update
+            onSuccess: () => {
+                queryClient.invalidateQueries('orders');
+            },
+            onError: (error) => {
+                console.error('Error updating order status:', error);
+            }
+        }
+    );
+
+
     /**
      * Handles the status change of an order.
      * @param {string} orderId - The id of the order
      * @param {string} status - The new status of the order
      */
-    const handleStatusChange = async (orderId, status) => {
-        try {
-            const updatedOrder = await updateOrderStatus(orderId, status);
-            setOrders((prevOrders) =>
-                prevOrders.map((order) =>
-                    order._id === orderId ? { ...order, status: updatedOrder.status } : order
-                )
-            );
-        } catch (error) {
-            console.error('Error updating order status:', error);
-        }
+    const handleStatusChange = (orderId, status) => {
+        
+        // Execute the mutation to update the order status
+        mutateOrderStatus({ orderId, status });
     };
 
     /**
@@ -150,7 +161,7 @@ const AdminOrderConsole = () => {
         user.email.toLowerCase().includes(userSearch)
     );
 
-    if (loading) {
+    if (isLoading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <CircularProgress />
@@ -220,7 +231,7 @@ const AdminOrderConsole = () => {
                             }}
                         >
                             <MenuItem value="">
-                                <em>{t('adminOrderConsole.allUsers')}</em>
+                                <em>{t('adminOrderConsole.all')}</em>
                             </MenuItem>
                             <MenuItem value="In Progress">{t('adminOrderConsole.inProgress')}</MenuItem>
                             <MenuItem value="Shipped">{t('adminOrderConsole.shipped')}</MenuItem>

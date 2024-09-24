@@ -231,6 +231,7 @@
     "user": "User",
     "products": "Products",
     "status": "Status",
+    "all": "All",
     "inProgress": "In Progress",
     "shipped": "Shipped",
     "delivered": "Delivered",
