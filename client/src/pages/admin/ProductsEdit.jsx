@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import {
     Container, Grid, Card, CardContent, Typography, IconButton,
@@ -12,36 +13,20 @@ import SearchIcon from '@mui/icons-material/Search';
 import { getAllProducts, deleteProduct } from '../../services/productsServices';
 import { useTranslation } from 'react-i18next';
 
-/**
- * The ProductsEdit component is used to display a list of products that can be edited and deleted.
- *
- * @returns {ReactElement} The JSX element for the ProductsEdit component.
- */
 const ProductsEdit = () => {
     const { t } = useTranslation();
-    const [products, setProducts] = useState([]); // Stores the list of products
     const [filteredProducts, setFilteredProducts] = useState([]); // Stores the filtered list of products
     const [open, setOpen] = useState(false); // Indicates whether the delete confirmation dialog is open
     const [productToDelete, setProductToDelete] = useState(null); // Stores the ID of the product to delete
     const [searchQuery, setSearchQuery] = useState(''); // Stores the search query
     const [availabilityFilter, setAvailabilityFilter] = useState(''); // Stores the availability filter
 
-    useEffect(() => {
-        /**
-         * Fetches the list of products from the server and sets the state.
-         */
-        const fetchData = async () => {
-            try {
-                const products = await getAllProducts();
-                setProducts(products);
-                setFilteredProducts(products);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        fetchData();
-    }, []);
+    // Fetch products using useQuery
+    const { data: products = [], isLoading, isError, error } = useQuery('products', getAllProducts, {
+        onSuccess: (data) => {
+            setFilteredProducts(data); // Set initial filtered products
+        },
+    });
 
     /**
      * Handles deleting a product.
@@ -51,7 +36,6 @@ const ProductsEdit = () => {
         try {
             await deleteProduct(productId);
             const updatedProducts = products.filter(product => product._id !== productId);
-            setProducts(updatedProducts);
             setFilteredProducts(updatedProducts);
         } catch (error) {
             console.error(error);
@@ -120,6 +104,14 @@ const ProductsEdit = () => {
 
         setFilteredProducts(filtered);
     };
+
+    if (isLoading) {
+        return <div>{t('productsEdit.loading')}</div>;
+    }
+
+    if (isError) {
+        return <div>{t('productsEdit.error')} {error.message}</div>;
+    }
 
     return (
         <Container>
