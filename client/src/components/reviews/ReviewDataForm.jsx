@@ -4,9 +4,9 @@ import { AuthContext } from '../../contexts/AuthContext';
 
 import { Button, TextField, Typography, Box, Rating, Alert, Snackbar } from '@mui/material';
 
-import { createReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
+import { createReview } from '../../services/reviewServices';
 
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useTranslation } from 'react-i18next'; 
 
 
 /**
@@ -25,11 +25,11 @@ import { useTranslation } from 'react-i18next'; // Import useTranslation
  * The component also uses the `useTranslation` hook to translate the text in the
  * component.
  * 
- * @param {{productId: string, onReviewSubmit: function}} props - The props passed
+ * @param {{onAddReview: function, setCanReview: function}} props - The props passed
  * to the component.
  * @returns {JSX.Element} The component element.
  */
-const ReviewDataForm = ({ productId, onReviewSubmit, setCanReview}) => {
+const ReviewDataForm = ({ onAddReview, setCanReview}) => {
     const { t } = useTranslation(); // No need to specify a namespace here
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
@@ -46,25 +46,18 @@ const ReviewDataForm = ({ productId, onReviewSubmit, setCanReview}) => {
         e.preventDefault();
         setError(null);
 
-        try {
-            // Create a new review
-            const submittedReview = await createReview(productId, { rating, comment });
-            // Create a new review object with the user's data
-            const newReview = { ...submittedReview, userId: { _id: user.id, name: user.name, photoUrl: user.photoUrl } };
-            // Set the success message
-            setSuccessMessage(t('reviews.reviewSuccess'));
-            // Reset the form
-            setRating(0);
-            setComment('');
+        // Create a new review
+        const newReview = { rating, comment };
+        setSuccessMessage(t('reviews.reviewSuccess'));
+        
+        // Reset the form
+        setRating(0);
+        setComment('');
 
-            setCanReview(false);
+        setCanReview(false);
 
-            // Call the callback function with the new review
-            onReviewSubmit(newReview);
-        } catch (error) {
-            // If there is an error, show an error message
-            setError(error.response?.data?.message || t('reviews.genericError'));
-        }
+        // Call the callback function with the new review
+        onAddReview(newReview);
     };
 
     /**

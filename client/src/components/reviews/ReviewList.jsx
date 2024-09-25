@@ -11,9 +11,9 @@ import {
     TextField,
 } from '@mui/material';
 import { Rating } from '@mui/material';
-import { Edit as EditIcon, Save as SaveIcon } from '@mui/icons-material'; // Importiamo le icone
+import { Edit as EditIcon, Save as SaveIcon } from '@mui/icons-material'; 
 import { AuthContext } from '../../contexts/AuthContext';
-import { useTranslation } from 'react-i18next'; // Importiamo useTranslation
+import { useTranslation } from 'react-i18next'; 
 
 /**
  * A component that renders a list of reviews.
@@ -29,6 +29,7 @@ const ReviewList = ({ reviews, onEditReview }) => {
     const [editingReviewId, setEditingReviewId] = useState(null); // Keep track of the review being edited 
     const [editedRating, setEditedRating] = useState(0);
     const [editedComment, setEditedComment] = useState('');
+
 
     /**
      * Handles the click of the edit button for a review.

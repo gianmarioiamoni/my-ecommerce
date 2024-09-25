@@ -24,22 +24,15 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
  * @returns {ReactElement} The rendered component
  */
 const Checkout = () => {
-    //Gets the translated strings
     const { t } = useTranslation(''); 
 
-    // State to store the current step
     const [step, setStep] = useState(1);
-    // State to store the shipping data
     const [shippingData, setShippingData] = useState({});
-    // State to store the payment method
     const [paymentMethod, setPaymentMethod] = useState('');
 
-    // Navigates to the success page
     const navigate = useNavigate();
 
-    // Gets the cart context
     const { cart, clearCart } = useContext(CartContext);
-    // Gets the auth context
     const { user } = useContext(AuthContext);
 
     /**

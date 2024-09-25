@@ -1,6 +1,7 @@
 // src/pages/ProductDetails.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 import { Container, Typography, Card, CardContent, Button, CardActions } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -10,7 +11,13 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import { getProductById } from '../../services/productsServices';
-import { getProductReviews, updateReview, hasPurchasedProduct, hasReviewedProduct } from '../../services/reviewServices';
+import {
+    getProductReviews,
+    createReview,
+    updateReview,
+    hasPurchasedProduct,
+    hasReviewedProduct
+} from '../../services/reviewServices';
 import { isOrderDelivered } from '../../services/ordersServices';
 import { trackEvent } from '../../services/eventsServices';
 
@@ -18,7 +25,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { CartContext } from '../../contexts/CartContext';
 import { useWishlist } from '../../contexts/WishListContext';
 
-import { useTranslation } from 'react-i18next'; // Importa useTranslation
+import { useTranslation } from 'react-i18next'; 
 
 import './ProductDetails.css';
 
@@ -35,37 +42,37 @@ import ReviewList from '../../components/reviews/ReviewList';
 const ProductDetails = () => {
     const { t } = useTranslation('productDetails'); 
     const { id } = useParams();
-    const [product, setProduct] = useState(null);
-    const [reviews, setReviews] = useState([]);
     const [canReview, setCanReview] = useState(false);
 
     const { addToCart, removeFromCart, cart } = useContext(CartContext);
     const { user } = useContext(AuthContext);
     const { wishlists, handleCreateWishlist, handleAddToWishlist } = useWishlist();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const product = await getProductById(id);
-                product.availableQuantity = product.quantity;
-                setProduct(product);
+    const queryClient = useQueryClient();
 
-                const reviewsData = await getProductReviews(id);
-                setReviews(reviewsData);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    // Fetch the product and reviews based on the ID
 
-        fetchData();
-    }, [id]);
+    // Query to get the product based on the ID
+    const { data: product, isLoading: productLoading, error: productError } = useQuery(
+        ['product', id],
+        async () => {
+            const product = await getProductById(id);
+            product.availableQuantity = product.quantity;
+            return product;
+        },
+        {
+            enabled: !!id, // Exec the query only if the ID is present
+        }
+    );
 
+    // Check permissions and set canReview state
     useEffect(() => {
         const checkPermissions = async () => {
             try {
                 const hasPurchased = await hasPurchasedProduct(user.id, product._id);
                 const reviewed = await hasReviewedProduct(user.id, product._id);
                 const isDelivered = await isOrderDelivered(user.id, product._id);
+                console.log("checkPermissions() - hasPurchased:", hasPurchased, "reviewed:", reviewed, "isDelivered:", isDelivered);
 
                 setCanReview(hasPurchased && !reviewed && isDelivered);
 
@@ -83,21 +90,63 @@ const ProductDetails = () => {
 
     }, [user, product]);
 
-    /**
-     * Updates a review in the list of reviews.
-     * @param {Object} updatedReview - The updated review
-     */
-    const onEditReview = async (updatedReview) => {
-        try {
-            const updated = await updateReview(updatedReview._id, updatedReview);
-            setReviews((prevReviews) =>
-                prevReviews.map((review) =>
-                    review._id === updated._id ? updated : review
-                )
-            );
-        } catch (error) {
-            console.error('Failed to update review:', error);
+    // Query to get the reviews based on the ID
+    const { data: reviews, isLoading: reviewsLoading, error: reviewsError } = useQuery(
+        ['reviews', id],
+        () => getProductReviews(id),
+        {
+            enabled: !!id, // Exec the query only if the ID is present
         }
+    );
+
+    const newReviewMutation = useMutation(
+        (newReview) => createReview(newReview), // Chiamata API per inviare la recensione
+        {
+            // Aggiorna la cache con la nuova recensione in caso di successo
+            onSuccess: (newReview) => {
+                newReview = { ...newReview, productId: product._id, userId: { ...user } };
+                console.log('Review submitted successfully:', newReview);
+                queryClient.setQueryData(['reviews', newReview.productId], (oldReviews = []) => [
+                    ...oldReviews,
+                    newReview,
+                ]);
+            },
+            // Gestione errori (opzionale)
+            onError: (error) => {
+                console.error('Failed to submit review:', error);
+            },
+        }
+    );
+
+    const onAddReview = (review) => {
+        console.log("onAddReview() - user:", user)
+        console.log("onAddReview() - review:", review)
+        review = { ...review, productId: product._id, userId: { ...user } };
+        console.log("onAddReview() - review:", review);
+        newReviewMutation.mutate(review);
+    };
+
+    const updateReviewMutation = useMutation(
+        (updatedReview) => updateReview(updatedReview._id, updatedReview),
+        {
+            // Success callback when the mutation is successful
+            onSuccess: (updated) => {
+                queryClient.setQueryData(['reviews', updated.productId], (oldReviews) =>
+                    oldReviews.map((review) =>
+                        review._id === updated._id ? updated : review
+                    )
+                );
+            },
+            // Errors callback
+            onError: (error) => {
+                console.error('Failed to update review:', error);
+            }
+        }
+    );
+    
+    // Function to update a review
+    const onEditReview = (updatedReview) => {
+        updateReviewMutation.mutate(updatedReview);
     };
 
     /**
@@ -123,15 +172,26 @@ const ProductDetails = () => {
         }
     };
 
-    const onReviewSubmit = (review) => {
-        setReviews([...reviews, review]);
-    };
-
     
     const isInCart = cart.some(item => item._id === product?._id);
 
-    if (!product) {
+    // if (!product) {
+    //     return <div>{t('loading')}</div>; 
+    // }
+    if (productLoading || reviewsLoading) {
         return <div>{t('loading')}</div>; 
+    }
+
+    if (productError) {
+        return <div>{t('error')}</div>; 
+    }
+
+    if (reviewsError) { 
+        return <div>{t('error')}</div>; 
+    }
+
+    if (!product) {
+        return <div>{t('notFound')}</div>; 
     }
 
     return (
@@ -201,7 +261,7 @@ const ProductDetails = () => {
             </Card>
             {/* Reviews section */}
             {user && !user.isAdmin && canReview &&
-                <ReviewDataForm productId={id} onReviewSubmit={onReviewSubmit} setCanReview={setCanReview}/>
+                <ReviewDataForm onAddReview={onAddReview} setCanReview={setCanReview}/>
             }
             <ReviewList reviews={reviews} onEditReview={onEditReview} />
         </Container>

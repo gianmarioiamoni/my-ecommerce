@@ -12,10 +12,11 @@ import { initAuthorizationHeader } from '../config/initAuthorizationHeader';
  * @return {Promise<Object>} The response from the server. If the request is successful, the response will contain the review data. If the request fails, the response will contain an error message.
  * @throws {Error} If there is an error creating the review
  */
-export const createReview = async (productId, review) => {
+export const createReview = async (review) => {
+    console.log("createReview() - review:", review);
     try {
         initAuthorizationHeader();
-        const response = await axios.post(`${serverURL}/reviews/product/${productId}`, review);
+        const response = await axios.post(`${serverURL}/reviews/product/${review.productId}`, review);
         // if status = 403 then throw error message returned by server
         if (response.status === 403) {
             // throw error

@@ -11,6 +11,7 @@ import {
 } from '../controllers/orders.js';
 
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
+import { check } from '../middleware/check.js';
 
 import express from 'express';
 
@@ -28,6 +29,7 @@ router.post('/confirm-payment-intent', isAuthenticated, confirmStripePaymentInte
 router.get('/history/:userId', isAuthenticated, getOrderHistory);
 
 // Orders management
+// router.get('/delivered/:productId/:userId', isAuthenticated, isOrderDelivered);
 router.get('/delivered/:productId/:userId', isAuthenticated, isOrderDelivered);
 
 // Admin routes

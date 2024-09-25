@@ -475,10 +475,11 @@ export const isOrderDelivered = async (req, res) => {
         }
 
         // in the orders array, find if there is an order with the productId in the products array
+        // The products array is an array of objects { product, quantity } where product is an ObjectId
         const order = orders.find(order => order.products.some(p => p.product._id.toString() === productId));
 
         if (!order) {
-            return res.status(404).json({ message: 'Order not found' });
+            return res.status(201).json({ message: 'No orders with delivered status found' });
         }
 
         res.status(200).json({ message: 'Order delivered' });
