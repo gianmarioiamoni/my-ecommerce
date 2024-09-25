@@ -13,7 +13,6 @@ import { initAuthorizationHeader } from '../config/initAuthorizationHeader';
  * @throws {Error} If there is an error creating the review
  */
 export const createReview = async (review) => {
-    console.log("createReview() - review:", review);
     try {
         initAuthorizationHeader();
         const response = await axios.post(`${serverURL}/reviews/product/${review.productId}`, review);
