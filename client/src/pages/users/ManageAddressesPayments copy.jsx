@@ -212,14 +212,13 @@ const ManageAddressesPayments = () => {
                 <Tab label={t('manageAddressesPayments.tabs.shippingAddresses')} />
                 <Tab label={t('manageAddressesPayments.tabs.paymentMethods')} />
             </Tabs>
-            
-            {/* Addresses tab */}
+
             {tabIndex === 0 && (
                 <Box>
                     <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
                         {t('manageAddressesPayments.manageShippingAddresses')}
                     </Typography>
-                    {/* Addresses Form */}
+
                     <Box component="form" onSubmit={(e) => {
                         e.preventDefault();
                         handleAddAddress({ ...addressForm, isDefault: addresses.length === 0 });
@@ -310,7 +309,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                         </Grid>
                     </Box>
-                    {/* Addresses List */}
+
                     <List>
                         {addresses.map((address, index) => (
                             <Box key={index}>
@@ -342,27 +341,22 @@ const ManageAddressesPayments = () => {
                 </Box>
             )}
 
-            {/* Payments tab */}
             {tabIndex === 1 && (
                 <Box>
                     <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
                         {t('manageAddressesPayments.managePaymentMethods')}
                     </Typography>
 
-                    {/* Payments form */}
-                    <Box
-                        component="form"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleAddPaymentMethod(paymentForm);
-                            setPaymentForm({
-                                cardType: '',
-                                last4Digits: '',
-                                cardNumber: '',
-                                expiryDate: '',
-                            });
-                        }}
-                        sx={{ mb: 4 }}>
+                    <Box component="form" onSubmit={(e) => {
+                        e.preventDefault();
+                        handleAddPaymentMethod(paymentForm);
+                        setPaymentForm({
+                            cardType: '',
+                            last4Digits: '',
+                            cardNumber: '',
+                            expiryDate: '',
+                        });
+                    }} sx={{ mb: 4 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -401,7 +395,7 @@ const ManageAddressesPayments = () => {
                             </Grid>
                         </Grid>
                     </Box>
-                    {/* Payments list */}
+
                     <List>
                         {payments.map((payment, index) => (
                             <Box key={index}>
@@ -433,7 +427,6 @@ const ManageAddressesPayments = () => {
                 </Box>
             )}
 
-            {/* Delete Confirmation Dialog */}
             <Dialog
                 open={deleteConfirmationOpen}
                 onClose={handleDeleteCancel}

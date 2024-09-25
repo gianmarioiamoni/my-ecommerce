@@ -1,5 +1,19 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Container, Typography, Grid, Card, CardContent, CircularProgress, TextField, MenuItem, Select, InputLabel, FormControl, Box, Pagination, Avatar } from '@mui/material';
+import { useQuery } from 'react-query';
+
+import {
+    Container,
+    Typography,
+    Grid,
+    Card, CardContent,
+    CircularProgress,
+    TextField,
+    MenuItem, Select,
+    InputLabel, FormControl,
+    Box,
+    Pagination,
+    Avatar
+} from '@mui/material';
 import { AuthContext } from '../../contexts/AuthContext';
 import { getOrderHistory } from '../../services/ordersServices';
 import { useTranslation } from 'react-i18next';
@@ -12,9 +26,7 @@ import { useTranslation } from 'react-i18next';
 const OrderHistory = () => {
     const { t } = useTranslation(); // Get the translation function
     const { user } = useContext(AuthContext); // Get the user from the auth context
-    const [allOrders, setAllOrders] = useState([]); // The list of all orders
     const [displayedOrders, setDisplayedOrders] = useState([]); // The list of orders to display
-    const [loading, setLoading] = useState(true); // Whether the component is loading
     const [page, setPage] = useState(1); // The current page
     const [limit, setLimit] = useState(10); // The number of orders per page
     const [sort, setSort] = useState('createdAt'); // The sort field
@@ -24,34 +36,17 @@ const OrderHistory = () => {
     const [endDate, setEndDate] = useState(''); // The end date of the date range
     const [statusFilter, setStatusFilter] = useState(''); // The status filter
 
-    useEffect(() => {
-        /**
-         * Fetches the order history of the user from the server.
-         * Sets the component to loading and the list of orders to the response.
-         */
-        const fetchOrderHistory = async () => {
-            try {
-                setLoading(true);
-                const response = await getOrderHistory(user.id, {
-                    page,
-                    limit,
-                    sort,
-                    order,
-                    search,
-                    startDate,
-                    endDate
-                });
-                setAllOrders(response.orders || []);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching order history:', error);
-                setLoading(false);
-            }
-        };
+    // Fetch the order history
+    const { data, error, isLoading } = useQuery(
+        ['orderHistory', user.id, page, limit, sort, order, search, startDate, endDate], // Unique key
+        () => getOrderHistory(user.id, { page, limit, sort, order, search, startDate, endDate }), // fetching function
+        {
+            keepPreviousData: true, // Maintain the previous data when the page changes 
+        }
+    );
 
-        fetchOrderHistory();
-    // }, [user.id]);
-    }, [user.id, page, limit, sort, order, search, startDate, endDate]);
+    // If the data is loading, extract the orders
+    const allOrders = data?.orders || [];
 
     useEffect(() => {
         /**
@@ -62,8 +57,14 @@ const OrderHistory = () => {
         let filteredOrders = allOrders;
 
         if (search) {
+            console.log("search:", search)
             filteredOrders = filteredOrders.filter(order =>
-                order.products.some(item => item.product.name.toLowerCase().includes(search.toLowerCase()))
+                // order.products.some(item => item.product.name.toLowerCase().includes(search.toLowerCase()))
+                order.products.some(p => {
+                    console.log("p.product.name:", p.product.name)
+                    console.log("p.product.name.toLowerCase().includes(search.toLowerCase()):", p.product.name.toLowerCase().includes(search.toLowerCase()))
+                    return p.product.name.toLowerCase().includes(search.toLowerCase())
+                })
             );
         }
 
@@ -111,7 +112,7 @@ const OrderHistory = () => {
         setPage(1);
     };
 
-    if (loading) {
+    if (isLoading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
                 <CircularProgress />
