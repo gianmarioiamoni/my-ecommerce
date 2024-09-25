@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useQuery } from 'react-query';
+
 import { getAllProducts } from '../../services/productsServices';
+
 import {
     Grid, Card, CardContent, CardMedia, Typography, Button, Container, Box,
     TextField, Select, MenuItem, FormControl, InputLabel, useMediaQuery, useTheme
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+
 import { CartContext } from '../../contexts/CartContext';
 import { useCategories } from '../../contexts/CategoriesContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useWishlist } from '../../contexts/WishListContext';
+
 import AddToCartButton from '../../components/products/AddToCartButton';
 import AddToWishlistButton from '../../components/products/AddToWishlistButton';
 import CreateNewWishlistDialog from '../../components/products/CreateNewWishlistDialog';
@@ -27,7 +32,6 @@ const ProductList = () => {
     /**
      * The state of the component.
      */
-    const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -51,25 +55,31 @@ const ProductList = () => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+    /**
+     * A function to update the available quantities in the products.
+     * It maps over the products and adds a new property, availableQuantity, to each product.
+     * The availableQuantity is set to the quantity of the product.
+     * @param {Object[]} products The products to update.
+     * @returns {Object[]} The products with the availableQuantity property.
+     */
+    const mapAvailableQuantities = (products) => {
+        return products.map((product) => ({
+            ...product,
+            availableQuantity: product.quantity,
+        }));
+    };
+
+    // Fetch all products from the server
+    const { data: products, error, isLoading } = useQuery('products', getAllProducts, {
+        select: (data) => mapAvailableQuantities(data), // Apply the mapping function to the data 
+    });
+
+
     useEffect(() => {
-        /**
-         * Fetches the products from the server on mount.
-         * Maps the products to their names and sets them as the state.
-         */
-        const fetchData = async () => {
-            try {
-                const products = await getAllProducts();
-                products.forEach(product => {
-                    product.availableQuantity = product.quantity;
-                });
-                setProducts(products);
-                setFilteredProducts(products);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchData();
-    }, []);
+        if (products) {
+            setFilteredProducts(products); // Update the filtered products state with the fetched products 
+        }
+    }, [products]);
 
     /**
      * Applies the filters and sorting to the products.
@@ -129,13 +139,6 @@ const ProductList = () => {
         applyFiltersAndSorting();
     }, [searchQuery, selectedCategory, products]);
 
-    /**
-     * Handles the language change.
-     * @param {string} lang - The language to change to.
-     */
-    const handleLanguageChange = (lang) => {
-        i18n.changeLanguage(lang);
-    };
 
     /**
      * Handles the search input change.
@@ -278,7 +281,7 @@ const ProductList = () => {
 
             {/* Product list */}
             <Grid container spacing={4}>
-                {filteredProducts.map((product) => (
+                {filteredProducts?.map((product) => (
                     <Grid item key={product._id} xs={12} sm={6} md={4} lg={3}>
                         <Card sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                             <Box sx={{ position: 'relative', width: '100%', paddingTop: '75%' }}>

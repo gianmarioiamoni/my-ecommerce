@@ -57,7 +57,7 @@ const AddToWishlistButton = ({
                     {t('wishlist.createNew')} 
                 </DropdownItem>
                 <Divider />
-                {wishlists.map((wishlist) => (
+                {wishlists?.map((wishlist) => (
                     <DropdownItem key={wishlist._id} onClick={() => handleWishlistSelection(wishlist._id)}>
                         {/* Show the name of the wishlist */}
                         {wishlist.name}

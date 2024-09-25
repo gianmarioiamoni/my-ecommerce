@@ -137,7 +137,7 @@ export const WishlistProvider = ({ children }) => {
         // wishlist.products is an array of product objects, each with an _id property
         // check if the product is in any of the wishlist products
     
-        return wishlists.some(wishlist => wishlist.products.some(p => p._id === productId));
+        return wishlists?.some(wishlist => wishlist.products.some(p => p._id === productId));
     };
 
     return (

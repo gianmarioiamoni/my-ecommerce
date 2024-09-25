@@ -188,7 +188,6 @@ export const getAllUsersWithOrders = async () => {
  * @throws {Error} If there is an error checking if the order is delivered
  */
 export const isOrderDelivered = async (userId, productId) => {
-    console.log("isOrderDelivered() - userId:", userId, "productId:", productId);
 
     try {
         initAuthorizationHeader();

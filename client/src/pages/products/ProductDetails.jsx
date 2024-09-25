@@ -72,7 +72,6 @@ const ProductDetails = () => {
                 const hasPurchased = await hasPurchasedProduct(user.id, product._id);
                 const reviewed = await hasReviewedProduct(user.id, product._id);
                 const isDelivered = await isOrderDelivered(user.id, product._id);
-                console.log("checkPermissions() - hasPurchased:", hasPurchased, "reviewed:", reviewed, "isDelivered:", isDelivered);
 
                 setCanReview(hasPurchased && !reviewed && isDelivered);
 
