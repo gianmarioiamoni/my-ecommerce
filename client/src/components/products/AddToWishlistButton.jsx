@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { IconButton, Menu, MenuItem as DropdownItem, Divider } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AddIcon from '@mui/icons-material/Add';
-import { useTranslation } from 'react-i18next';
+
 
 /**
  * The AddToWishlistButton component is used to add a product to a wishlist.

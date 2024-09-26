@@ -1,9 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
-import { AuthContext } from '../../contexts/AuthContext';
-import { uploadProfilePicture } from '../../services/usersServices';
 import { useTranslation } from 'react-i18next';
+
+import { TextField, Button, Container, Typography, Box, Snackbar, Alert } from '@mui/material';
+
+import { AuthContext } from '../../contexts/AuthContext';
+
+import { uploadProfilePicture } from '../../services/usersServices';
+
 
 /**
  * Component to show and update user profile information.

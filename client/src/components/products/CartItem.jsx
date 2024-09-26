@@ -1,8 +1,11 @@
 import React, { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import { Button, Card, CardContent, Typography, TextField, Box } from '@mui/material';
+
 import { CartContext } from '../../contexts/CartContext';
 import { AuthContext } from '../../contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
+
 
 /**
  * The CartItem component renders a single item in the cart, including its quantity,

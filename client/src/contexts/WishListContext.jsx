@@ -27,7 +27,6 @@ const WishlistContext = createContext();
 export const WishlistProvider = ({ children }) => {
     const { user } = useContext(AuthContext);
     const queryClient = useQueryClient();
-    // const [wishlists, setWishlists] = useState([]);
 
     /**
      * Custom hook to fetch wishlists associated with the user.

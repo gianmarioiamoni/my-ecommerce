@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+
 import { Container, TextField, Button, Typography, List, ListItem, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+
 import { useCategories } from '../../contexts/CategoriesContext';
 
 import { useTranslation } from 'react-i18next';

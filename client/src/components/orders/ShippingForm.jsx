@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { Container, TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
-import { getAddresses } from '../../services/usersServices';
 import { useTranslation } from 'react-i18next';
+
+import { Container, TextField, Button, Typography, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material';
+
+import { getAddresses } from '../../services/usersServices';
+
 
 /**
  * ShippingForm component

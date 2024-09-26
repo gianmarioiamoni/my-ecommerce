@@ -1,7 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
+
 import { Container, Typography, Button, List, ListItem, ListItemText, Grid, Box } from '@mui/material';
+
 import { CartContext } from '../../contexts/CartContext';
 import { useTranslation } from 'react-i18next';
+
 import PayPalButton from './PayPalButton';
 import CreditCardForm from './CreditCardForm';
 

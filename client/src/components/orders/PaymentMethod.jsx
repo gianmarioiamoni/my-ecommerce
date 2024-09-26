@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, Typography, Button, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Box } from '@mui/material';
+
+import {
+    Container,
+    Typography,
+    Button,
+    Radio, RadioGroup,
+    FormControlLabel, FormControl, FormLabel,
+    Box
+} from '@mui/material';
 
 /**
  * This component renders a page for the user to choose a payment method.

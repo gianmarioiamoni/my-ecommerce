@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useQuery, useMutation } from 'react-query';
 import { Link } from 'react-router-dom';
 
 import {
