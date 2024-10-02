@@ -27,7 +27,7 @@ const ReviewOrder = ({ shippingData, paymentMethod, prevStep, placeOrder, userId
     const [total, setTotal] = useState(0);
 
     useEffect(() => {
-        setTotal(cart.reduce((total, product) => total + product.price, 0).toFixed(2));
+        setTotal(cart.reduce((total, product) => total + (product.price * product.quantity), 0).toFixed(2));
     }, [cart]);
 
     return (

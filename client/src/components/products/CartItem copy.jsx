@@ -1,35 +1,40 @@
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import { Button, Card, CardContent, Typography, TextField, Box } from '@mui/material';
 
 import { CartContext } from '../../contexts/CartContext';
 import { AuthContext } from '../../contexts/AuthContext';
 
+
+/**
+ * The CartItem component renders a single item in the cart, including its quantity,
+ * price and a button to remove it.
+ *
+ * @param {Object} product - The product object, including its id, name, description,
+ * price, availableQuantity and quantity in the cart.
+ * @returns {JSX.Element} The CartItem component
+ */
 const CartItem = ({ product }) => {
     const { updateQuantity, removeFromCart } = useContext(CartContext);
+    const [error, setError] = useState(false);
     const { user } = useContext(AuthContext);
     const { t } = useTranslation();
 
-    // State to handle the current quantity
-    const [quantity, setQuantity] = useState(product.quantity);
-    const [error, setError] = useState(false);
-
+    /**
+     * Handles the quantity change event, updating the quantity of the product in the cart
+     * and setting an error if the quantity is higher than the available quantity.
+     * @param {Object} event - The event object
+     */
     const handleQuantityChange = (event) => {
-        const newQuantity = parseInt(event.target.value, 10);
-
-        if (isNaN(newQuantity) || newQuantity <= 0) {
-            // Prevent negative or invalid input
-            setQuantity('');
-            return;
-        }
-
-        // Check if the quantity exceeds the available stock
-        if (newQuantity > product.availableQuantity) {
-            setError(true);
-        } else {
-            setError(false);
-            setQuantity(newQuantity);
-            updateQuantity(product._id, newQuantity, user);
+        const quantity = parseInt(event.target.value, 10);
+        if (quantity > 0) {
+            if (quantity > product.availableQuantity) {
+                setError(true);
+            } else {
+                setError(false);
+                updateQuantity(product._id, quantity);
+            }
         }
     };
 
@@ -49,7 +54,7 @@ const CartItem = ({ product }) => {
                     <TextField
                         label={t('cart.quantity')}
                         type="number"
-                        value={quantity}
+                        value={product.quantity}
                         onChange={handleQuantityChange}
                         inputProps={{ min: 1 }}
                         error={error}
@@ -70,7 +75,6 @@ const CartItem = ({ product }) => {
 };
 
 export default CartItem;
-
 
 
 

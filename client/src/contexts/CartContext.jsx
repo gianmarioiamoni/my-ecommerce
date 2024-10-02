@@ -97,8 +97,8 @@ const CartProvider = ({ children }) => {
         dispatch({ type: 'REMOVE_FROM_CART', productId, user });
     };
 
-    const updateQuantity = (id, quantity) => {
-        dispatch({ type: 'UPDATE_QUANTITY', id, quantity });
+    const updateQuantity = (id, quantity, user) => {
+        dispatch({ type: 'UPDATE_QUANTITY', id, quantity, user });
     };
 
     const checkQuantities = () => {
