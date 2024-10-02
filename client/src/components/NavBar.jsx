@@ -307,7 +307,7 @@ const NavBar = () => {
                                 <MenuItem component={Link} to="/user-behavior-dashboard">{t('navBar.userBehaviorDashboard')}</MenuItem>
                             )}
                             {user.isAdmin && (
-                                <MenuItem component={Link} to="/config">{t('navBar.config')}</MenuItem>
+                                <MenuItem component={Link} to="/manage-categories">{t('navBar.config')}</MenuItem>
                             )}
                             <MenuItem onClick={logout}>{t('navBar.logout')}</MenuItem>
                         </Menu>

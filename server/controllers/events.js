@@ -1,4 +1,3 @@
-// /controllers/userBehaviorController.js
 import Event from '../models/Event.js';
 
 /**

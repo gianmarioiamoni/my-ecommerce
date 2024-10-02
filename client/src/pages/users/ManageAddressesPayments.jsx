@@ -33,6 +33,7 @@ const ManageAddressesPayments = () => {
     const [deleteType, setDeleteType] = useState(null); // Type of the item to be deleted (address or payment)
 
     const [tabIndex, setTabIndex] = useState(0); // Current tab index
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -105,6 +106,7 @@ const ManageAddressesPayments = () => {
     const handleTabChange = (event, newIndex) => {
         setTabIndex(newIndex);
     };
+
 
     return (
         <Container maxWidth="md">

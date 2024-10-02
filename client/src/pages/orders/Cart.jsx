@@ -48,12 +48,13 @@ const Cart = () => {
         <Container maxWidth="md">
             <Box mt={4} mb={4}>
                 <Typography variant="h4" component="h1" align="center" gutterBottom>
-                    {t('cart.cartTitle')} {/* Translate the title */}
+                    {t('cart.cartTitle')} 
                 </Typography>
+                {/* Cart Content */}
                 <Grid container spacing={3} justifyContent="center">
                     {cart.length === 0 ? (
                         <Typography variant="h6" align="center" gutterBottom>
-                            {t('cart.emptyCartMessage')} {/* Translate the empty cart message */}
+                            {t('cart.emptyCartMessage')} 
                         </Typography>
                     ) : (
                         cart.map(product => (
@@ -64,7 +65,7 @@ const Cart = () => {
                                         {t('cart.maxQuantityError2', {
                                             name: product.name,
                                             quantity: product.availableQuantity,
-                                        })} {/* Translate the quantity error message */}
+                                        })} 
                                     </Typography>
                                 )}
                             </Grid>
@@ -74,7 +75,7 @@ const Cart = () => {
                 {cart.length > 0 && (
                     <>
                         <Typography variant="h5" align="center" sx={{ marginTop: 3 }}>
-                            {t('cart.totalLabel', { total: getTotal() })} {/* Translate the total label */}
+                            {t('cart.totalLabel', { total: getTotal() })} 
                         </Typography>
                         <Box mt={3} display="flex" justifyContent="center">
                             <Button
@@ -83,7 +84,7 @@ const Cart = () => {
                                 color="primary"
                                 sx={{ marginRight: 2 }}
                             >
-                                {t('cart.clearCartButton')} {/* Translate the clear cart button */}
+                                {t('cart.clearCartButton')} 
                             </Button>
                             <Button
                                 variant="contained"
@@ -91,7 +92,7 @@ const Cart = () => {
                                 onClick={handleCheckout}
                                 disabled={hasErrors}
                             >
-                                {t('cart.checkoutButton')} {/* Translate the checkout button */}
+                                {t('cart.checkoutButton')} 
                             </Button>
                         </Box>
                     </>
